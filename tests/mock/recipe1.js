@@ -1,10 +1,13 @@
 /** @jsx jsx */
 
-function Alert({ look, headline, headingTag, children }) {
+import { jsx } from '@emotion/core';
+
+function Alert({ look = '', children }) {
 	return (
 		<div
 			css={{
-				color: 'red',
+				label: `alert-${look}`,
+				background: look,
 			}}
 		>
 			{children}
@@ -16,16 +19,11 @@ function Recipe() {
 	return (
 		<div>
 			<Alert>Text</Alert>
-			<Alert look="info">Text</Alert>
-			<Alert look="warning">Text</Alert>
-			<Alert look="danger">Text</Alert>
-			<Alert look="system">Text</Alert>
-			<Alert look="system" headline="Text">
-				Text
-			</Alert>
-			<Alert look="system" headline="Text" headingTag="h3">
-				Text
-			</Alert>
+			<Alert look="red">Text</Alert>
+			<Alert look="blue">Text</Alert>
+			<Alert look="green">Text</Alert>
+			<Alert look="gray">Text</Alert>
+			<Alert look="orange">Text</Alert>
 		</div>
 	);
 }

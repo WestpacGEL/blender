@@ -70,5 +70,9 @@ typings/
 .vscode/*
 .DS_Store
 
+# npm files
+package-lock.json
+
 # Artefacts
 lib
+bin
