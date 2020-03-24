@@ -23,10 +23,13 @@
 		"build:bin": "npx mkdirp bin && mv lib/bin.js bin/index.js",
 		"watch": "yarn build:lib && onchange 'src/**/*' -- yarn build:lib",
 		"format": "prettier --write \"**/*.{js,md,mdx,json}\"",
-		"test": "yarn test:format && yarn test:unit",
+		"test": "yarn test:format && yarn test:unit && yarn test:types",
 		"test:format": "prettier --list-different \"**/*.{js,md,mdx,json}\"",
 		"test:unit": "jest",
 		"test:unit-watch": "jest --watch --coverage",
+		"test:types": "yarn types:clean && yarn types:declaration",
+		"types:clean": "find lib/ -type f -name '*.d.ts' -exec rm {} +",
+		"types:declaration": "tsc -p declaration.tsconfig.json",
 		"nuke": "rm -rf bin && rm -rf lib && rm -rf node_modules && rm yarn.lock",
 		"fresh": "yarn nuke && yarn"
 	},
@@ -64,8 +67,10 @@
 		"@babel/core": "^7.9.0",
 		"@babel/preset-env": "^7.9.0",
 		"@babel/preset-react": "^7.9.1",
+		"@types/node": "^13.9.3",
 		"jest-cli": "^25.1.0",
 		"onchange": "^6.1.0",
-		"prettier": "^2.0.2"
+		"prettier": "^2.0.2",
+		"typescript": "^3.8.3"
 	}
 }
