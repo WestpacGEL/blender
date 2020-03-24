@@ -39,3 +39,37 @@ console.log(
 		)
 	)
 );
+
+// example
+
+// const fs = require('fs');
+// const register = require("@babel/register");
+// const createElement = require('react').createElement;
+// const { renderToStaticMarkup } = require('react-dom/server');
+// const BOM = require('@westpac/bom');
+// const createEmotionServer = require('create-emotion-server').default;
+// const createCache = require('@emotion/cache').default;
+// const { CacheProvider } = require('@emotion/core');
+//
+// const cache = createCache();
+// const { extractCritical } = createEmotionServer(cache);
+//
+// function Example(brand) {
+//
+// 	const exampleComponent = require('./alert').default;
+//
+// 	const staticMarkup = extractCritical(
+// 		renderToStaticMarkup(
+// 			createElement(
+// 				CacheProvider,
+// 				{ value: cache },
+// 				exampleComponent(BOM),
+// 			)
+// 		)
+// 	);
+//
+// 	return staticMarkup;
+//
+// }
+//
+// console.log(Example(BOM));

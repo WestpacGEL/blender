@@ -46,6 +46,7 @@
 		}
 	},
 	"dependencies": {
+		"@babel/register": "^7.9.0",
 		"@emotion/core": "^10.0.28",
 		"@emotion/weak-memoize": "^0.2.5",
 		"cfonts": "^2.8.1",
