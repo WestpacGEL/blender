@@ -1,5 +1,21 @@
 # Blender [![CircleCI](https://circleci.com/gh/WestpacGEL/blender/tree/master.svg?style=svg)](https://circleci.com/gh/WestpacGEL/blender/tree/master)
 
+## Scripts
+
+| name              | description                                                                               |
+| ----------------- | ----------------------------------------------------------------------------------------- |
+| `build`           | Building the source files and moving them into `lib/` and `bin/` folder                   |
+| `build:lib`       | Building all lib files. Changing these files won't break symlinks created with `npm link` |
+| `build:bin`       | Moving the `bin.js` file from `lib/` to `bin/` and renaming it to `index.js`              |
+| `watch`           | Watching all files inside `src/` for changes and running `build:lib` if detected          |
+| `format`          | Format all code with prettier                                                             |
+| `test`            | Run all tests                                                                             |
+| `test:format`     | Testing for code style differences                                                        |
+| `test:unit`       | Run all unit Jest tests                                                                   |
+| `test:unit-watch` | Run Jest in watch mode                                                                    |
+| `nuke`            | Remove all artifacts from including `node_modules` folder and lock files                  |
+| `fresh`           | Run `nuke` and `yarn` in sequence                                                         |
+
 ## TODO
 
 - test script: - iterates the `ids` - checks if the `id` exists in the css output - checks if hash is different for same label
