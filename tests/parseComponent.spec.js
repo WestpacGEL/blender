@@ -14,7 +14,7 @@ describe('parseComponent', () => {
 		expect(result.css).not.toBe('');
 	});
 
-	test('error when component doesn\'t exist', () => {
+	test("error when component doesn't exist", () => {
 		const result = parseComponent({
 			componentPath: path.normalize(`${__dirname}/../tests/mock/void`),
 			brand: {},
