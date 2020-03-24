@@ -37,6 +37,7 @@ function parseComponent({ componentPath, brand }) {
 	const cache = createCache();
 	const { extractCritical } = createEmotionServer(cache);
 	let Component;
+	let staticMarkup;
 
 	try {
 		Component = require(componentPath).default;
@@ -48,9 +49,17 @@ function parseComponent({ componentPath, brand }) {
 		};
 	}
 
-	const staticMarkup = extractCritical(
-		renderToStaticMarkup(createElement(CacheProvider, { value: cache }, Component({ brand })))
-	);
+	try {
+		staticMarkup = extractCritical(
+			renderToStaticMarkup(createElement(CacheProvider, { value: cache }, Component({ brand })))
+		);
+	} catch(error) {
+		return {
+			status: 'error',
+			error,
+			message: `An error occured when trying to parse ${chalk.yellow(componentPath)}`,
+		};
+	}
 
 	return {
 		status: 'ok',

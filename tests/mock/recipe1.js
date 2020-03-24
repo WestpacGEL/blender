@@ -23,6 +23,7 @@ function Recipe() {
 			<Alert look="blue">Text</Alert>
 			<Alert look="green">Text</Alert>
 			<Alert look="gray">Text</Alert>
+			<Alert look="orange">Text</Alert>
 		</div>
 	);
 }
