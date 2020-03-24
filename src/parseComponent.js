@@ -46,7 +46,7 @@ function parseComponent({ componentPath, brand }) {
 	try {
 		Component = require(componentPath).default;
 	} catch (error) {
-		D.error(`Component failed to be required at "${componentPath}"`);
+		D.error(`Component failed to be required at "${chalk.yellow(componentPath)}"`);
 		D.error(error);
 
 		return {
@@ -55,14 +55,14 @@ function parseComponent({ componentPath, brand }) {
 			message: `An error occured when trying to open ${chalk.yellow(componentPath)}`,
 		};
 	}
-	D.log(`Component successfully required via "${componentPath}"`);
+	D.log(`Component successfully required via "${chalk.yellow(componentPath)}"`);
 
 	try {
 		staticMarkup = extractCritical(
 			renderToStaticMarkup(createElement(CacheProvider, { value: cache }, Component({ brand })))
 		);
 	} catch (error) {
-		D.error(`Component failed to be rendered at "${componentPath}"`);
+		D.error(`Component failed to be rendered at "${chalk.yellow(componentPath)}"`);
 		D.error(error);
 
 		return {
@@ -71,7 +71,7 @@ function parseComponent({ componentPath, brand }) {
 			message: `An error occured when trying to parse ${chalk.yellow(componentPath)}`,
 		};
 	}
-	D.log(`Component successfully rendered via "${componentPath}"`);
+	D.log(`Component successfully rendered via "${chalk.yellow(componentPath)}"`);
 
 	return {
 		status: 'ok',

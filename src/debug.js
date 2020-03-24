@@ -1,3 +1,5 @@
+const { color } = require('./color.js');
+
 /**
  * DEBUG object for tracking debug mode, level and messages
  *
@@ -46,10 +48,16 @@ const D = {
 	 * @param  {boolean} debug - Global debug mode on/off switch
 	 */
 	header: (name, args = [], debug = DEBUG.enabled) => {
+		DEBUG.messages =
+			`${DEBUG.messages.length > 0 ? '\n\n' : ''}   ===== RUNNING "${name}" =====\n` +
+			`${JSON.stringify(args)}`;
+
 		if (debug) {
-			DEBUG.messages =
-				`${DEBUG.messages.length > 0 ? '\n\n' : ''}   ===== RUNNING "${name}" =====\n` +
-				`${JSON.stringify(args)}`;
+			console.log(
+				`\n\n===== RUNNING "${color.bold(name)}" =====\n`,
+				color.green(JSON.stringify(args, null, '\t')),
+				'\n'
+			);
 		}
 	},
 
@@ -60,8 +68,10 @@ const D = {
 	 * @param  {boolean} debug      - Global debug mode on/off switch
 	 */
 	log: (text, debug = DEBUG.enabled) => {
+		DEBUG.messages = text;
+
 		if (debug) {
-			DEBUG.messages = text;
+			console.log(`🔎  ${text}`);
 		}
 	},
 
@@ -72,9 +82,11 @@ const D = {
 	 * @param  {boolean} debug      - Global debug mode on/off switch
 	 */
 	error: (text, debug = DEBUG.enabled) => {
+		DEBUG.messages = `ERROR: ${text}`;
+		DEBUG.addError();
+
 		if (debug) {
-			DEBUG.messages = `ERROR: ${text}`;
-			DEBUG.addError();
+			console.error(`🛑  ${color.red(text)}`);
 		}
 	},
 };

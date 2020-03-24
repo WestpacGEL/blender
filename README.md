@@ -85,6 +85,7 @@ blender
 	-m                                    # --modules
 	-c                                    # --version-in-class
 	-t less                               # --tokens-format
+	-d                                    # --debug
 	-v                                    # --version
 ```
 
