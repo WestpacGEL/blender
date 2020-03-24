@@ -1,0 +1,53 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:12
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - v1-dependencies-{{ .Branch }}
+            - v1-dependencies
+
+      - run:
+          name: Install tree
+          command: apt-get install tree
+      - run:
+          name: 'DEBUG: Run tree'
+          command: tree -C -I "node_modules*"
+      - run:
+          name: 'DEBUG: node version'
+          command: node -v
+      - run:
+          name: 'DEBUG: npm version'
+          command: npm -v
+      - run:
+          name: 'DEBUG: yarn version'
+          command: yarn -v
+      - run:
+          name: Install dependencies
+          command: yarn
+
+      - save_cache:
+          paths:
+            - node_modules
+            - ~/.npm
+            - ~/.cache
+          key: v1-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
+
+      - run:
+          name: Run build
+          command: yarn build
+      - run:
+          name: Run tests
+          command: yarn test
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
