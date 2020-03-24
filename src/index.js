@@ -3,10 +3,10 @@
  *
  * @return {void}
  */
-function Cli() {
-	console.log('Hello world!');
+function cli() {
+	console.log('Hello world');
 }
 
 module.exports = exports = {
-	Cli,
+	cli,
 };

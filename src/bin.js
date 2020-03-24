@@ -13,4 +13,4 @@
 
 'use strict';
 
-require('../lib/index.js').Cli();
+require('../lib/index.js').cli();
