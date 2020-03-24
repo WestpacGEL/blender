@@ -23,6 +23,7 @@
 		"fresh": "yarn nuke && yarn",
 		"build": "npx mkdirp lib && babel src --out-dir lib",
 		"format": "prettier --write \"**/*.{js,md,mdx,json}\"",
+		"prettier:version": "prettier --version",
 		"test:format": "prettier --list-different \"**/*.{js,md,mdx,json}\"",
 		"test:unit": "jest",
 		"test:unit-watch": "jest --watch --coverage",
