@@ -1,4 +1,4 @@
-# Blender
+# Blender [![CircleCI](https://circleci.com/gh/WestpacGEL/blender/tree/master.svg?style=svg)](https://circleci.com/gh/WestpacGEL/blender/tree/master)
 
 ## TODO
 

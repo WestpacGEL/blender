@@ -2,9 +2,13 @@
 
 function Alert({ look, headline, headingTag, children }) {
 	return (
-		<div css={{
-			color: 'red',
-		}}>{children}</div>
+		<div
+			css={{
+				color: 'red',
+			}}
+		>
+			{children}
+		</div>
 	);
 }
 

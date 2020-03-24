@@ -49,8 +49,8 @@
 		"@emotion/weak-memoize": "^0.2.5",
 		"cfonts": "^2.8.1",
 		"create-emotion-server": "^10.0.27",
-		"react": "^16.13.0",
-		"react-dom": "^16.13.0"
+		"react": "^16.13.1",
+		"react-dom": "^16.13.1"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.8.4",
@@ -58,6 +58,6 @@
 		"@babel/preset-env": "^7.9.0",
 		"@babel/preset-react": "^7.9.1",
 		"jest-cli": "^25.1.0",
-		"prettier": "^1.19.1"
+		"prettier": "^2.0.2"
 	}
 }
