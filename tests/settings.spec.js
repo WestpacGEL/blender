@@ -54,8 +54,8 @@ describe('getSettings', () => {
 		const cliArgs = {
 			flag4: true,
 			flag5: true,
-			flag1: [ 'flag1Value1', 'flag1Value2', 'flag1Value3' ],
-			flag3: true
+			flag1: ['flag1Value1', 'flag1Value2', 'flag1Value3'],
+			flag3: true,
 		};
 
 		const result = getSettings(cliArgs, cwd, options);
@@ -112,8 +112,8 @@ describe('getSettings', () => {
 		};
 		const cwd = path.normalize(`${__dirname}/mock/pkg1/`);
 		const cliArgs = {
-			flag1: [ 'flag1Value1', 'flag1Value2', 'flag1Value3' ],
-			flag3: true
+			flag1: ['flag1Value1', 'flag1Value2', 'flag1Value3'],
+			flag3: true,
 		};
 
 		const result = getSettings(cliArgs, cwd, options);
@@ -135,7 +135,7 @@ describe('getSettings', () => {
 		const cwd = path.normalize(`${__dirname}/mock/pkg1/`);
 		const cliArgs = {
 			'camel-case-flag': 'flag2',
-			flag3: true
+			flag3: true,
 		};
 
 		const result = getSettings(cliArgs, cwd, options);
@@ -237,7 +237,7 @@ describe('getSettings', () => {
 			flag3: true,
 			'--i-am-rogue': true,
 			'-x': true,
-			flag2: true
+			flag2: true,
 		};
 
 		const result = getSettings(cliArgs, cwd, options);

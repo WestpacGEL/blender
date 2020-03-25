@@ -1,3 +1,8 @@
+/**
+ * The entry file for the blender API
+ *
+ * blender - The blender API
+ **/
 const { time } = require('./time.js');
 
 /**

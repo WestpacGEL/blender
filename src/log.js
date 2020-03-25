@@ -1,3 +1,10 @@
+/**
+ * All functions for logging to the console
+ *
+ * DEBUG - DEBUG object for tracking debug mode, level and messages
+ * D     - Debugging prettiness
+ * log   - Logging prettiness
+ **/
 const { color } = require('./color.js');
 
 /**

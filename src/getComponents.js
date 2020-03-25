@@ -1,5 +1,15 @@
+/**
+ * All functions for getting components from the node_modules folder
+ *
+ * getComponents - Handle exiting of program
+ **/
 const { SETTINGS } = require('./settings.js');
 
+/**
+ * Getting components from the node_modules folder
+ *
+ * @return {array} - An array of objects with component data
+ */
 function getComponents() {
 	// run: blender -s "@w" -i x y z -x foo bar baz
 

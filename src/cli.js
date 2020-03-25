@@ -1,14 +1,21 @@
+/**
+ * All functions we need for the cli
+ *
+ * cli         - The CLI function
+ * help        - Display the cli help
+ * exitHandler - Handle exiting of program
+ **/
 const cfonts = require('cfonts');
 const path = require('path');
+const fs = require('fs');
 
 const { SETTINGS, getCliArgs, checkCliInput, getSettings } = require('./settings.js');
 const { parseComponent } = require('./parseComponent.js');
 const { getComponents } = require('./getComponents.js');
-const { exitHandler } = require('./exitHandler.js');
+const { stripColor, color } = require('./color.js');
 const { version } = require('../package.json');
 const { CLIOPTIONS } = require('./const.js');
 const { DEBUG, log } = require('./log.js');
-const { color } = require('./color.js');
 const { time } = require('./time.js');
 
 /**
@@ -22,7 +29,7 @@ async function cli() {
 	const cliArgs = getCliArgs();
 	const isGoodHuman = checkCliInput(cliArgs);
 
-	if(isGoodHuman.pass === false) {
+	if (isGoodHuman.pass === false) {
 		console.error(isGoodHuman.errors);
 		process.exit(1);
 	}
@@ -80,6 +87,39 @@ function help(options = CLIOPTIONS) {
 				` $ ${color.gray(option.example)}\n`
 		);
 	});
+}
+
+/**
+ * Handle exiting of program
+ *
+ * @param {null}    exiting - null for bind
+ * @param {object}  error   - Object to distinguish between closing events
+ * @param {boolean} debug   - Global debug mode on/off switch
+ */
+function exitHandler(exiting, error, debug = DEBUG) {
+	if ((error && error !== 1) || debug.errors > 0) {
+		const messages =
+			debug.messages.join('\n') +
+			`\n\n` +
+			`Errors: ${debug.errors}\n` +
+			`Duration: ${time.stop()}\n`;
+		const logPath = path.normalize(`${process.cwd()}/blender-error.log`);
+
+		try {
+			fs.writeFileSync(logPath, stripColor(messages), { encoding: 'utf8' });
+		} catch (error) {
+			console.error(`Unable to write error log file to "${logPath}"`);
+			console.error(error);
+		}
+	}
+
+	if (debug.enabled) {
+		console.log(`\nErrors: ${debug.errors}\n`);
+	}
+
+	log.success(`Successfully blended ${'TODO'} components in ${time.stop()}\n`);
+
+	process.exit(0);
 }
 
 module.exports = exports = {

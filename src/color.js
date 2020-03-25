@@ -1,4 +1,11 @@
 /**
+ * Functions around ANSI colors
+ *
+ * stripColor - Remove ansi colors from a string
+ * color      - Returning ansi escape color codes
+ **/
+
+/**
  * Remove ansi colors from a string
  *
  * @param  {string} text - The text to be stripped

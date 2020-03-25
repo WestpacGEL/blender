@@ -1,4 +1,11 @@
 /**
+ * All functions for keeping time
+ *
+ * time          - Keeping time
+ * convertHrtime - Convert hrtime to seconds
+ **/
+
+/**
  * Keeping time
  *
  * @type {Object}

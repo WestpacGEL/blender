@@ -1,3 +1,8 @@
+/**
+ * All functions for parsing components with emotion
+ *
+ * parseComponent - Parsing a component to get out css and html
+ **/
 const { renderToStaticMarkup } = require('react-dom/server');
 const createEmotionServer = require('create-emotion-server').default;
 const createElement = require('react').createElement;

@@ -1,5 +1,15 @@
+/**
+ * All constance shared with all functions
+ *
+ * CLIOPTIONS - Default settings for our cli flags
+ **/
 const { color } = require('./color.js');
 
+/**
+ * Default settings for our cli flags
+ *
+ * @type {Object}
+ */
 const CLIOPTIONS = {
 	brand: {
 		description: 'Specify the brand you want to blend',
