@@ -1,3 +1,14 @@
+/**
+ * Settings from defaults, package.json and cli
+ *
+ * SETTINGS      - The settings store
+ * getSettings   - Get the settings from the package.json, the cli and our defaults value and merge them all together
+ * getDefaults   - Get the default values from our options
+ * camelCase     - Convert a string to camel case
+ * getPkgOptions - Get the blender settings from the package.json
+ * getCliArgs    - Parse our cli options into an easily digestible object
+ * checkCliInput - Check the cli input and log out helpful errors messages
+ **/
 const path = require('path');
 const fs = require('fs');
 
@@ -24,16 +35,15 @@ const SETTINGS = {
 /**
  * Get the settings from the package.json, the cli and our defaults value and merge them all together
  *
- * @param  {object} options   - The options for this program
- * @param  {string} cwd       - The current working directory
- * @param  {array}  inputArgs - The array of our cli options of which the first two are ignored
+ * @param  {object} cliArgs - The parsed cli flags
+ * @param  {string} cwd     - The current working directory
+ * @param  {object} options - The options for this program
  *
- * @return {object}           - The settings object with all merged
+ * @return {object}         - The settings object with all merged
  */
-function getSettings(options = CLIOPTIONS, cwd = process.cwd(), inputArgs = process.argv) {
-	D.header('getSettings', { options, cwd, inputArgs });
+function getSettings(cliArgs, cwd = process.cwd(), options = CLIOPTIONS) {
+	D.header('getSettings', { cliArgs, cwd });
 
-	const cliArgs = getCliArgs(options, inputArgs);
 	const pkgOptions = getPkgOptions(cwd);
 	const defaults = getDefaults(options);
 
@@ -134,7 +144,7 @@ function getPkgOptions(cwd) {
  *
  * @return {object}           - A shallow 1-level deep object
  */
-function getCliArgs(options, inputArgs) {
+function getCliArgs(options = CLIOPTIONS, inputArgs = process.argv) {
 	D.header('getCliArgs', { options, inputArgs });
 
 	const argDict = {};
@@ -192,10 +202,39 @@ function getCliArgs(options, inputArgs) {
 	return cliArgs;
 }
 
+/**
+ * Check the cli input and log out helpful errors messages
+ *
+ * @param  {object} cliArgs - The parsed cli flags
+ * @param  {object} options - The defaults options object
+ *
+ * @return {object}         - An object with errors and a boolean check
+ */
+function checkCliInput(cliArgs, options) {
+	// iterate over options and check against cliArgs
+	// specifically:
+	// 	check type
+	// 	if arguments exists make sure they are in there
+	// 	error out when something is wrong, write helpful message that shows what the blender was expecting
+	// 		like when "blender --brand x" error out saying: "x is unrecognized. Here are the expected values: ${color.yellow(option.arguments.join(', '))}"
+	//
+	// return an object in this shape:
+	// {
+	// 	pass: true|false,
+	// 	errors: '',  // this is where all error messages go (we don't console.log from this function as it might also be used in the API)
+	// }
+
+	return {
+		pass: true,
+		errors: '',
+	};
+}
+
 module.exports = exports = {
 	SETTINGS,
 	getSettings,
 	camelCase,
 	getPkgOptions,
 	getCliArgs,
+	checkCliInput,
 };

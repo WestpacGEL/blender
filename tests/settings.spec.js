@@ -1,6 +1,6 @@
 const path = require('path');
 
-const { getSettings, SETTINGS } = require('../src/settings.js');
+const { getSettings, SETTINGS, getCliArgs } = require('../src/settings.js');
 
 describe('getSettings', () => {
 	test('Get nothing when nothing is set', () => {
@@ -10,9 +10,9 @@ describe('getSettings', () => {
 			flag3: {},
 		};
 		const cwd = process.cwd();
-		const inputArgs = [];
+		const cliArgs = {};
 
-		const result = getSettings(options, cwd, inputArgs);
+		const result = getSettings(cliArgs, cwd, options);
 
 		expect(result).toStrictEqual({});
 	});
@@ -28,9 +28,12 @@ describe('getSettings', () => {
 			},
 		};
 		const cwd = process.cwd();
-		const inputArgs = [];
+		const cliArgs = {
+			flag1: 'foo',
+			flag3: false,
+		};
 
-		const result = getSettings(options, cwd, inputArgs);
+		const result = getSettings(cliArgs, cwd, options);
 
 		expect(result).toStrictEqual({ flag1: 'foo', flag3: false });
 	});
@@ -48,18 +51,14 @@ describe('getSettings', () => {
 			},
 		};
 		const cwd = process.cwd();
-		const inputArgs = [
-			'path/to/node',
-			'path/to/script',
-			'-ab',
-			'--flag1',
-			'flag1Value1',
-			'flag1Value2',
-			'flag1Value3',
-			'--flag3',
-		];
+		const cliArgs = {
+			flag4: true,
+			flag5: true,
+			flag1: [ 'flag1Value1', 'flag1Value2', 'flag1Value3' ],
+			flag3: true
+		};
 
-		const result = getSettings(options, cwd, inputArgs);
+		const result = getSettings(cliArgs, cwd, options);
 
 		expect(result).toStrictEqual({
 			flag1: ['flag1Value1', 'flag1Value2', 'flag1Value3'],
@@ -72,9 +71,9 @@ describe('getSettings', () => {
 	test('Get package.json settings when nothing else is set', () => {
 		const options = {};
 		const cwd = path.normalize(`${__dirname}/mock/pkg1/`);
-		const inputArgs = [];
+		const cliArgs = {};
 
-		const result = getSettings(options, cwd, inputArgs);
+		const result = getSettings(cliArgs, cwd, options);
 
 		expect(result).toStrictEqual({ flag1: 'value for flag1', flag2: true, flag3: false });
 	});
@@ -92,9 +91,9 @@ describe('getSettings', () => {
 			},
 		};
 		const cwd = path.normalize(`${__dirname}/mock/pkg1/`);
-		const inputArgs = [];
+		const cliArgs = {};
 
-		const result = getSettings(options, cwd, inputArgs);
+		const result = getSettings(cliArgs, cwd, options);
 
 		expect(result).toStrictEqual({ flag1: 'value for flag1', flag2: true, flag3: false });
 	});
@@ -112,17 +111,12 @@ describe('getSettings', () => {
 			},
 		};
 		const cwd = path.normalize(`${__dirname}/mock/pkg1/`);
-		const inputArgs = [
-			'path/to/node',
-			'path/to/script',
-			'--flag1',
-			'flag1Value1',
-			'flag1Value2',
-			'flag1Value3',
-			'--flag3',
-		];
+		const cliArgs = {
+			flag1: [ 'flag1Value1', 'flag1Value2', 'flag1Value3' ],
+			flag3: true
+		};
 
-		const result = getSettings(options, cwd, inputArgs);
+		const result = getSettings(cliArgs, cwd, options);
 
 		expect(result).toStrictEqual({
 			flag1: ['flag1Value1', 'flag1Value2', 'flag1Value3'],
@@ -139,9 +133,12 @@ describe('getSettings', () => {
 			'camel-case-flag': {},
 		};
 		const cwd = path.normalize(`${__dirname}/mock/pkg1/`);
-		const inputArgs = ['path/to/node', 'path/to/script', '--camel-case-flag', 'flag2', '--flag3'];
+		const cliArgs = {
+			'camel-case-flag': 'flag2',
+			flag3: true
+		};
 
-		const result = getSettings(options, cwd, inputArgs);
+		const result = getSettings(cliArgs, cwd, options);
 
 		expect(result).toStrictEqual({
 			camelCaseFlag: 'flag2',
@@ -162,15 +159,12 @@ describe('getSettings', () => {
 			'output-flag1': {},
 		};
 		const cwd = path.normalize(`${__dirname}/mock/pkg1/`);
-		const inputArgs = [
-			'path/to/node',
-			'path/to/script',
-			'--output-flag1',
-			'output for flag 1',
-			'--flag3',
-		];
+		const cliArgs = {
+			'output-flag1': 'output for flag 1',
+			flag3: true,
+		};
 
-		const result = getSettings(options, cwd, inputArgs);
+		const result = getSettings(cliArgs, cwd, options);
 
 		expect(result).toStrictEqual({
 			output: { flag1: 'output for flag 1' },
@@ -200,9 +194,12 @@ describe('getSettings', () => {
 			'output-nope': {},
 		};
 		const cwd = path.normalize(`${__dirname}/mock/pkg1/`);
-		const inputArgs = ['path/to/node', 'path/to/script', '--output', 'path/to/output', '--flag3'];
+		const cliArgs = {
+			output: 'path/to/output',
+			flag3: true,
+		};
 
-		const result = getSettings(options, cwd, inputArgs);
+		const result = getSettings(cliArgs, cwd, options);
 
 		expect(result).toStrictEqual({
 			output: { flag1: 'path/to/output', flag2: 'path/to/output', flag3: 'path/to/output' },
@@ -212,43 +209,14 @@ describe('getSettings', () => {
 		});
 	});
 
-	test('Warn when a cli argument is orphaned', () => {
-		console.warn = jest.fn();
-
-		const options = {
-			flag1: {},
-			flag2: {},
-			flag3: {},
-		};
-		const cwd = process.cwd();
-		const inputArgs = [
-			'path/to/node',
-			'path/to/script',
-			'I-belong-nowhere',
-			'--flag1',
-			'flag1Value1',
-			'--flag3',
-		];
-
-		const result = getSettings(options, cwd, inputArgs);
-
-		expect(result).toStrictEqual({
-			flag1: 'flag1Value1',
-			flag3: true,
-		});
-		expect(console.warn.mock.calls.length).toBe(1);
-		expect(console.warn.mock.calls[0][0].includes('I-belong-nowhere')).toBeTruthy();
-		expect(console.warn.mock.calls[0][0].includes('The cli argument')).toBeTruthy();
-	});
-
 	test('Log when there was no package.json found', () => {
 		console.info = jest.fn();
 
 		const options = {};
 		const cwd = 'null/void/';
-		const inputArgs = [];
+		const cliArgs = {};
 
-		const result = getSettings(options, cwd, inputArgs);
+		const result = getSettings(cliArgs, cwd, options);
 
 		expect(result).toStrictEqual({});
 		expect(console.info.mock.calls.length).toBe(1);
@@ -265,9 +233,14 @@ describe('getSettings', () => {
 			flag3: {},
 		};
 		const cwd = path.normalize(`${__dirname}/mock/pkg1/`);
-		const inputArgs = ['path/to/node', 'flag2', '--flag3', '--i-am-rogue', '-xa'];
+		const cliArgs = {
+			flag3: true,
+			'--i-am-rogue': true,
+			'-x': true,
+			flag2: true
+		};
 
-		const result = getSettings(options, cwd, inputArgs);
+		const result = getSettings(cliArgs, cwd, options);
 
 		expect(result).toStrictEqual({
 			flag1: 'value for flag1',
@@ -279,9 +252,38 @@ describe('getSettings', () => {
 	});
 });
 
+describe('getCliArgs', () => {
+	test('Warn when a cli argument is orphaned', () => {
+		console.warn = jest.fn();
+
+		const options = {
+			flag1: {},
+			flag2: {},
+			flag3: {},
+		};
+		const inputArgs = [
+			'path/to/node',
+			'path/to/script',
+			'I-belong-nowhere',
+			'--flag1',
+			'flag1Value1',
+			'--flag3',
+		];
+		const result = getCliArgs(options, inputArgs);
+
+		expect(result).toStrictEqual({
+			flag1: 'flag1Value1',
+			flag3: true,
+		});
+		expect(console.warn.mock.calls.length).toBe(1);
+		expect(console.warn.mock.calls[0][0].includes('I-belong-nowhere')).toBeTruthy();
+		expect(console.warn.mock.calls[0][0].includes('The cli argument')).toBeTruthy();
+	});
+});
+
 describe('SETTINGS', () => {
 	beforeEach(() => {
-		SETTINGS.set = {};
+		jest.resetModules();
 	});
 
 	test('Get the current settings', () => {

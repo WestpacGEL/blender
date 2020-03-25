@@ -1,7 +1,7 @@
 const cfonts = require('cfonts');
 const path = require('path');
 
-const { SETTINGS, getSettings } = require('./settings.js');
+const { SETTINGS, getCliArgs, checkCliInput, getSettings } = require('./settings.js');
 const { parseComponent } = require('./parseComponent.js');
 const { getComponents } = require('./getComponents.js');
 const { exitHandler } = require('./exitHandler.js');
@@ -19,7 +19,15 @@ const { time } = require('./time.js');
 async function cli() {
 	time.start();
 
-	SETTINGS.set = getSettings();
+	const cliArgs = getCliArgs();
+	const isGoodHuman = checkCliInput(cliArgs);
+
+	if(isGoodHuman.pass === false) {
+		console.error(isGoodHuman.errors);
+		process.exit(1);
+	}
+
+	SETTINGS.set = getSettings(cliArgs);
 	DEBUG.enabled = SETTINGS.get.debug;
 
 	if (SETTINGS.get.version) {
@@ -35,6 +43,7 @@ async function cli() {
 	log.start(`Blender v${version} starting`);
 	getComponents();
 
+	// just showing that we can run the parser, will go elsewhere
 	await parseComponent({
 		componentPath: path.normalize(`${__dirname}/../tests/mock/recipe1.js`),
 		brand: {},
