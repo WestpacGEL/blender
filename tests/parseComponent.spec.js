@@ -1,5 +1,6 @@
-const { parseComponent } = require('../src/parseComponent.js');
 const path = require('path');
+
+const { parseComponent } = require('../src/parseComponent.js');
 
 describe('parseComponent', () => {
 	test('parse component correctly', () => {

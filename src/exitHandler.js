@@ -1,8 +1,8 @@
 const path = require('path');
 const fs = require('fs');
 
-const { stripColor } = require('./color.js');
-const { DEBUG } = require('./debug.js');
+const { stripColor, color } = require('./color.js');
+const { DEBUG, log } = require('./log.js');
 const { time } = require('./time.js');
 
 /**
@@ -28,6 +28,12 @@ function exitHandler(exiting, error, debug = DEBUG) {
 			console.error(error);
 		}
 	}
+
+	if (debug.enabled) {
+		console.log(`\nErrors: ${debug.errors}\n`);
+	}
+
+	log.success(`Successfully blended ${'TODO'} components in ${time.stop()}\n`);
 
 	process.exit(0);
 }

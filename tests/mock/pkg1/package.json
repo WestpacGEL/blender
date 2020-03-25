@@ -1,0 +1,9 @@
+{
+	"name": "test",
+	"private": true,
+	"blender": {
+		"flag1": "value for flag1",
+		"flag2": true,
+		"flag3": false
+	}
+}

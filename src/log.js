@@ -91,7 +91,60 @@ const D = {
 	},
 };
 
+/**
+ * Logging prettiness
+ *
+ * @type {object}
+ */
+const log = {
+	/**
+	 * Log the start message
+	 *
+	 * @param  {string}  text  - The sting you want to log
+	 */
+	start: (text) => {
+		console.log(`\n   ${color.bold(text)}`);
+	},
+
+	/**
+	 * Log an informal message
+	 *
+	 * @param  {string}  text  - The sting you want to log
+	 */
+	info: (text) => {
+		console.info(`💡  ${text}`);
+	},
+
+	/**
+	 * Log a success message
+	 *
+	 * @param  {string}  text  - The sting you want to log
+	 */
+	success: (text) => {
+		console.log(`🚀  ${color.green(text)}`);
+	},
+
+	/**
+	 * Log a warning message
+	 *
+	 * @param  {string}  text  - The sting you want to log
+	 */
+	warn: (text) => {
+		console.warn(`⚠️  ${color.yellow(text)}`);
+	},
+
+	/**
+	 * Log a error message
+	 *
+	 * @param  {string}  text  - The sting you want to log
+	 */
+	error: (text) => {
+		console.error(`🛑  ${color.red(text)}`);
+	},
+};
+
 module.exports = exports = {
 	DEBUG,
 	D,
+	log,
 };
