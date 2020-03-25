@@ -48,7 +48,7 @@ blender: {
     css: 'path/to/css',
     js: 'path/to/js',
     html: false,              // false disabled the generation
-    tokens: 'path/to/tokens',
+    token: 'path/to/tokens',
   },
   output: 'path/to/all',      // will put all files in the same folder
   scope: '@westpac',          // not hardcoded
@@ -76,10 +76,11 @@ blender
 	--output-css path/to/css
 	--output-js path/to/js
 	--output-html path/to/html
+	--output-token path/to/token
 	--output-zip
 	-s "@westpac"                         # --scope
-	-i "@westpac/button","@westpac/alert" # --include
-	-x "@westpac/button","@westpac/alert" # --exclude
+	-i "@westpac/button" "@westpac/alert" # --include
+	-x "@westpac/button" "@westpac/alert" # --exclude
 	-p                                    # --prettify
 	-j                                    # --include-jquery
 	-m                                    # --modules
@@ -87,6 +88,13 @@ blender
 	-t less                               # --tokens-format
 	-d                                    # --debug
 	-v                                    # --version
+	-h                                    # --help
+```
+
+An example would be:
+
+```sh
+blender -b WBC --output-css path/to/css --output-js path/to/js --output-html path/to/html --output-token path/to/token --output-zip -s "@westpac" --include "@westpac/button" "@westpac/core" -x "@westpac/tabcordion" -pjmct less -dvh
 ```
 
 - iterates over each component (https://babeljs.io/docs/en/babel-register/) - generates the critical styles from the recipe file (includes all variations of the component) - generates the html from the template (includes only those that go into docs) - takes ids - removes hashes and `css-` prefix - adds package version - build html file with example codes for each component (a file per component plus an index file) - build css file - separate core - export js file for all tokens - remove all core css from each component - add core as separate thing on top - build js file (concat) - optionally include jquery file - zip it all up - profit

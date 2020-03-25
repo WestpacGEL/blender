@@ -4,10 +4,10 @@ const createElement = require('react').createElement;
 const createCache = require('@emotion/cache').default;
 const { CacheProvider } = require('@emotion/core');
 const register = require('@babel/register');
-const chalk = require('chalk');
 const fs = require('fs');
 
-const { D } = require('./debug.js');
+const { color } = require('./color.js');
+const { D } = require('./log.js');
 
 /**
  * Parsing a component to get out css and html
@@ -46,32 +46,32 @@ function parseComponent({ componentPath, brand }) {
 	try {
 		Component = require(componentPath).default;
 	} catch (error) {
-		D.error(`Component failed to be required at "${chalk.yellow(componentPath)}"`);
+		D.error(`Component failed to be required at "${color.yellow(componentPath)}"`);
 		D.error(error);
 
 		return {
 			status: 'error',
 			error,
-			message: `An error occured when trying to open ${chalk.yellow(componentPath)}`,
+			message: `An error occured when trying to open ${color.yellow(componentPath)}`,
 		};
 	}
-	D.log(`Component successfully required via "${chalk.yellow(componentPath)}"`);
+	D.log(`Component successfully required via "${color.yellow(componentPath)}"`);
 
 	try {
 		staticMarkup = extractCritical(
 			renderToStaticMarkup(createElement(CacheProvider, { value: cache }, Component({ brand })))
 		);
 	} catch (error) {
-		D.error(`Component failed to be rendered at "${chalk.yellow(componentPath)}"`);
+		D.error(`Component failed to be rendered at "${color.yellow(componentPath)}"`);
 		D.error(error);
 
 		return {
 			status: 'error',
 			error,
-			message: `An error occured when trying to parse ${chalk.yellow(componentPath)}`,
+			message: `An error occured when trying to parse ${color.yellow(componentPath)}`,
 		};
 	}
-	D.log(`Component successfully rendered via "${chalk.yellow(componentPath)}"`);
+	D.log(`Component successfully rendered via "${color.yellow(componentPath)}"`);
 
 	return {
 		status: 'ok',
