@@ -3,6 +3,7 @@ const path = require('path');
 
 const { SETTINGS, getSettings } = require('./settings.js');
 const { parseComponent } = require('./parseComponent.js');
+const { getComponents } = require('./getComponents.js');
 const { exitHandler } = require('./exitHandler.js');
 const { version } = require('../package.json');
 const { CLIOPTIONS } = require('./const.js');
@@ -32,13 +33,12 @@ async function cli() {
 	}
 
 	log.start(`Blender v${version} starting`);
+	getComponents();
 
 	await parseComponent({
 		componentPath: path.normalize(`${__dirname}/../tests/mock/recipe1.js`),
 		brand: {},
 	});
-
-	console.log(SETTINGS.get);
 
 	process.on('exit', exitHandler); // on closing
 	process.on('SIGINT', exitHandler); // on [ctrl] + [c]
@@ -59,7 +59,7 @@ function help(options = CLIOPTIONS) {
 		font: 'tiny',
 		space: false,
 	});
-	console.log(` Help v${version}\n\n`);
+	console.log(` v${version}\n\n`);
 
 	Object.entries(CLIOPTIONS).map(([name, option]) => {
 		console.log(

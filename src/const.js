@@ -51,13 +51,15 @@ const CLIOPTIONS = {
 		description: 'White-list specific components you want to blend',
 		example: 'blender -i "@westpac/body" "@westpac/button"',
 		flag: 'i',
-		type: 'string',
+		type: 'array',
+		default: [],
 	},
 	exclude: {
 		description: `Black-list specific components you don't want to blend`,
 		example: 'blender -x "@westpac/tabcordion" "@westpac/grid"',
 		flag: 'x',
-		type: 'string',
+		type: 'array',
+		default: [],
 	},
 	prettify: {
 		description: 'Specify if you want you code to be prettified',
