@@ -212,8 +212,6 @@ function getCliArgs(options = CLIOPTIONS, inputArgs = process.argv) {
  */
 function checkCliInput(cliArgs, options = CLIOPTIONS) {
 
-	// Q. How to parse objects in CLI?
-
 	console.log(`============================\n`);
 
 	const result = {
@@ -241,28 +239,11 @@ function checkCliInput(cliArgs, options = CLIOPTIONS) {
 			return;
 		}
 
-		// we support a single (string) or multiple (array of strings) types,
-		// normalise them before we continue
-		const types = typeof option.type === 'string'
-			? option.type.split()
-			: option.type;
-
 		// loop over the types and check that the value matches at least one
-		let typeMatch = false;
-
-		types.forEach((type) => {
-			if (typeof value !== type) {
-				console.log(`value [${value}] does not match type [${type}]`);
-				return;
-			}
-			typeMatch = true;
-			console.log(`value [${value}] matches type [${type}]`);
-		});
-
-		// if we don't get any positive matches, error out
-		if (!typeMatch) {
+		if (typeof value !== options.type) {
+			console.log(`value [${value}] does not match type [${options.type}]`);
 			result.pass = false;
-			result.errors.push(`value [${value}] does not match any types [${types}]`);
+			result.errors.push(`value [${value}] does not match type [${options.type}]`);
 			return;
 		}
 
@@ -279,8 +260,6 @@ function checkCliInput(cliArgs, options = CLIOPTIONS) {
 			result.errors.push(`value [${value}] does not match valid arguments [${option.arguments}]`);
 			return;
 		}
-
-
 
 	};
 

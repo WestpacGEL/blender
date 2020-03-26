@@ -50,7 +50,7 @@ const CLIOPTIONS = {
 	'output-zip': {
 		description: 'Tell blender to zip up all files into an archive',
 		example: 'blender --output path/to/folder --output-zip',
-		type: 'string',
+		type: 'boolean',
 	},
 	scope: {
 		description: 'Specify what npm scope the blender should look through',
