@@ -18,6 +18,7 @@ const CLIOPTIONS = {
 		type: 'string',
 		arguments: ['WBC', 'WBG', 'BOM', 'BSA', 'STG', 'BTFG'],
 	},
+	// Q: If it's an object, don't we need to validate that structure as well?
 	output: {
 		description: 'Specify where the blender should save all your files to',
 		example: 'blender -o path/to/folder',
@@ -45,10 +46,11 @@ const CLIOPTIONS = {
 		example: 'blender --output-token path/to/token',
 		type: 'string',
 	},
+	// Q: Type was false before, shouldn't it be string?
 	'output-zip': {
 		description: 'Tell blender to zip up all files into an archive',
 		example: 'blender --output path/to/folder --output-zip',
-		type: false,
+		type: 'string',
 	},
 	scope: {
 		description: 'Specify what npm scope the blender should look through',

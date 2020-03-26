@@ -27,7 +27,7 @@ async function cli() {
 	time.start();
 
 	const cliArgs = getCliArgs();
-	const isGoodHuman = checkCliInput(cliArgs);
+	const isGoodHuman = checkCliInput(cliArgs, CLIOPTIONS);
 
 	if (isGoodHuman.pass === false) {
 		console.error(isGoodHuman.errors);
@@ -80,7 +80,6 @@ function help(options = CLIOPTIONS) {
 	Object.entries(CLIOPTIONS).map(([name, option]) => {
 		console.log(
 			` ${color.bold(name.toUpperCase())}\n` +
-				color.cyan(` --${name}${color.white(',')} ${option.flag ? `-${option.flag}` : ''}\n`) +
 				` ${option.description}\n` +
 				(option.arguments
 					? ` Possible arguments are: ${color.yellow(option.arguments.join(', '))}\n`

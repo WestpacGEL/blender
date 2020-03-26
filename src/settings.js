@@ -210,7 +210,84 @@ function getCliArgs(options = CLIOPTIONS, inputArgs = process.argv) {
  *
  * @return {object}         - An object with errors and a boolean check
  */
-function checkCliInput(cliArgs, options) {
+function checkCliInput(cliArgs, options = CLIOPTIONS) {
+
+	// Q. How to parse objects in CLI?
+
+	console.log(`============================\n`);
+
+	const result = {
+		pass: true,
+		errors: [],
+	}
+
+	// loop over all the arguments we get in the CLI
+	for (const [key, value] of Object.entries(cliArgs)) {
+
+		console.log(`>>> analysing option { ${key}: ${value} }\n`);
+
+		// locate the option in our options config either by flag or key
+		const option = options[Object.keys(options)
+			.find((opt) => {
+				return (opt === key || options[opt].flag === key)
+					? key : null;
+			})];
+
+		// error out if we can't find the option either by flag or key
+		if (!option) {
+			console.log(`option [${key}] not found`)
+			result.pass = false;
+			result.errors.push(`option [${key}] not found`);
+			return;
+		}
+
+		// we support a single (string) or multiple (array of strings) types,
+		// normalise them before we continue
+		const types = typeof option.type === 'string'
+			? option.type.split()
+			: option.type;
+
+		// loop over the types and check that the value matches at least one
+		let typeMatch = false;
+
+		types.forEach((type) => {
+			if (typeof value !== type) {
+				console.log(`value [${value}] does not match type [${type}]`);
+				return;
+			}
+			typeMatch = true;
+			console.log(`value [${value}] matches type [${type}]`);
+		});
+
+		// if we don't get any positive matches, error out
+		if (!typeMatch) {
+			result.pass = false;
+			result.errors.push(`value [${value}] does not match any types [${types}]`);
+			return;
+		}
+
+		// if we only support specific arguments for an option, make sure the one
+		// we're passing in is one we expect
+		const invalidArgument = option.arguments
+			&& Array.isArray(option.arguments)
+			&& option.arguments.length
+				? option.arguments.indexOf(value) !== 1
+				: false;
+
+		if (invalidArgument) {
+			result.pass = false;
+			result.errors.push(`value [${value}] does not match valid arguments [${option.arguments}]`);
+			return;
+		}
+
+
+
+	};
+
+	console.log(result);
+
+	return result;
+
 	// iterate over options and check against cliArgs
 	// specifically:
 	// 	check type
@@ -224,10 +301,6 @@ function checkCliInput(cliArgs, options) {
 	// 	errors: '',  // this is where all error messages go (we don't console.log from this function as it might also be used in the API)
 	// }
 
-	return {
-		pass: true,
-		errors: '',
-	};
 }
 
 module.exports = exports = {
