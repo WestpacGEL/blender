@@ -1,7 +1,15 @@
+/**
+ * Testing src/parseComponent.js functions
+ *
+ * parseComponent
+ **/
 const path = require('path');
 
 const { parseComponent } = require('../src/parseComponent.js');
 
+/**
+ * parseComponent
+ */
 describe('parseComponent', () => {
 	test('parse component correctly', () => {
 		const result = parseComponent({

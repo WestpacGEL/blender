@@ -1,7 +1,17 @@
+/**
+ * Testing src/settings.js functions
+ *
+ * getSettings
+ * getCliArgs
+ * SETTINGS
+ **/
 const path = require('path');
 
 const { getSettings, SETTINGS, getCliArgs } = require('../src/settings.js');
 
+/**
+ * getSettings
+ */
 describe('getSettings', () => {
 	test('Get nothing when nothing is set', () => {
 		const options = {
@@ -252,6 +262,9 @@ describe('getSettings', () => {
 	});
 });
 
+/**
+ * getCliArgs
+ */
 describe('getCliArgs', () => {
 	test('Warn when a cli argument is orphaned', () => {
 		console.warn = jest.fn();
@@ -281,6 +294,9 @@ describe('getCliArgs', () => {
 	});
 });
 
+/**
+ * SETTINGS
+ */
 describe('SETTINGS', () => {
 	beforeEach(() => {
 		jest.resetModules();
