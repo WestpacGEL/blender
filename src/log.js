@@ -61,9 +61,7 @@ const D = {
 
 		if (debug) {
 			console.log(
-				`\n\n===== RUNNING "${color.bold(name)}" =====\n`,
-				color.green(JSON.stringify(args, null, '\t')),
-				'\n'
+				`\n===== RUNNING "${color.bold(name)}" =====\n${color.green(JSON.stringify(args))}`
 			);
 		}
 	},
