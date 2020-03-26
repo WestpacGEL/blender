@@ -76,3 +76,6 @@ package-lock.json
 # Artefacts
 lib
 bin
+
+# mock files
+!tests/mock/**/node_modules/

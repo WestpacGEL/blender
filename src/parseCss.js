@@ -1,5 +1,5 @@
 /**
- * All functions for parsing components with emotion
+ * All functions for parsing packages with emotion
  *
  * parseComponent - Parsing a component to get out css and html
  **/
