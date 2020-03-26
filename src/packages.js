@@ -1,6 +1,7 @@
 /**
  * All functions for around packages
  *
+ * PACKAGES      - The packages store
  * getComponents - Handle exiting of program
  **/
 const path = require('path');
@@ -10,6 +11,22 @@ const { SETTINGS } = require('./settings.js');
 const { color } = require('./color.js');
 const { log } = require('./log.js');
 const { D } = require('./log.js');
+
+/**
+ * The packages store
+ *
+ * @type {Object}
+ */
+const PACKAGES = {
+	store: [],
+
+	get get() {
+		return this.store;
+	},
+	set set(settings) {
+		this.store = settings;
+	},
+};
 
 /**
  * Retrieve packages from the node_modules folder
@@ -67,5 +84,6 @@ function getPackages(cwd = process.cwd()) {
 }
 
 module.exports = exports = {
+	PACKAGES,
 	getPackages,
 };

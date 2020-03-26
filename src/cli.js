@@ -11,7 +11,7 @@ const fs = require('fs');
 
 const { SETTINGS, getCliArgs, checkCliInput, getSettings } = require('./settings.js');
 const { parseComponent } = require('./parseCss.js');
-const { getPackages } = require('./packages.js');
+const { PACKAGES, getPackages } = require('./packages.js');
 const { stripColor, color } = require('./color.js');
 const { version } = require('../package.json');
 const { CLIOPTIONS } = require('./const.js');
@@ -34,7 +34,9 @@ async function cli() {
 		process.exit(1);
 	}
 
+	console.log(cliArgs);
 	SETTINGS.set = getSettings(cliArgs);
+	console.log(SETTINGS.get);
 	DEBUG.enabled = SETTINGS.get.debug;
 
 	if (SETTINGS.get.version) {
@@ -48,8 +50,7 @@ async function cli() {
 	}
 
 	log.start(`Blender v${version} starting`);
-	const packages = getPackages(path.normalize(`${__dirname}/../tests/mock/mock-project1/`));
-	console.log(packages);
+	PACKAGES.set = getPackages(path.normalize(`${__dirname}/../tests/mock/mock-project1/`));
 
 	// just showing that we can run the parser, will go elsewhere
 	await parseComponent({
@@ -119,11 +120,17 @@ function exitHandler(exiting, error, debug = DEBUG) {
 		console.log(`\nErrors: ${debug.errors}\n`);
 	}
 
-	log.success(`Successfully blended ${'TODO'} packages in ${time.stop()}\n`);
+	log.success(
+		`Successfully blended ${color.yellow(PACKAGES.get.length)} packages in ${color.yellow(
+			time.stop()
+		)}\n`
+	);
 
 	process.exit(0);
 }
 
 module.exports = exports = {
 	cli,
+	help,
+	exitHandler,
 };

@@ -2,10 +2,11 @@
  * Testing src/packages.js functions
  *
  * getPackages
+ * PACKAGES
  **/
 const path = require('path');
 
-const { getPackages } = require('../src/packages.js');
+const { getPackages, PACKAGES } = require('../src/packages.js');
 const { SETTINGS } = require('../src/settings.js');
 
 /**
@@ -117,5 +118,33 @@ describe('getPackages', () => {
 		expect(result[0].pkg).toStrictEqual({ jquery: 'blender/jquery.js' });
 		expect(result[1].path.endsWith('mock-project1/node_modules/component4')).toBe(true);
 		expect(result[1].pkg).toStrictEqual({ jquery: 'blender/jquery.js' });
+	});
+});
+
+/**
+ * PACKAGES
+ */
+describe('PACKAGES', () => {
+	beforeEach(() => {
+		jest.resetModules();
+	});
+
+	test('Get the current packages', () => {
+		expect(PACKAGES.get).toStrictEqual([]);
+	});
+
+	test('Set the packages', () => {
+		const packages = [
+			{
+				key: 'value',
+				sub: {
+					deep: 'value',
+				},
+			},
+			{},
+		];
+		PACKAGES.set = packages;
+
+		expect(PACKAGES.get).toStrictEqual(packages);
 	});
 });

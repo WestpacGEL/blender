@@ -22,8 +22,7 @@ const CLIOPTIONS = {
 		description: 'Specify where the blender should save all your files to',
 		example: 'blender -o path/to/folder',
 		flag: 'o',
-		type: ['string', 'object'],
-		default: {},
+		type: 'string',
 	},
 	'output-css': {
 		description: 'Specify where the blender should save the css files to',
@@ -48,7 +47,7 @@ const CLIOPTIONS = {
 	'output-zip': {
 		description: 'Tell blender to zip up all files into an archive',
 		example: 'blender --output path/to/folder --output-zip',
-		type: false,
+		type: 'boolean',
 	},
 	scope: {
 		description: 'Specify what npm scope the blender should look through',

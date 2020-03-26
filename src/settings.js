@@ -44,26 +44,10 @@ const SETTINGS = {
 function getSettings(cliArgs, cwd = process.cwd(), options = CLIOPTIONS) {
 	D.header('getSettings', { cliArgs, cwd });
 
-	const pkgOptions = getPkgOptions(cwd);
 	const defaults = getDefaults(options);
+	const pkgOptions = getPkgOptions(cwd);
 
-	const settings = { ...defaults, ...pkgOptions };
-
-	D.log(`settings merged with defaults: "${color.yellow(JSON.stringify(settings))}"`);
-
-	Object.entries(cliArgs).map(([key, value]) => {
-		if (key.startsWith('output-')) {
-			settings.output[key.replace('output-', '')] = value;
-		} else if (key === 'output') {
-			Object.entries(options)
-				.filter(([option, obj]) => option.startsWith('output-') && obj.type === 'string')
-				.map(([option]) => {
-					settings.output[option.replace('output-', '')] = value;
-				});
-		} else {
-			settings[key.startsWith('-') ? key : camelCase(key)] = value;
-		}
-	});
+	const settings = { ...defaults, ...pkgOptions, ...cliArgs };
 
 	D.log(`getSettings return: "${color.yellow(JSON.stringify(settings))}"`);
 
@@ -83,7 +67,7 @@ function getDefaults(options) {
 
 	Object.entries(options).map(([option, value]) => {
 		if (typeof value.default !== 'undefined') {
-			defaults[option] = value.default;
+			defaults[camelCase(option)] = value.default;
 		}
 	});
 
@@ -100,15 +84,17 @@ function getDefaults(options) {
  * @return {string}      - Camel-cased string
  */
 function camelCase(name) {
-	return name
-		.split('-')
-		.map((bit, i) => {
-			if (i > 0) {
-				return bit.charAt(0).toUpperCase() + bit.slice(1);
-			}
-			return bit;
-		})
-		.join('');
+	return typeof name === 'string'
+		? name
+				.split('-')
+				.map((bit, i) => {
+					if (i > 0) {
+						return bit.charAt(0).toUpperCase() + bit.slice(1);
+					}
+					return bit;
+				})
+				.join('')
+		: name;
 }
 
 /**
@@ -163,7 +149,7 @@ function getCliArgs(options = CLIOPTIONS, inputArgs = process.argv) {
 		.map((arg) => {
 			// catch all full size flags "--version", "--debug" and all single short flags "-v", "-d"
 			if (arg.startsWith('--') || (arg.startsWith('-') && arg.length === 2)) {
-				currentFlag = argDict[arg] || arg;
+				currentFlag = camelCase(argDict[arg]) || arg;
 				cliArgs[currentFlag] = true;
 			}
 			// catch all combined short flags "-xyz"
@@ -172,7 +158,7 @@ function getCliArgs(options = CLIOPTIONS, inputArgs = process.argv) {
 					.slice(1) // remove the "-"       -> "xyz"
 					.split('') // split into each flag -> ["x","y","z"]
 					.map((flag) => {
-						currentFlag = argDict[`-${flag}`] || `-${flag}`;
+						currentFlag = camelCase(argDict[`-${flag}`]) || `-${flag}`;
 						cliArgs[currentFlag] = true;
 					});
 			}
@@ -210,7 +196,22 @@ function getCliArgs(options = CLIOPTIONS, inputArgs = process.argv) {
  *
  * @return {object}         - An object with errors and a boolean check
  */
-function checkCliInput(cliArgs, options) {
+function checkCliInput(cliArgs, options = CLIOPTIONS) {
+	const argDict = {};
+	Object.entries(options).map(([name, value]) => {
+		argDict[camelCase(name)] = name;
+	});
+
+	Object.entries(cliArgs).map(([name, value]) => {
+		// console.log(name);
+		if (options[name]) {
+			// check type
+			// check arguments
+		} else {
+			// warn about unrecognized flag
+		}
+	});
+
 	// iterate over options and check against cliArgs
 	// specifically:
 	// 	check type
