@@ -5,7 +5,7 @@
  **/
 const path = require('path');
 
-const { parseComponent } = require('../src/parseComponent.js');
+const { parseComponent } = require('../src/parseCss.js');
 
 /**
  * parseComponent

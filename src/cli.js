@@ -10,8 +10,8 @@ const path = require('path');
 const fs = require('fs');
 
 const { SETTINGS, getCliArgs, checkCliInput, getSettings } = require('./settings.js');
-const { parseComponent } = require('./parseComponent.js');
-const { getComponents } = require('./getComponents.js');
+const { parseComponent } = require('./parseCss.js');
+const { getComponents } = require('./components.js');
 const { stripColor, color } = require('./color.js');
 const { version } = require('../package.json');
 const { CLIOPTIONS } = require('./const.js');
