@@ -58,14 +58,14 @@ const CLIOPTIONS = {
 		default: '@westpac',
 	},
 	include: {
-		description: 'White-list specific components you want to blend',
+		description: 'White-list specific packages you want to blend',
 		example: 'blender -i "@westpac/body" "@westpac/button"',
 		flag: 'i',
 		type: 'array',
 		default: [],
 	},
 	exclude: {
-		description: `Black-list specific components you don't want to blend`,
+		description: `Black-list specific packages you don't want to blend`,
 		example: 'blender -x "@westpac/tabcordion" "@westpac/grid"',
 		flag: 'x',
 		type: 'array',
