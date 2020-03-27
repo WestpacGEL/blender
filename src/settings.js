@@ -209,6 +209,7 @@ function checkCliInput(cliArgs, options = CLIOPTIONS) {
 	});
 
 	Object.entries(cliArgs).map(([key, value]) => {
+		D.log(`Checking "${color.yellow(key)}"`);
 		if (options[key]) {
 
 			// check types and check that the value matches at least one
