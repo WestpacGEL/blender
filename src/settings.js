@@ -197,11 +197,10 @@ function getCliArgs(options = CLIOPTIONS, inputArgs = process.argv) {
  * @return {object}         - An object with errors and a boolean check
  */
 function checkCliInput(cliArgs, options = CLIOPTIONS) {
-
 	const result = {
 		pass: true,
 		errors: [],
-	}
+	};
 
 	const argDict = {};
 	Object.entries(options).map(([key, value]) => {
@@ -213,24 +212,25 @@ function checkCliInput(cliArgs, options = CLIOPTIONS) {
 			console.log(`option found [${key}] for value [${value}]`);
 
 			// check types and check that the value matches at least one
-			if (options[key].type === 'array'
-				? !Array.isArray(value)
-				: typeof value !== options[key].type)
-			{
+			if (
+				options[key].type === 'array' ? !Array.isArray(value) : typeof value !== options[key].type
+			) {
 				result.pass = false;
 				result.errors.push(`value [${value}] does not match type [${options[key].type}]`);
 			}
 
 			// if we only support specific arguments for an option, make sure the one
 			// we're passing in is one we expect
-			if (options[key].arguments
-				&& Array.isArray(options[key].arguments)
-				&& !options[key].arguments.includes(value))
-			{
+			if (
+				options[key].arguments &&
+				Array.isArray(options[key].arguments) &&
+				!options[key].arguments.includes(value)
+			) {
 				result.pass = false;
-				result.errors.push(`value [${value}] does not match valid arguments [${options[key].arguments}]`);
+				result.errors.push(
+					`value [${value}] does not match valid arguments [${options[key].arguments}]`
+				);
 			}
-
 		} else {
 			log.warn(`option [${key}] ignored`);
 		}
