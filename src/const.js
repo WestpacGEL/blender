@@ -1,5 +1,15 @@
+/**
+ * All constance shared with all functions
+ *
+ * CLIOPTIONS - Default settings for our cli flags
+ **/
 const { color } = require('./color.js');
 
+/**
+ * Default settings for our cli flags
+ *
+ * @type {Object}
+ */
 const CLIOPTIONS = {
 	brand: {
 		description: 'Specify the brand you want to blend',
@@ -12,8 +22,7 @@ const CLIOPTIONS = {
 		description: 'Specify where the blender should save all your files to',
 		example: 'blender -o path/to/folder',
 		flag: 'o',
-		type: ['string', 'object'],
-		default: {},
+		type: 'string',
 	},
 	'output-css': {
 		description: 'Specify where the blender should save the css files to',
@@ -38,7 +47,7 @@ const CLIOPTIONS = {
 	'output-zip': {
 		description: 'Tell blender to zip up all files into an archive',
 		example: 'blender --output path/to/folder --output-zip',
-		type: false,
+		type: 'boolean',
 	},
 	scope: {
 		description: 'Specify what npm scope the blender should look through',
@@ -48,16 +57,18 @@ const CLIOPTIONS = {
 		default: '@westpac',
 	},
 	include: {
-		description: 'White-list specific components you want to blend',
+		description: 'White-list specific packages you want to blend',
 		example: 'blender -i "@westpac/body" "@westpac/button"',
 		flag: 'i',
-		type: 'string',
+		type: 'array',
+		default: [],
 	},
 	exclude: {
-		description: `Black-list specific components you don't want to blend`,
+		description: `Black-list specific packages you don't want to blend`,
 		example: 'blender -x "@westpac/tabcordion" "@westpac/grid"',
 		flag: 'x',
-		type: 'string',
+		type: 'array',
+		default: [],
 	},
 	prettify: {
 		description: 'Specify if you want you code to be prettified',

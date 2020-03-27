@@ -1,3 +1,14 @@
+/**
+ * Settings from defaults, package.json and cli
+ *
+ * SETTINGS      - The settings store
+ * getSettings   - Get the settings from the package.json, the cli and our defaults value and merge them all together
+ * getDefaults   - Get the default values from our options
+ * camelCase     - Convert a string to camel case
+ * getPkgOptions - Get the blender settings from the package.json
+ * getCliArgs    - Parse our cli options into an easily digestible object
+ * checkCliInput - Check the cli input and log out helpful errors messages
+ **/
 const path = require('path');
 const fs = require('fs');
 
@@ -24,36 +35,19 @@ const SETTINGS = {
 /**
  * Get the settings from the package.json, the cli and our defaults value and merge them all together
  *
- * @param  {object} options   - The options for this program
- * @param  {string} cwd       - The current working directory
- * @param  {array}  inputArgs - The array of our cli options of which the first two are ignored
+ * @param  {object} cliArgs - The parsed cli flags
+ * @param  {string} cwd     - The current working directory
+ * @param  {object} options - The options for this program
  *
- * @return {object}           - The settings object with all merged
+ * @return {object}         - The settings object with all merged
  */
-function getSettings(options = CLIOPTIONS, cwd = process.cwd(), inputArgs = process.argv) {
-	D.header('getSettings', { options, cwd, inputArgs });
+function getSettings(cliArgs, cwd = process.cwd(), options = CLIOPTIONS) {
+	D.header('getSettings', { cliArgs, cwd });
 
-	const cliArgs = getCliArgs(options, inputArgs);
-	const pkgOptions = getPkgOptions(cwd);
 	const defaults = getDefaults(options);
+	const pkgOptions = getPkgOptions(cwd);
 
-	const settings = { ...defaults, ...pkgOptions };
-
-	D.log(`settings merged with defaults: "${color.yellow(JSON.stringify(settings))}"`);
-
-	Object.entries(cliArgs).map(([key, value]) => {
-		if (key.startsWith('output-')) {
-			settings.output[key.replace('output-', '')] = value;
-		} else if (key === 'output') {
-			Object.entries(options)
-				.filter(([option, obj]) => option.startsWith('output-') && obj.type === 'string')
-				.map(([option]) => {
-					settings.output[option.replace('output-', '')] = value;
-				});
-		} else {
-			settings[key.startsWith('-') ? key : camelCase(key)] = value;
-		}
-	});
+	const settings = { ...defaults, ...pkgOptions, ...cliArgs };
 
 	D.log(`getSettings return: "${color.yellow(JSON.stringify(settings))}"`);
 
@@ -73,7 +67,7 @@ function getDefaults(options) {
 
 	Object.entries(options).map(([option, value]) => {
 		if (typeof value.default !== 'undefined') {
-			defaults[option] = value.default;
+			defaults[camelCase(option)] = value.default;
 		}
 	});
 
@@ -90,15 +84,17 @@ function getDefaults(options) {
  * @return {string}      - Camel-cased string
  */
 function camelCase(name) {
-	return name
-		.split('-')
-		.map((bit, i) => {
-			if (i > 0) {
-				return bit.charAt(0).toUpperCase() + bit.slice(1);
-			}
-			return bit;
-		})
-		.join('');
+	return typeof name === 'string'
+		? name
+				.split('-')
+				.map((bit, i) => {
+					if (i > 0) {
+						return bit.charAt(0).toUpperCase() + bit.slice(1);
+					}
+					return bit;
+				})
+				.join('')
+		: name;
 }
 
 /**
@@ -118,7 +114,7 @@ function getPkgOptions(cwd) {
 		D.log(`Found package.json at "${color.yellow(pkgPath)}"`);
 	} catch (error) {
 		D.error(`Unable to find package.json at "${color.yellow(pkgPath)}"`);
-		log.info(`No ${color.yellow(`package.json`)} file found`);
+		log.info(`No package.json file found at "${color.yellow(pkgPath)}"`);
 	}
 
 	D.log(`getPkgOptions return: "${color.yellow(JSON.stringify(pkgSettings))}"`);
@@ -134,26 +130,28 @@ function getPkgOptions(cwd) {
  *
  * @return {object}           - A shallow 1-level deep object
  */
-function getCliArgs(options, inputArgs) {
+function getCliArgs(options = CLIOPTIONS, inputArgs = process.argv) {
 	D.header('getCliArgs', { options, inputArgs });
 
 	const argDict = {};
 	Object.entries(options).map(([name, value]) => {
-		argDict[`--${name}`] = name;
+		argDict[`--${name}`] = { name, ...value };
 		if (value.flag) {
-			argDict[`-${value.flag}`] = name;
+			argDict[`-${value.flag}`] = { name, ...value };
 		}
 	});
 	D.log(`Created arguments dictonary: "${color.yellow(JSON.stringify(argDict))}"`);
 
 	const cliArgs = {};
 	let currentFlag = '';
+	let currentType = '';
 	inputArgs
 		.slice(2) // ignore the first two items as first is path to node binary and second is path to node script (this one)
 		.map((arg) => {
 			// catch all full size flags "--version", "--debug" and all single short flags "-v", "-d"
 			if (arg.startsWith('--') || (arg.startsWith('-') && arg.length === 2)) {
-				currentFlag = argDict[arg] || arg;
+				currentFlag = argDict[arg] ? camelCase(argDict[arg].name) : arg;
+				currentType = argDict[arg] ? argDict[arg].type : '';
 				cliArgs[currentFlag] = true;
 			}
 			// catch all combined short flags "-xyz"
@@ -162,7 +160,8 @@ function getCliArgs(options, inputArgs) {
 					.slice(1) // remove the "-"       -> "xyz"
 					.split('') // split into each flag -> ["x","y","z"]
 					.map((flag) => {
-						currentFlag = argDict[`-${flag}`] || `-${flag}`;
+						currentFlag = argDict[`-${flag}`] ? camelCase(argDict[`-${flag}`].name) : `-${flag}`;
+						currentType = argDict[`-${flag}`] ? argDict[`-${flag}`].type : '';
 						cliArgs[currentFlag] = true;
 					});
 			}
@@ -180,6 +179,8 @@ function getCliArgs(options, inputArgs) {
 						cliArgs[currentFlag].push(arg);
 					} else if (typeof cliArgs[currentFlag] === 'string') {
 						cliArgs[currentFlag] = [cliArgs[currentFlag], arg];
+					} else if (currentType === 'array') {
+						cliArgs[currentFlag] = [arg];
 					} else {
 						cliArgs[currentFlag] = arg;
 					}
@@ -192,10 +193,84 @@ function getCliArgs(options, inputArgs) {
 	return cliArgs;
 }
 
+/**
+ * Check the cli input and log out helpful errors messages
+ *
+ * @param  {object} cliArgs - The parsed cli flags
+ * @param  {object} options - The defaults options object
+ *
+ * @return {object}         - An object with errors and a boolean check
+ */
+function checkCliInput(cliArgs, options = CLIOPTIONS) {
+	D.header('checkCliInput', { cliArgs, options });
+	const result = {
+		pass: true,
+		errors: [],
+	};
+
+	const argDict = {};
+	Object.entries(options).map(([key, value]) => {
+		argDict[camelCase(key)] = options[key];
+	});
+
+	Object.entries(cliArgs).map(([key, value]) => {
+		D.log(`Checking "${color.yellow(key)}"`);
+		if (argDict[key]) {
+			// check types and check that the value matches at least one
+			if (
+				argDict[key].type === 'array' ? !Array.isArray(value) : typeof value !== argDict[key].type
+			) {
+				D.error(
+					`Type mismatch found for "${color.yellow(key)}". Expected "${color.yellow(
+						argDict[key].type
+					)}" but received "${color.yellow(typeof value)}"`
+				);
+				result.pass = false;
+				result.errors.push(
+					`Type mismatch found for "${color.yellow(key)}". Expected "${color.yellow(
+						argDict[key].type
+					)}" but received "${color.yellow(typeof value)}"`
+				);
+			}
+
+			// if we only support specific arguments for an option, make sure the one
+			// we're passing in is one we expect
+			if (
+				argDict[key].arguments &&
+				Array.isArray(argDict[key].arguments) &&
+				!argDict[key].arguments.includes(value)
+			) {
+				D.error(
+					`Invalid argument for ${color.yellow(key)} Expected ${color.yellow(
+						argDict[key].arguments.join(', ')
+					)} but received ${color.yellow(value)}`
+				);
+				result.pass = false;
+				result.errors.push(
+					`The input for the option "${color.yellow(key)}" was "${color.yellow(
+						value
+					)}" which does not match any of the valid arguments "${color.yellow(
+						argDict[key].arguments.join(', ')
+					)}"`
+				);
+			}
+		} else {
+			log.warn(
+				`The option ${color.yellow(key)} didn't watch any of blenders options and was ignored`
+			);
+		}
+	});
+
+	D.log(`checkCliInput return: "${color.yellow(JSON.stringify(result))}"`);
+
+	return result;
+}
+
 module.exports = exports = {
 	SETTINGS,
 	getSettings,
 	camelCase,
 	getPkgOptions,
 	getCliArgs,
+	checkCliInput,
 };

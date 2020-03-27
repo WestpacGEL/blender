@@ -1,3 +1,10 @@
+/**
+ * All functions for logging to the console
+ *
+ * DEBUG - DEBUG object for tracking debug mode, level and messages
+ * D     - Debugging prettiness
+ * log   - Logging prettiness
+ **/
 const { color } = require('./color.js');
 
 /**
@@ -7,12 +14,23 @@ const { color } = require('./color.js');
  */
 const DEBUG = {
 	store: {
+		mode: 'cli',
 		enabled: false,
 		errors: 0,
 		messages: [],
+		set: false,
+		buffer: [],
+	},
+
+	set mode(value) {
+		this.store.mode = value;
+	},
+	get mode() {
+		return this.store.mode;
 	},
 
 	set enabled(value) {
+		this.store.set = true;
 		this.store.enabled = value;
 	},
 	get enabled() {
@@ -32,6 +50,21 @@ const DEBUG = {
 	get messages() {
 		return this.store.messages;
 	},
+
+	get set() {
+		return this.store.set;
+	},
+
+	set buffer(value) {
+		if (value) {
+			this.store.buffer.push(value);
+		} else {
+			this.store.buffer = [];
+		}
+	},
+	get buffer() {
+		return this.store.buffer;
+	},
 };
 
 /**
@@ -40,6 +73,17 @@ const DEBUG = {
  * @type {object}
  */
 const D = {
+	output(text, debug) {
+		if (debug.set && debug.buffer.length && debug.enabled) {
+			console.log(debug.buffer.join('\n'));
+			debug.buffer = false;
+		} else if (!debug.set) {
+			debug.buffer = text;
+		} else if (debug.enabled) {
+			console.log(text);
+		}
+	},
+
 	/**
 	 * Log a header for a function call
 	 *
@@ -47,18 +91,14 @@ const D = {
 	 * @param  {array}   args  - Arguments this function may have taken
 	 * @param  {boolean} debug - Global debug mode on/off switch
 	 */
-	header: (name, args = [], debug = DEBUG.enabled) => {
+	header(name, args = [], debug = DEBUG) {
 		DEBUG.messages =
 			`${DEBUG.messages.length > 0 ? '\n\n' : ''}   ===== RUNNING "${name}" =====\n` +
 			`${JSON.stringify(args)}`;
-
-		if (debug) {
-			console.log(
-				`\n\n===== RUNNING "${color.bold(name)}" =====\n`,
-				color.green(JSON.stringify(args, null, '\t')),
-				'\n'
-			);
-		}
+		this.output(
+			`\n===== RUNNING "${color.bold(name)}" =====\n${color.green(JSON.stringify(args))}`,
+			debug
+		);
 	},
 
 	/**
@@ -67,12 +107,9 @@ const D = {
 	 * @param  {string}  text       - The sting you want to log
 	 * @param  {boolean} debug      - Global debug mode on/off switch
 	 */
-	log: (text, debug = DEBUG.enabled) => {
+	log(text, debug = DEBUG) {
 		DEBUG.messages = text;
-
-		if (debug) {
-			console.log(`🔎  ${text}`);
-		}
+		this.output(`🔎  ${text}`, debug);
 	},
 
 	/**
@@ -81,13 +118,10 @@ const D = {
 	 * @param  {string}  text       - The sting you want to log
 	 * @param  {boolean} debug      - Global debug mode on/off switch
 	 */
-	error: (text, debug = DEBUG.enabled) => {
+	error(text, debug = DEBUG) {
 		DEBUG.messages = `ERROR: ${text}`;
 		DEBUG.addError();
-
-		if (debug) {
-			console.error(`🛑  ${color.red(text)}`);
-		}
+		this.output(`🛑  ${color.red(text)}`, debug);
 	},
 };
 
@@ -103,7 +137,9 @@ const log = {
 	 * @param  {string}  text  - The sting you want to log
 	 */
 	start: (text) => {
-		console.log(`\n   ${color.bold(text)}`);
+		if (DEBUG.mode === 'cli') {
+			console.log(`\n   ${color.bold(text)}`);
+		}
 	},
 
 	/**
@@ -112,7 +148,9 @@ const log = {
 	 * @param  {string}  text  - The sting you want to log
 	 */
 	info: (text) => {
-		console.info(`💡  ${text}`);
+		if (DEBUG.mode === 'cli') {
+			console.info(`💡  ${text}`);
+		}
 	},
 
 	/**
@@ -121,7 +159,9 @@ const log = {
 	 * @param  {string}  text  - The sting you want to log
 	 */
 	success: (text) => {
-		console.log(`🚀  ${color.green(text)}`);
+		if (DEBUG.mode === 'cli') {
+			console.log(`🚀  ${color.green(text)}`);
+		}
 	},
 
 	/**
@@ -130,7 +170,9 @@ const log = {
 	 * @param  {string}  text  - The sting you want to log
 	 */
 	warn: (text) => {
-		console.warn(`⚠️  ${color.yellow(text)}`);
+		if (DEBUG.mode === 'cli') {
+			console.warn(`⚠️  ${color.yellow(text)}`);
+		}
 	},
 
 	/**
@@ -139,7 +181,9 @@ const log = {
 	 * @param  {string}  text  - The sting you want to log
 	 */
 	error: (text) => {
-		console.error(`🛑  ${color.red(text)}`);
+		if (DEBUG.mode === 'cli') {
+			console.error(`🛑  ${color.red(text)}`);
+		}
 	},
 };
 
