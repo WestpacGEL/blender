@@ -114,7 +114,7 @@ function getPkgOptions(cwd) {
 		D.log(`Found package.json at "${color.yellow(pkgPath)}"`);
 	} catch (error) {
 		D.error(`Unable to find package.json at "${color.yellow(pkgPath)}"`);
-		log.info(`No ${color.yellow(`package.json`)} file found`);
+		log.info(`No package.json file found at "${color.yellow(pkgPath)}"`);
 	}
 
 	D.log(`getPkgOptions return: "${color.yellow(JSON.stringify(pkgSettings))}"`);

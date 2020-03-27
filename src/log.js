@@ -14,9 +14,17 @@ const { color } = require('./color.js');
  */
 const DEBUG = {
 	store: {
+		mode: 'cli',
 		enabled: false,
 		errors: 0,
 		messages: [],
+	},
+
+	set mode(value) {
+		this.store.mode = value;
+	},
+	get mode() {
+		return this.store.mode;
 	},
 
 	set enabled(value) {
@@ -108,7 +116,9 @@ const log = {
 	 * @param  {string}  text  - The sting you want to log
 	 */
 	start: (text) => {
-		console.log(`\n   ${color.bold(text)}`);
+		if (DEBUG.mode === 'cli') {
+			console.log(`\n   ${color.bold(text)}`);
+		}
 	},
 
 	/**
@@ -117,7 +127,9 @@ const log = {
 	 * @param  {string}  text  - The sting you want to log
 	 */
 	info: (text) => {
-		console.info(`💡  ${text}`);
+		if (DEBUG.mode === 'cli') {
+			console.info(`💡  ${text}`);
+		}
 	},
 
 	/**
@@ -126,7 +138,9 @@ const log = {
 	 * @param  {string}  text  - The sting you want to log
 	 */
 	success: (text) => {
-		console.log(`🚀  ${color.green(text)}`);
+		if (DEBUG.mode === 'cli') {
+			console.log(`🚀  ${color.green(text)}`);
+		}
 	},
 
 	/**
@@ -135,7 +149,9 @@ const log = {
 	 * @param  {string}  text  - The sting you want to log
 	 */
 	warn: (text) => {
-		console.warn(`⚠️  ${color.yellow(text)}`);
+		if (DEBUG.mode === 'cli') {
+			console.warn(`⚠️  ${color.yellow(text)}`);
+		}
 	},
 
 	/**
@@ -144,7 +160,9 @@ const log = {
 	 * @param  {string}  text  - The sting you want to log
 	 */
 	error: (text) => {
-		console.error(`🛑  ${color.red(text)}`);
+		if (DEBUG.mode === 'cli') {
+			console.error(`🛑  ${color.red(text)}`);
+		}
 	},
 };
 

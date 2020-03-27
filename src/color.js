@@ -32,7 +32,7 @@ const stripColor = (text) => {
  *
  * @type {Object}
  */
-export const color = {
+const color = {
 	/**
 	 * Parse ansi code while making sure we can nest colors
 	 *

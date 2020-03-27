@@ -10,8 +10,8 @@ const path = require('path');
 const fs = require('fs');
 
 const { SETTINGS, getCliArgs, checkCliInput, getSettings } = require('./settings.js');
-const { parseComponent } = require('./parseCss.js');
 const { PACKAGES, getPackages } = require('./packages.js');
+const { parseComponent } = require('./parseCss.js');
 const { stripColor, color } = require('./color.js');
 const { version } = require('../package.json');
 const { CLIOPTIONS } = require('./const.js');
@@ -34,9 +34,7 @@ async function cli() {
 		process.exit(1);
 	}
 
-	console.log(cliArgs);
 	SETTINGS.set = getSettings(cliArgs);
-	console.log(SETTINGS.get);
 	DEBUG.enabled = SETTINGS.get.debug;
 
 	if (SETTINGS.get.version) {
@@ -53,10 +51,12 @@ async function cli() {
 	PACKAGES.set = getPackages(path.normalize(`${__dirname}/../tests/mock/mock-project1/`));
 
 	// just showing that we can run the parser, will go elsewhere
-	await parseComponent({
+	const thing = await parseComponent({
 		componentPath: path.normalize(`${__dirname}/../tests/mock/recipe1.js`),
 		brand: {},
 	});
+
+	console.log(thing);
 
 	process.on('exit', exitHandler); // on closing
 	process.on('SIGINT', exitHandler); // on [ctrl] + [c]
