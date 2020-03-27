@@ -321,41 +321,50 @@ describe('checkCliInput', () => {
 	test('Arguments are validated correctly', () => {
 		const options = {
 			flag1: {
-				flag: 'a',
 				type: 'string',
-				arguments: ['Dominik', 'Tom'],
+				arguments: ['dominik', 'tom'],
 			},
 			flag2: {
-				flag: 'b',
 				type: 'string',
-				arguments: ['Dominik', 'Tom'],
+				arguments: ['dominik', 'tom'],
 			},
 			flag3: {
-				flag: 'c',
 				type: 'string',
-				arguments: ['Dominik', 'Tom'],
+				arguments: ['dominik', 'tom'],
 			},
 		};
 
-		expect(checkCliInput(options, { 'a': 'Dominik' }).pass).toBe(true);
-		expect(checkCliInput(options, { 'b': 'Alex' }).pass).toBe(false);
-		expect(checkCliInput(options, { 'c': true }).pass).toBe(false);
+		expect(checkCliInput({ flag1: 'dominik' }, options).pass).toBe(true);
+		expect(checkCliInput({ flag2: 'alex' }, options).pass).toBe(false);
+		expect(checkCliInput({ flag3: true }, options).pass).toBe(false);
 	});
 
-	test('String type is validated correctly', () => {
+	test.only('String type is validated correctly', () => {
 		const options = {
 			flag1: {
-				flag: 'a',
 				type: 'string',
 			},
 			flag2: {
-				flag: 'b',
 				type: 'string',
 			},
 		};
 
-		expect(checkCliInput(options, { 'a': 'Dominik' }).pass).toBe(true);
-		expect(checkCliInput(options, { 'b': true }).pass).toBe(false);
+		expect(checkCliInput({ flag1: 'dominik' }, options).pass).toBe(true);
+		expect(checkCliInput({ flag2: true }, options).pass).toBe(false);
+	});
+
+	test('Array type is validated correctly', () => {
+		const options = {
+			flag1: {
+				type: 'array',
+			},
+			flag2: {
+				type: 'array',
+			},
+		};
+
+		expect(checkCliInput({ flag1: ['dominik', 'tom'] }, options).pass).toBe(true);
+		expect(checkCliInput({ flag2: '' }, options).pass).toBe(false);
 	});
 
 });
