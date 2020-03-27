@@ -197,20 +197,48 @@ function getCliArgs(options = CLIOPTIONS, inputArgs = process.argv) {
  * @return {object}         - An object with errors and a boolean check
  */
 function checkCliInput(cliArgs, options = CLIOPTIONS) {
+
+	const result = {
+		pass: true,
+		errors: [],
+	}
+
 	const argDict = {};
-	Object.entries(options).map(([name, value]) => {
-		argDict[camelCase(name)] = name;
+	Object.entries(options).map(([key, value]) => {
+		argDict[camelCase(key)] = options[key];
 	});
 
-	Object.entries(cliArgs).map(([name, value]) => {
-		// console.log(name);
-		if (options[name]) {
-			// check type
-			// check arguments
+	Object.entries(cliArgs).map(([key, value]) => {
+		if (options[key]) {
+			console.log(`option found [${key}] for value [${value}]\n`);
+
+			// check types and check that the value matches at least one
+			if (options[key].type === 'array'
+				? !Array.isArray(value)
+				: typeof value !== options[key].type)
+			{
+				result.pass = false;
+				result.errors.push(`value [${value}] does not match type [${options[key].type}]`);
+			}
+
+			// if we only support specific arguments for an option, make sure the one
+			// we're passing in is one we expect
+			if (options[key].arguments
+				&& Array.isArray(options[key].arguments)
+				&& !options[key].arguments.includes(value))
+			{
+				result.pass = false;
+				result.errors.push(`value [${value}] does not match valid arguments [${options[key].arguments}]`);
+			}
+
 		} else {
-			// warn about unrecognized flag
+			log.warn(`option [${key}] ignored`);
 		}
 	});
+
+	console.log(`checkCliInput return: "${color.yellow(JSON.stringify(result))}"`);
+
+	return result;
 
 	// iterate over options and check against cliArgs
 	// specifically:

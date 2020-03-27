@@ -27,7 +27,7 @@ async function cli() {
 	time.start();
 
 	const cliArgs = getCliArgs();
-	const isGoodHuman = checkCliInput(cliArgs, CLIOPTIONS);
+	const isGoodHuman = checkCliInput(cliArgs);
 
 	if (isGoodHuman.pass === false) {
 		console.error(isGoodHuman.errors);
