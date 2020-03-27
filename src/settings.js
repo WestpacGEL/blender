@@ -220,7 +220,7 @@ function checkCliInput(cliArgs, options = CLIOPTIONS) {
 	}
 
 	// loop over all the arguments we get in the CLI
-	for (const [key, value] of Object.entries(cliArgs)) {
+	Object.entries(cliArgs).map(([key, value]) => {
 
 		console.log(`>>> analysing option { ${key}: ${value} }\n`);
 
@@ -239,7 +239,7 @@ function checkCliInput(cliArgs, options = CLIOPTIONS) {
 			return;
 		}
 
-		// loop over the types and check that the value matches at least one
+		// check types and check that the value matches at least one
 		if (typeof value !== options.type) {
 			console.log(`value [${value}] does not match type [${options.type}]`);
 			result.pass = false;
@@ -261,7 +261,7 @@ function checkCliInput(cliArgs, options = CLIOPTIONS) {
 			return;
 		}
 
-	};
+	});
 
 	console.log(result);
 
