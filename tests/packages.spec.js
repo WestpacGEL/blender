@@ -47,24 +47,6 @@ describe('getPackages', () => {
 		expect(result[2].pkg).toStrictEqual({ jquery: 'blender/jquery.js' });
 	});
 
-	test('Include additional packages via the include option when include is not an array', () => {
-		SETTINGS.set = {
-			scope: '@westpac',
-			include: 'component4',
-			exclude: [],
-		};
-
-		const result = getPackages(path.normalize(`${__dirname}/../tests/mock/mock-project1/`));
-
-		expect(result.length).toBe(3);
-		expect(result[0].path.endsWith('mock-project1/node_modules/@westpac/component1')).toBe(true);
-		expect(result[0].pkg).toStrictEqual({ jquery: 'blender/jquery.js' });
-		expect(result[1].path.endsWith('mock-project1/node_modules/@westpac/component2')).toBe(true);
-		expect(result[1].pkg).toStrictEqual({});
-		expect(result[2].path.endsWith('mock-project1/node_modules/component4')).toBe(true);
-		expect(result[2].pkg).toStrictEqual({ jquery: 'blender/jquery.js' });
-	});
-
 	test(`Warn if a package is included that doesn't exist`, () => {
 		console.warn = jest.fn();
 
@@ -93,22 +75,6 @@ describe('getPackages', () => {
 			scope: '@westpac',
 			include: ['component4'],
 			exclude: ['@westpac/component2'],
-		};
-
-		const result = getPackages(path.normalize(`${__dirname}/../tests/mock/mock-project1/`));
-
-		expect(result.length).toBe(2);
-		expect(result[0].path.endsWith('mock-project1/node_modules/@westpac/component1')).toBe(true);
-		expect(result[0].pkg).toStrictEqual({ jquery: 'blender/jquery.js' });
-		expect(result[1].path.endsWith('mock-project1/node_modules/component4')).toBe(true);
-		expect(result[1].pkg).toStrictEqual({ jquery: 'blender/jquery.js' });
-	});
-
-	test('Exclude packages from scope and included once when exclude is not an array', () => {
-		SETTINGS.set = {
-			scope: '@westpac',
-			include: ['component4'],
-			exclude: '@westpac/component2',
 		};
 
 		const result = getPackages(path.normalize(`${__dirname}/../tests/mock/mock-project1/`));

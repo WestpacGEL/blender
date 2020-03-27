@@ -47,21 +47,14 @@ function getPackages(cwd = process.cwd()) {
 
 	D.log(`Retrived in scope packages: "${color.yellow(JSON.stringify(inScope))}"`);
 
-	const includes = (Array.isArray(SETTINGS.get.include)
-		? SETTINGS.get.include
-		: [SETTINGS.get.include]
-	).map((module) => path.normalize(`${nodeModulesPath}/${module}`));
+	const includes = SETTINGS.get.include.map((module) =>
+		path.normalize(`${nodeModulesPath}/${module}`)
+	);
 
 	D.log(`Retrived in included packages: "${color.yellow(JSON.stringify(includes))}"`);
 
 	const packages = [...inScope, ...includes] // merging both sets
-		.filter(
-			(module) =>
-				!(Array.isArray(SETTINGS.get.exclude)
-					? SETTINGS.get.exclude
-					: [SETTINGS.get.exclude]
-				).includes(module.replace(nodeModulesPath, ''))
-		) // filtered out all excludes
+		.filter((module) => !SETTINGS.get.exclude.includes(module.replace(nodeModulesPath, ''))) // filtered out all excludes
 		.map((module) => {
 			let pkg = { blender: false };
 			try {
