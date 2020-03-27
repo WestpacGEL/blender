@@ -3,11 +3,12 @@
  *
  * getSettings
  * getCliArgs
+ * checkCliInput
  * SETTINGS
  **/
 const path = require('path');
 
-const { getSettings, SETTINGS, getCliArgs } = require('../src/settings.js');
+const { getSettings, getCliArgs, checkCliInput, SETTINGS } = require('../src/settings.js');
 
 /**
  * getSettings
@@ -310,4 +311,51 @@ describe('SETTINGS', () => {
 
 		expect(SETTINGS.get).toStrictEqual(settings);
 	});
+});
+
+/**
+ * SETTINGS
+ */
+describe('checkCliInput', () => {
+
+	test('Arguments are validated correctly', () => {
+		const options = {
+			flag1: {
+				flag: 'a',
+				type: 'string',
+				arguments: ['Dominik', 'Tom'],
+			},
+			flag2: {
+				flag: 'b',
+				type: 'string',
+				arguments: ['Dominik', 'Tom'],
+			},
+			flag3: {
+				flag: 'c',
+				type: 'string',
+				arguments: ['Dominik', 'Tom'],
+			},
+		};
+
+		expect(checkCliInput(options, { 'a': 'Dominik' }).pass).toBe(true);
+		expect(checkCliInput(options, { 'b': 'Alex' }).pass).toBe(false);
+		expect(checkCliInput(options, { 'c': true }).pass).toBe(false);
+	});
+
+	test('String type is validated correctly', () => {
+		const options = {
+			flag1: {
+				flag: 'a',
+				type: 'string',
+			},
+			flag2: {
+				flag: 'b',
+				type: 'string',
+			},
+		};
+
+		expect(checkCliInput(options, { 'a': 'Dominik' }).pass).toBe(true);
+		expect(checkCliInput(options, { 'b': true }).pass).toBe(false);
+	});
+
 });
