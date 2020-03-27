@@ -30,7 +30,7 @@ async function cli() {
 	const isGoodHuman = checkCliInput(cliArgs);
 
 	if (isGoodHuman.pass === false) {
-		console.error(isGoodHuman.errors);
+		console.error(isGoodHuman.errors.join('\n'));
 		process.exit(1);
 	}
 

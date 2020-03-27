@@ -197,38 +197,66 @@ function getCliArgs(options = CLIOPTIONS, inputArgs = process.argv) {
  * @return {object}         - An object with errors and a boolean check
  */
 function checkCliInput(cliArgs, options = CLIOPTIONS) {
+	D.header('checkCliInput', { cliArgs, options });
+	const result = {
+		pass: true,
+		errors: [],
+	};
+
 	const argDict = {};
-	Object.entries(options).map(([name, value]) => {
-		argDict[camelCase(name)] = name;
+	Object.entries(options).map(([key, value]) => {
+		argDict[camelCase(key)] = options[key];
 	});
 
-	Object.entries(cliArgs).map(([name, value]) => {
-		// console.log(name);
-		if (options[name]) {
-			// check type
-			// check arguments
+	Object.entries(cliArgs).map(([key, value]) => {
+		D.log(`Checking "${color.yellow(key)}"`);
+		if (options[key]) {
+			// check types and check that the value matches at least one
+			if (
+				options[key].type === 'array' ? !Array.isArray(value) : typeof value !== options[key].type
+			) {
+				D.error(
+					`Type mismatch found for "${color.yellow(key)}". Expected ${color.yellow(
+						options[key].type
+					)} but received ${color.yellow(typeof value)}`
+				);
+				result.pass = false;
+				result.errors.push(
+					`The input ${color.yellow(value)} was expected to be ${color.yellow(options[key].type)}`
+				);
+			}
+
+			// if we only support specific arguments for an option, make sure the one
+			// we're passing in is one we expect
+			if (
+				options[key].arguments &&
+				Array.isArray(options[key].arguments) &&
+				!options[key].arguments.includes(value)
+			) {
+				D.error(
+					`Invalid argument for ${color.yellow(key)} Expected ${color.yellow(
+						options[key].arguments.join(', ')
+					)} but received ${color.yellow(value)}`
+				);
+				result.pass = false;
+				result.errors.push(
+					`The input ${color.yellow(
+						value
+					)} does not match any of the valid arguments ${color.yellow(
+						options[key].arguments.join(', ')
+					)}`
+				);
+			}
 		} else {
-			// warn about unrecognized flag
+			log.warn(
+				`The option ${color.yellow(key)}] didn't watch any of blenders options and was ignored`
+			);
 		}
 	});
 
-	// iterate over options and check against cliArgs
-	// specifically:
-	// 	check type
-	// 	if arguments exists make sure they are in there
-	// 	error out when something is wrong, write helpful message that shows what the blender was expecting
-	// 		like when "blender --brand x" error out saying: "x is unrecognized. Here are the expected values: ${color.yellow(option.arguments.join(', '))}"
-	//
-	// return an object in this shape:
-	// {
-	// 	pass: true|false,
-	// 	errors: '',  // this is where all error messages go (we don't console.log from this function as it might also be used in the API)
-	// }
+	D.log(`checkCliInput return: "${color.yellow(JSON.stringify(result))}"`);
 
-	return {
-		pass: true,
-		errors: '',
-	};
+	return result;
 }
 
 module.exports = exports = {
