@@ -216,7 +216,7 @@ function checkCliInput(cliArgs, options = CLIOPTIONS) {
 				options[key].type === 'array' ? !Array.isArray(value) : typeof value !== options[key].type
 			) {
 				result.pass = false;
-				result.errors.push(`value [${value}] does not match type [${options[key].type}]`);
+				result.errors.push(`The input ${color.yellow(value)} was expected to be ${color.yellow(options[key].type)}`);
 			}
 
 			// if we only support specific arguments for an option, make sure the one
