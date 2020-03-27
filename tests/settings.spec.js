@@ -317,7 +317,6 @@ describe('SETTINGS', () => {
  * SETTINGS
  */
 describe('checkCliInput', () => {
-
 	test('Arguments are validated correctly', () => {
 		const options = {
 			flag1: {
@@ -339,7 +338,7 @@ describe('checkCliInput', () => {
 		expect(checkCliInput({ flag3: true }, options).pass).toBe(false);
 	});
 
-	test.only('String type is validated correctly', () => {
+	test('String type is validated correctly', () => {
 		const options = {
 			flag1: {
 				type: 'string',
@@ -366,5 +365,4 @@ describe('checkCliInput', () => {
 		expect(checkCliInput({ flag1: ['dominik', 'tom'] }, options).pass).toBe(true);
 		expect(checkCliInput({ flag2: '' }, options).pass).toBe(false);
 	});
-
 });
