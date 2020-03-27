@@ -236,7 +236,7 @@ function checkCliInput(cliArgs, options = CLIOPTIONS) {
 		}
 	});
 
-	console.log(`checkCliInput return: "${color.yellow(JSON.stringify(result))}"`);
+	D.log(`checkCliInput return: "${color.yellow(JSON.stringify(result))}"`);
 
 	return result;
 }
