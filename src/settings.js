@@ -215,6 +215,7 @@ function checkCliInput(cliArgs, options = CLIOPTIONS) {
 			if (
 				options[key].type === 'array' ? !Array.isArray(value) : typeof value !== options[key].type
 			) {
+				D.error(`Type mismatch found for "${color.yellow(key)}". Expected ${color.yellow(options[key].type)} but received ${color.yellow(typeof value)}`);
 				result.pass = false;
 				result.errors.push(`The input ${color.yellow(value)} was expected to be ${color.yellow(options[key].type)}`);
 			}
