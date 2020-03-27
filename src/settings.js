@@ -249,7 +249,7 @@ function checkCliInput(cliArgs, options = CLIOPTIONS) {
 			}
 		} else {
 			log.warn(
-				`The option ${color.yellow(key)}] didn't watch any of blenders options and was ignored`
+				`The option ${color.yellow(key)} didn't watch any of blenders options and was ignored`
 			);
 		}
 	});
