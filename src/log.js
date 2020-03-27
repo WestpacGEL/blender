@@ -18,6 +18,8 @@ const DEBUG = {
 		enabled: false,
 		errors: 0,
 		messages: [],
+		set: false,
+		buffer: [],
 	},
 
 	set mode(value) {
@@ -28,6 +30,7 @@ const DEBUG = {
 	},
 
 	set enabled(value) {
+		this.store.set = true;
 		this.store.enabled = value;
 	},
 	get enabled() {
@@ -47,6 +50,21 @@ const DEBUG = {
 	get messages() {
 		return this.store.messages;
 	},
+
+	get set() {
+		return this.store.set;
+	},
+
+	set buffer(value) {
+		if (value) {
+			this.store.buffer.push(value);
+		} else {
+			this.store.buffer = [];
+		}
+	},
+	get buffer() {
+		return this.store.buffer;
+	},
 };
 
 /**
@@ -55,6 +73,17 @@ const DEBUG = {
  * @type {object}
  */
 const D = {
+	output(text, debug) {
+		if (debug.set && debug.buffer.length && debug.enabled) {
+			console.log(debug.buffer.join('\n'));
+			debug.buffer = false;
+		} else if (!debug.set) {
+			debug.buffer = text;
+		} else if (debug.enabled) {
+			console.log(text);
+		}
+	},
+
 	/**
 	 * Log a header for a function call
 	 *
@@ -62,16 +91,14 @@ const D = {
 	 * @param  {array}   args  - Arguments this function may have taken
 	 * @param  {boolean} debug - Global debug mode on/off switch
 	 */
-	header: (name, args = [], debug = DEBUG.enabled) => {
+	header(name, args = [], debug = DEBUG) {
 		DEBUG.messages =
 			`${DEBUG.messages.length > 0 ? '\n\n' : ''}   ===== RUNNING "${name}" =====\n` +
 			`${JSON.stringify(args)}`;
-
-		if (debug) {
-			console.log(
-				`\n===== RUNNING "${color.bold(name)}" =====\n${color.green(JSON.stringify(args))}`
-			);
-		}
+		this.output(
+			`\n===== RUNNING "${color.bold(name)}" =====\n${color.green(JSON.stringify(args))}`,
+			debug
+		);
 	},
 
 	/**
@@ -80,12 +107,9 @@ const D = {
 	 * @param  {string}  text       - The sting you want to log
 	 * @param  {boolean} debug      - Global debug mode on/off switch
 	 */
-	log: (text, debug = DEBUG.enabled) => {
+	log(text, debug = DEBUG) {
 		DEBUG.messages = text;
-
-		if (debug) {
-			console.log(`🔎  ${text}`);
-		}
+		this.output(`🔎  ${text}`, debug);
 	},
 
 	/**
@@ -94,13 +118,10 @@ const D = {
 	 * @param  {string}  text       - The sting you want to log
 	 * @param  {boolean} debug      - Global debug mode on/off switch
 	 */
-	error: (text, debug = DEBUG.enabled) => {
+	error(text, debug = DEBUG) {
 		DEBUG.messages = `ERROR: ${text}`;
 		DEBUG.addError();
-
-		if (debug) {
-			console.error(`🛑  ${color.red(text)}`);
-		}
+		this.output(`🛑  ${color.red(text)}`, debug);
 	},
 };
 
