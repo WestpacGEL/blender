@@ -135,84 +135,45 @@ describe('getSettings', () => {
 		});
 	});
 
-	test('Convert to camel case options', () => {
-		const options = {
-			flag1: {},
-			flag2: {},
-			flag3: {},
-			'camel-case-flag': {},
-		};
-		const cwd = path.normalize(`${__dirname}/mock/pkg1/`);
-		const cliArgs = {
-			'camel-case-flag': 'flag2',
-			flag3: true,
-		};
-
-		const result = getSettings(cliArgs, cwd, options);
-
-		expect(result).toStrictEqual({
-			camelCaseFlag: 'flag2',
-			flag1: 'value for flag1',
-			flag2: true,
-			flag3: true,
-		});
-	});
-
 	test('Merge output settings into the output object', () => {
 		const options = {
 			flag1: {},
 			flag2: {},
 			flag3: {},
-			output: {
-				default: {},
-			},
-			'output-flag1': {},
+			'camel-case': {},
 		};
 		const cwd = path.normalize(`${__dirname}/mock/pkg1/`);
 		const cliArgs = {
-			'output-flag1': 'output for flag 1',
+			camelCase: 'thing',
 			flag3: true,
 		};
 
 		const result = getSettings(cliArgs, cwd, options);
 
 		expect(result).toStrictEqual({
-			output: { flag1: 'output for flag 1' },
+			camelCase: 'thing',
 			flag1: 'value for flag1',
 			flag2: true,
 			flag3: true,
 		});
 	});
 
-	test('Spread output setting into all output keys', () => {
+	test('Keep rouge flags in the settings', () => {
 		const options = {
 			flag1: {},
 			flag2: {},
 			flag3: {},
-			output: {
-				default: {},
-			},
-			'output-flag1': {
-				type: 'string',
-			},
-			'output-flag2': {
-				type: 'string',
-			},
-			'output-flag3': {
-				type: 'string',
-			},
-			'output-nope': {},
 		};
 		const cwd = path.normalize(`${__dirname}/mock/pkg1/`);
 		const cliArgs = {
-			output: 'path/to/output',
+			'--camel-case': 'thing',
 			flag3: true,
 		};
 
 		const result = getSettings(cliArgs, cwd, options);
 
 		expect(result).toStrictEqual({
-			output: { flag1: 'path/to/output', flag2: 'path/to/output', flag3: 'path/to/output' },
+			'--camel-case': 'thing',
 			flag1: 'value for flag1',
 			flag2: true,
 			flag3: true,
@@ -271,8 +232,11 @@ describe('getCliArgs', () => {
 
 		const options = {
 			flag1: {},
-			flag2: {},
+			flag2: {
+				flag: 'f',
+			},
 			flag3: {},
+			'camel-case': {},
 		};
 		const inputArgs = [
 			'path/to/node',
@@ -281,16 +245,45 @@ describe('getCliArgs', () => {
 			'--flag1',
 			'flag1Value1',
 			'--flag3',
+			'--camel-case',
+			'-f',
+			'value1',
+			'value2',
+			'value3',
 		];
 		const result = getCliArgs(options, inputArgs);
 
 		expect(result).toStrictEqual({
 			flag1: 'flag1Value1',
 			flag3: true,
+			camelCase: true,
+			flag2: ['value1', 'value2', 'value3'],
 		});
 		expect(console.warn.mock.calls.length).toBe(1);
 		expect(console.warn.mock.calls[0][0].includes('I-belong-nowhere')).toBeTruthy();
 		expect(console.warn.mock.calls[0][0].includes('The cli argument')).toBeTruthy();
+	});
+
+	test('Combine short flags', () => {
+		const options = {
+			flag1: {
+				flag: 'a',
+			},
+			flag2: {
+				flag: 'b',
+			},
+			flag3: {
+				flag: 'c',
+			},
+		};
+		const inputArgs = ['path/to/node', 'path/to/script', '--flag1', 'flag1Value1', '-bc'];
+		const result = getCliArgs(options, inputArgs);
+
+		expect(result).toStrictEqual({
+			flag1: 'flag1Value1',
+			flag2: true,
+			flag3: true,
+		});
 	});
 });
 
