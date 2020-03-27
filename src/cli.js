@@ -82,7 +82,7 @@ function help(options = CLIOPTIONS) {
 	Object.entries(CLIOPTIONS).map(([name, option]) => {
 		console.log(
 			` ${color.bold(name.toUpperCase())}\n` +
-color.cyan(` --${name}${color.white(',')} ${option.flag ? `-${option.flag}` : ''}\n`) +
+				color.cyan(` --${name}${color.white(',')} ${option.flag ? `-${option.flag}` : ''}\n`) +
 				` ${option.description}\n` +
 				(option.arguments
 					? ` Possible arguments are: ${color.yellow(option.arguments.join(', '))}\n`
