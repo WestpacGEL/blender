@@ -197,6 +197,7 @@ function getCliArgs(options = CLIOPTIONS, inputArgs = process.argv) {
  * @return {object}         - An object with errors and a boolean check
  */
 function checkCliInput(cliArgs, options = CLIOPTIONS) {
+	D.header('checkCliInput', { cliArgs, options });
 	const result = {
 		pass: true,
 		errors: [],
