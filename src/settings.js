@@ -210,7 +210,7 @@ function checkCliInput(cliArgs, options = CLIOPTIONS) {
 
 	Object.entries(cliArgs).map(([key, value]) => {
 		if (options[key]) {
-			console.log(`option found [${key}] for value [${value}]\n`);
+			console.log(`option found [${key}] for value [${value}]`);
 
 			// check types and check that the value matches at least one
 			if (options[key].type === 'array'
