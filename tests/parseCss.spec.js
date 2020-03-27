@@ -1,5 +1,5 @@
 /**
- * Testing src/parseComponent.js functions
+ * Testing src/parseCss.js functions
  *
  * parseComponent
  **/
