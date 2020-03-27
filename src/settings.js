@@ -216,13 +216,15 @@ function checkCliInput(cliArgs, options = CLIOPTIONS) {
 				options[key].type === 'array' ? !Array.isArray(value) : typeof value !== options[key].type
 			) {
 				D.error(
-					`Type mismatch found for "${color.yellow(key)}". Expected ${color.yellow(
+					`Type mismatch found for "${color.yellow(key)}". Expected "${color.yellow(
 						options[key].type
-					)} but received ${color.yellow(typeof value)}`
+					)}" but received "${color.yellow(typeof value)}"`
 				);
 				result.pass = false;
 				result.errors.push(
-					`The input ${color.yellow(value)} was expected to be ${color.yellow(options[key].type)}`
+					`Type mismatch found for "${color.yellow(key)}". Expected "${color.yellow(
+						options[key].type
+					)}" but received "${color.yellow(typeof value)}"`
 				);
 			}
 
@@ -240,11 +242,11 @@ function checkCliInput(cliArgs, options = CLIOPTIONS) {
 				);
 				result.pass = false;
 				result.errors.push(
-					`The input ${color.yellow(
+					`The input for the option "${color.yellow(key)}" was "${color.yellow(
 						value
-					)} does not match any of the valid arguments ${color.yellow(
+					)}" which does not match any of the valid arguments "${color.yellow(
 						options[key].arguments.join(', ')
-					)}`
+					)}"`
 				);
 			}
 		} else {
