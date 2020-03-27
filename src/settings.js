@@ -239,20 +239,6 @@ function checkCliInput(cliArgs, options = CLIOPTIONS) {
 	console.log(`checkCliInput return: "${color.yellow(JSON.stringify(result))}"`);
 
 	return result;
-
-	// iterate over options and check against cliArgs
-	// specifically:
-	// 	check type
-	// 	if arguments exists make sure they are in there
-	// 	error out when something is wrong, write helpful message that shows what the blender was expecting
-	// 		like when "blender --brand x" error out saying: "x is unrecognized. Here are the expected values: ${color.yellow(option.arguments.join(', '))}"
-	//
-	// return an object in this shape:
-	// {
-	// 	pass: true|false,
-	// 	errors: '',  // this is where all error messages go (we don't console.log from this function as it might also be used in the API)
-	// }
-
 }
 
 module.exports = exports = {
