@@ -211,14 +211,19 @@ function checkCliInput(cliArgs, options = CLIOPTIONS) {
 	Object.entries(cliArgs).map(([key, value]) => {
 		D.log(`Checking "${color.yellow(key)}"`);
 		if (options[key]) {
-
 			// check types and check that the value matches at least one
 			if (
 				options[key].type === 'array' ? !Array.isArray(value) : typeof value !== options[key].type
 			) {
-				D.error(`Type mismatch found for "${color.yellow(key)}". Expected ${color.yellow(options[key].type)} but received ${color.yellow(typeof value)}`);
+				D.error(
+					`Type mismatch found for "${color.yellow(key)}". Expected ${color.yellow(
+						options[key].type
+					)} but received ${color.yellow(typeof value)}`
+				);
 				result.pass = false;
-				result.errors.push(`The input ${color.yellow(value)} was expected to be ${color.yellow(options[key].type)}`);
+				result.errors.push(
+					`The input ${color.yellow(value)} was expected to be ${color.yellow(options[key].type)}`
+				);
 			}
 
 			// if we only support specific arguments for an option, make sure the one
@@ -228,13 +233,24 @@ function checkCliInput(cliArgs, options = CLIOPTIONS) {
 				Array.isArray(options[key].arguments) &&
 				!options[key].arguments.includes(value)
 			) {
+				D.error(
+					`Invalid argument for ${color.yellow(key)} Expected ${color.yellow(
+						options[key].arguments.join(', ')
+					)} but received ${color.yellow(value)}`
+				);
 				result.pass = false;
 				result.errors.push(
-					`The input ${color.yellow(value)} does not match any of the valid arguments ${color.yellow(options[key].arguments)}`
+					`The input ${color.yellow(
+						value
+					)} does not match any of the valid arguments ${color.yellow(
+						options[key].arguments.join(', ')
+					)}`
 				);
 			}
 		} else {
-			log.warn(`The option ${color.yellow(key)}] didn't watch any of blenders options and was ignored`);
+			log.warn(
+				`The option ${color.yellow(key)}] didn't watch any of blenders options and was ignored`
+			);
 		}
 	});
 
