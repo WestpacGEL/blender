@@ -228,7 +228,7 @@ function checkCliInput(cliArgs, options = CLIOPTIONS) {
 			) {
 				result.pass = false;
 				result.errors.push(
-					`value [${value}] does not match valid arguments [${options[key].arguments}]`
+					`The input ${color.yellow(value)} does not match any of the valid arguments ${color.yellow(options[key].arguments)}`
 				);
 			}
 		} else {
