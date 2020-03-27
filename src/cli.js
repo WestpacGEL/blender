@@ -25,7 +25,6 @@ const { time } = require('./time.js');
  */
 async function cli() {
 	time.start();
-	log.start(`Blender v${version} starting`);
 
 	const cliArgs = getCliArgs();
 	const isGoodHuman = checkCliInput(cliArgs);
@@ -50,6 +49,7 @@ async function cli() {
 		process.exit();
 	}
 
+	log.start(`Blender v${version} starting`);
 	PACKAGES.set = getPackages(path.normalize(`${__dirname}/../tests/mock/mock-project1/`));
 
 	// // just showing that we can run the parser, will go elsewhere
