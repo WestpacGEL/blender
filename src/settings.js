@@ -44,26 +44,10 @@ const SETTINGS = {
 function getSettings(cliArgs, cwd = process.cwd(), options = CLIOPTIONS) {
 	D.header('getSettings', { cliArgs, cwd });
 
-	const pkgOptions = getPkgOptions(cwd);
 	const defaults = getDefaults(options);
+	const pkgOptions = getPkgOptions(cwd);
 
-	const settings = { ...defaults, ...pkgOptions };
-
-	D.log(`settings merged with defaults: "${color.yellow(JSON.stringify(settings))}"`);
-
-	Object.entries(cliArgs).map(([key, value]) => {
-		if (key.startsWith('output-')) {
-			settings.output[key.replace('output-', '')] = value;
-		} else if (key === 'output') {
-			Object.entries(options)
-				.filter(([option, obj]) => option.startsWith('output-') && obj.type === 'string')
-				.map(([option]) => {
-					settings.output[option.replace('output-', '')] = value;
-				});
-		} else {
-			settings[key.startsWith('-') ? key : camelCase(key)] = value;
-		}
-	});
+	const settings = { ...defaults, ...pkgOptions, ...cliArgs };
 
 	D.log(`getSettings return: "${color.yellow(JSON.stringify(settings))}"`);
 
@@ -83,7 +67,7 @@ function getDefaults(options) {
 
 	Object.entries(options).map(([option, value]) => {
 		if (typeof value.default !== 'undefined') {
-			defaults[option] = value.default;
+			defaults[camelCase(option)] = value.default;
 		}
 	});
 
@@ -100,15 +84,17 @@ function getDefaults(options) {
  * @return {string}      - Camel-cased string
  */
 function camelCase(name) {
-	return name
-		.split('-')
-		.map((bit, i) => {
-			if (i > 0) {
-				return bit.charAt(0).toUpperCase() + bit.slice(1);
-			}
-			return bit;
-		})
-		.join('');
+	return typeof name === 'string'
+		? name
+				.split('-')
+				.map((bit, i) => {
+					if (i > 0) {
+						return bit.charAt(0).toUpperCase() + bit.slice(1);
+					}
+					return bit;
+				})
+				.join('')
+		: name;
 }
 
 /**
@@ -163,7 +149,7 @@ function getCliArgs(options = CLIOPTIONS, inputArgs = process.argv) {
 		.map((arg) => {
 			// catch all full size flags "--version", "--debug" and all single short flags "-v", "-d"
 			if (arg.startsWith('--') || (arg.startsWith('-') && arg.length === 2)) {
-				currentFlag = argDict[arg] || arg;
+				currentFlag = camelCase(argDict[arg]) || arg;
 				cliArgs[currentFlag] = true;
 			}
 			// catch all combined short flags "-xyz"
@@ -172,7 +158,7 @@ function getCliArgs(options = CLIOPTIONS, inputArgs = process.argv) {
 					.slice(1) // remove the "-"       -> "xyz"
 					.split('') // split into each flag -> ["x","y","z"]
 					.map((flag) => {
-						currentFlag = argDict[`-${flag}`] || `-${flag}`;
+						currentFlag = camelCase(argDict[`-${flag}`]) || `-${flag}`;
 						cliArgs[currentFlag] = true;
 					});
 			}
@@ -211,61 +197,20 @@ function getCliArgs(options = CLIOPTIONS, inputArgs = process.argv) {
  * @return {object}         - An object with errors and a boolean check
  */
 function checkCliInput(cliArgs, options = CLIOPTIONS) {
-
-	console.log(`============================\n`);
-
-	const result = {
-		pass: true,
-		errors: [],
-	}
-
-	// loop over all the arguments we get in the CLI
-	Object.entries(cliArgs).map(([key, value]) => {
-
-		console.log(`>>> analysing option { ${key}: ${value} }\n`);
-
-		// locate the option in our options config either by flag or key
-		const option = options[Object.keys(options)
-			.find((opt) => {
-				return (opt === key || options[opt].flag === key)
-					? key : null;
-			})];
-
-		// error out if we can't find the option either by flag or key
-		if (!option) {
-			console.log(`option [${key}] not found`)
-			result.pass = false;
-			result.errors.push(`option [${key}] not found`);
-			return;
-		}
-
-		// check types and check that the value matches at least one
-		if (typeof value !== options.type) {
-			console.log(`value [${value}] does not match type [${options.type}]`);
-			result.pass = false;
-			result.errors.push(`value [${value}] does not match type [${options.type}]`);
-			return;
-		}
-
-		// if we only support specific arguments for an option, make sure the one
-		// we're passing in is one we expect
-		const invalidArgument = option.arguments
-			&& Array.isArray(option.arguments)
-			&& option.arguments.length
-				? option.arguments.indexOf(value) !== 1
-				: false;
-
-		if (invalidArgument) {
-			result.pass = false;
-			result.errors.push(`value [${value}] does not match valid arguments [${option.arguments}]`);
-			return;
-		}
-
+	const argDict = {};
+	Object.entries(options).map(([name, value]) => {
+		argDict[camelCase(name)] = name;
 	});
 
-	console.log(result);
-
-	return result;
+	Object.entries(cliArgs).map(([name, value]) => {
+		// console.log(name);
+		if (options[name]) {
+			// check type
+			// check arguments
+		} else {
+			// warn about unrecognized flag
+		}
+	});
 
 	// iterate over options and check against cliArgs
 	// specifically:

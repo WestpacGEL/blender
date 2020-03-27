@@ -23,8 +23,7 @@ const CLIOPTIONS = {
 		description: 'Specify where the blender should save all your files to',
 		example: 'blender -o path/to/folder',
 		flag: 'o',
-		type: ['string', 'object'],
-		default: {},
+		type: 'string',
 	},
 	'output-css': {
 		description: 'Specify where the blender should save the css files to',
