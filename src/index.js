@@ -16,6 +16,7 @@ const { DEBUG } = require('./log.js');
  */
 function blender(options = {}) {
 	return new Promise(async (resolve, reject) => {
+		const { cwd = process.cwd() } = options;
 		DEBUG.mode = 'api';
 		const isGoodHuman = checkCliInput(options);
 
@@ -23,9 +24,9 @@ function blender(options = {}) {
 			reject(isGoodHuman);
 		}
 
-		SETTINGS.set = getSettings(options);
+		SETTINGS.set = getSettings(options, cwd);
 		DEBUG.enabled = SETTINGS.get.debug;
-		PACKAGES.set = getPackages();
+		PACKAGES.set = getPackages(cwd);
 
 		// const thing = await parseComponent({
 		// 	componentPath: path.normalize(`${__dirname}/../tests/mock/recipe1.js`),
@@ -39,7 +40,9 @@ function blender(options = {}) {
 	});
 }
 
-blender();
+blender({ cwd: path.normalize(`${__dirname}/../tests/mock/mock-project1/`) }).then((data) =>
+	console.log(JSON.stringify(data, null, 2))
+);
 
 module.exports = exports = {
 	blender,

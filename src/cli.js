@@ -14,8 +14,9 @@ const { PACKAGES, getPackages } = require('./packages.js');
 const { parseComponent } = require('./parseCss.js');
 const { stripColor, color } = require('./color.js');
 const { version } = require('../package.json');
+const { DEBUG, D, log } = require('./log.js');
+const { tester } = require('./tester.js');
 const { CLIOPTIONS } = require('./const.js');
-const { DEBUG, log } = require('./log.js');
 const { time } = require('./time.js');
 
 /**
@@ -25,6 +26,7 @@ const { time } = require('./time.js');
  */
 async function cli() {
 	time.start();
+	D.header('cli');
 
 	const cliArgs = getCliArgs();
 	const isGoodHuman = checkCliInput(cliArgs);
@@ -50,14 +52,26 @@ async function cli() {
 	}
 
 	log.start(`Blender v${version} starting`);
-	PACKAGES.set = getPackages(path.normalize(`${__dirname}/../tests/mock/mock-project1/`));
+
+	// SETTINGS.get.cwd = path.normalize(`${__dirname}/../tests/mock/mock-project1/`)
+	const cwd = SETTINGS.get.cwd ? path.resolve(process.cwd(), SETTINGS.get.cwd) : cwd;
+	if (cwd) {
+		log.info(`Running in ${color.yellow(cwd)}`);
+	}
+	D.log(`Running in ${color.yellow(cwd)}`);
+
+	PACKAGES.set = getPackages(cwd);
+
+	if (SETTINGS.get.test) {
+		const result = tester();
+		exitHandler(result.code);
+	}
 
 	// // just showing that we can run the parser, will go elsewhere
 	// const thing = await parseComponent({
 	// 	componentPath: path.normalize(`${__dirname}/../tests/mock/recipe1.js`),
 	// 	brand: {},
 	// });
-
 	// console.log(thing);
 
 	['exit', 'SIGINT', 'SIGUSR1', 'SIGUSR2', 'uncaughtException', 'SIGTERM'].forEach((eventType) => {

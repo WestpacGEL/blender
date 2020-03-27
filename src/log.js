@@ -1,14 +1,14 @@
 /**
  * All functions for logging to the console
  *
- * DEBUG - DEBUG object for tracking debug mode, level and messages
+ * DEBUG - DEBUG object for tracking debug mode, level, messages etc
  * D     - Debugging prettiness
  * log   - Logging prettiness
  **/
 const { color } = require('./color.js');
 
 /**
- * DEBUG object for tracking debug mode, level and messages
+ * DEBUG object for tracking debug mode, level, messages etc
  *
  * @type {Object}
  */
@@ -88,15 +88,17 @@ const D = {
 	 * Log a header for a function call
 	 *
 	 * @param  {string}  name  - The name of the function
-	 * @param  {array}   args  - Arguments this function may have taken
+	 * @param  {object}  args  - Arguments this function may have taken
 	 * @param  {boolean} debug - Global debug mode on/off switch
 	 */
-	header(name, args = [], debug = DEBUG) {
+	header(name, args, debug = DEBUG) {
 		DEBUG.messages =
 			`${DEBUG.messages.length > 0 ? '\n\n' : ''}   ===== RUNNING "${name}" =====\n` +
-			`${JSON.stringify(args)}`;
+			`${args ? JSON.stringify(args) : ''}`;
 		this.output(
-			`\n===== RUNNING "${color.bold(name)}" =====\n${color.green(JSON.stringify(args))}`,
+			`\n===== RUNNING "${color.bold(name)}" =====${
+				args ? `\n${color.cyan(JSON.stringify(args))}` : ''
+			}`,
 			debug
 		);
 	},
