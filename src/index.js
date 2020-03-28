@@ -19,11 +19,10 @@ function blender(options = {}) {
 
 	return new Promise(async (resolve, reject) => {
 		DEBUG.mode = 'api'; // setting debug mode to api means no console.logs that clutters the output
-		const { cwd = process.cwd() } = options;
 
 		// parse and check options
 		const isGoodHuman = checkInput(options);
-		SETTINGS.set = getSettings(options, cwd);
+		SETTINGS.set = getSettings(options, options.cwd);
 		DEBUG.enabled = SETTINGS.get.debug;
 
 		if (isGoodHuman.pass === false) {
@@ -37,7 +36,7 @@ function blender(options = {}) {
 		}
 
 		// get all packages
-		PACKAGES.set = getPackages(cwd);
+		PACKAGES.set = getPackages(options.cwd);
 
 		// run tester
 		if (SETTINGS.get.test) {
