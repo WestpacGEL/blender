@@ -9,7 +9,7 @@ const cfonts = require('cfonts');
 const path = require('path');
 const fs = require('fs');
 
-const { SETTINGS, getCliArgs, checkCliInput, getSettings } = require('./settings.js');
+const { SETTINGS, getCliArgs, checkInput, getSettings } = require('./settings.js');
 const { PACKAGES, getPackages } = require('./packages.js');
 const { parseComponent } = require('./parseCss.js');
 const { stripColor, color } = require('./color.js');
@@ -31,7 +31,7 @@ async function cli() {
 
 	// parse and check cli args
 	const cliArgs = getCliArgs();
-	const isGoodHuman = checkCliInput(cliArgs);
+	const isGoodHuman = checkInput(cliArgs);
 	SETTINGS.set = getSettings(cliArgs);
 	DEBUG.enabled = SETTINGS.get.debug;
 
@@ -74,7 +74,7 @@ async function cli() {
 
 	// run tester
 	if (SETTINGS.get.test) {
-		const result = tester();
+		const result = tester(PACKAGES.get);
 		exitHandler(result.code);
 	}
 
@@ -181,7 +181,7 @@ function exitHandler(exiting, error, debug = DEBUG) {
 
 	clean();
 
-	process.exit(exiting ? 0 : exiting);
+	process.exit(exiting);
 }
 
 module.exports = exports = {

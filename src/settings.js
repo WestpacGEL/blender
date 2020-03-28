@@ -7,7 +7,7 @@
  * camelCase     - Convert a string to camel case
  * getPkgOptions - Get the blender settings from the package.json
  * getCliArgs    - Parse our cli options into an easily digestible object
- * checkCliInput - Check the cli input and log out helpful errors messages
+ * checkInput    - Check the cli input and log out helpful errors messages
  **/
 const path = require('path');
 const fs = require('fs');
@@ -206,8 +206,8 @@ function getCliArgs(options = CLIOPTIONS, inputArgs = process.argv) {
  *
  * @return {object}         - An object with errors and a boolean check
  */
-function checkCliInput(cliArgs, options = CLIOPTIONS) {
-	D.header('checkCliInput', { cliArgs, options });
+function checkInput(cliArgs, options = CLIOPTIONS) {
+	D.header('checkInput', { cliArgs, options });
 	const result = {
 		pass: true,
 		errors: [],
@@ -267,7 +267,7 @@ function checkCliInput(cliArgs, options = CLIOPTIONS) {
 		}
 	});
 
-	D.log(`checkCliInput return: "${color.yellow(JSON.stringify(result))}"`);
+	D.log(`checkInput return: "${color.yellow(JSON.stringify(result))}"`);
 
 	return result;
 }
@@ -278,5 +278,5 @@ module.exports = exports = {
 	camelCase,
 	getPkgOptions,
 	getCliArgs,
-	checkCliInput,
+	checkInput,
 };

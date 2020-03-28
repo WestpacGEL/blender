@@ -34,13 +34,13 @@ const TIME = {
  *
  * @param {array} elapsedTime - The elapsed time started and stopped with process.hrtime
  */
-const convertHrtime = (elapsedTime) => {
+function convertHrtime(elapsedTime) {
 	if (Array.isArray(elapsedTime)) {
 		return (elapsedTime[0] + elapsedTime[1] / 1e9).toFixed(3);
 	} else {
 		return elapsedTime;
 	}
-};
+}
 
 module.exports = exports = {
 	TIME,

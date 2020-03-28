@@ -21,7 +21,10 @@
 
 ## TODO
 
-- test script: - iterates the `ids` - checks if the `id` exists in the css output - checks if hash is different for same label
+- test script:
+- iterates the `ids`
+- checks if the `id` exists in the css output
+- checks if hash is different for same label
 
 ```
 {
