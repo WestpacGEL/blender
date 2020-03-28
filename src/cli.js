@@ -11,7 +11,6 @@ const fs = require('fs');
 
 const { SETTINGS, getCliArgs, checkInput, getSettings } = require('./settings.js');
 const { PACKAGES, getPackages } = require('./packages.js');
-const { parseComponent } = require('./parseCss.js');
 const { stripColor, color } = require('./color.js');
 const { version } = require('../package.json');
 const { DEBUG, D, log } = require('./log.js');

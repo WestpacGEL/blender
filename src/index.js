@@ -7,7 +7,6 @@ const path = require('path');
 
 const { SETTINGS, getSettings, checkInput } = require('./settings.js');
 const { PACKAGES, getPackages } = require('./packages.js');
-const { parseComponent } = require('./parseCss.js');
 const { clean } = require('./clean.js');
 const { DEBUG } = require('./log.js');
 
