@@ -26,6 +26,10 @@ const PACKAGES = {
 	set set(settings) {
 		this.store = settings;
 	},
+
+	clean() {
+		this.store = [];
+	},
 };
 
 /**

@@ -1,11 +1,26 @@
 /**
  * All functions for logging to the console
  *
- * DEBUG - DEBUG object for tracking debug mode, level, messages etc
- * D     - Debugging prettiness
- * log   - Logging prettiness
+ * DEBUGdefaults - The DEBUG default values for the store
+ * DEBUG         - DEBUG object for tracking debug mode, level, messages etc
+ * D             - Debugging prettiness
+ * log           - Logging prettiness
  **/
 const { color } = require('./color.js');
+
+/**
+ * The DEBUG default values for the store
+ *
+ * @type {Object}
+ */
+const DEBUGdefaults = {
+	mode: 'cli',
+	enabled: false,
+	errors: 0,
+	messages: [],
+	set: false,
+	buffer: [],
+};
 
 /**
  * DEBUG object for tracking debug mode, level, messages etc
@@ -13,14 +28,7 @@ const { color } = require('./color.js');
  * @type {Object}
  */
 const DEBUG = {
-	store: {
-		mode: 'cli',
-		enabled: false,
-		errors: 0,
-		messages: [],
-		set: false,
-		buffer: [],
-	},
+	store: { ...DEBUGdefaults },
 
 	set mode(value) {
 		this.store.mode = value;
@@ -64,6 +72,10 @@ const DEBUG = {
 	},
 	get buffer() {
 		return this.store.buffer;
+	},
+
+	clean() {
+		this.store = DEBUGdefaults;
 	},
 };
 

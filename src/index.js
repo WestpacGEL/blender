@@ -8,7 +8,7 @@ const path = require('path');
 const { SETTINGS, getSettings, checkCliInput } = require('./settings.js');
 const { PACKAGES, getPackages } = require('./packages.js');
 const { parseComponent } = require('./parseCss.js');
-const { time } = require('./time.js');
+const { clean } = require('./clean.js');
 const { DEBUG } = require('./log.js');
 
 /**
@@ -33,6 +33,8 @@ function blender(options = {}) {
 		// 	brand: {},
 		// });
 		// console.log(thing);
+
+		clean();
 
 		resolve({
 			packages: PACKAGES.get,

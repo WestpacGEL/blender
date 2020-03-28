@@ -17,7 +17,8 @@ const { version } = require('../package.json');
 const { DEBUG, D, log } = require('./log.js');
 const { tester } = require('./tester.js');
 const { CLIOPTIONS } = require('./const.js');
-const { time } = require('./time.js');
+const { clean } = require('./clean.js');
+const { TIME } = require('./time.js');
 
 /**
  * The CLI function
@@ -25,7 +26,7 @@ const { time } = require('./time.js');
  * @return {void}
  */
 async function cli() {
-	time.start();
+	TIME.start();
 	D.header('cli');
 
 	const cliArgs = getCliArgs();
@@ -43,11 +44,13 @@ async function cli() {
 
 	if (SETTINGS.get.version) {
 		console.log(`v${version}`);
+		clean();
 		process.exit();
 	}
 
 	if (SETTINGS.get.help) {
 		help();
+		clean();
 		process.exit();
 	}
 
@@ -121,7 +124,7 @@ function exitHandler(exiting, error, debug = DEBUG) {
 			debug.messages.join('\n') +
 			`\n\n` +
 			`Errors: ${debug.errors}\n` +
-			`Duration: ${time.stop()}\n`;
+			`Duration: ${TIME.stop()}\n`;
 		const logPath = path.normalize(`${process.cwd()}/blender-error.log`);
 
 		try {
@@ -141,10 +144,12 @@ function exitHandler(exiting, error, debug = DEBUG) {
 	} else {
 		log.success(
 			`Successfully blended ${color.yellow(PACKAGES.get.length)} packages in ${color.yellow(
-				time.stop()
+				TIME.stop()
 			)}\n`
 		);
 	}
+
+	clean();
 
 	process.exit(exiting ? 0 : exiting);
 }
