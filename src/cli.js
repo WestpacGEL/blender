@@ -26,12 +26,30 @@ const { TIME } = require('./time.js');
  * @return {void}
  */
 async function cli() {
-	TIME.start();
+	TIME.start(); // start time keeping
 	D.header('cli');
 
+	// parse and check cli args
 	const cliArgs = getCliArgs();
 	const isGoodHuman = checkCliInput(cliArgs);
+	SETTINGS.set = getSettings(cliArgs);
+	DEBUG.enabled = SETTINGS.get.debug;
 
+	// display version
+	if (SETTINGS.get.version) {
+		console.log(`v${version}`);
+		process.exit();
+	}
+
+	// display help
+	if (SETTINGS.get.help) {
+		help();
+		process.exit();
+	}
+
+	log.start(`Blender v${version}`);
+
+	// show error messages from arg parsing
 	if (isGoodHuman.pass === false) {
 		isGoodHuman.errors.map((error) => {
 			log.error(error);
@@ -39,36 +57,28 @@ async function cli() {
 		exitHandler(1);
 	}
 
-	SETTINGS.set = getSettings(cliArgs);
-	DEBUG.enabled = SETTINGS.get.debug;
-
-	if (SETTINGS.get.version) {
-		console.log(`v${version}`);
-		clean();
-		process.exit();
+	// show warnings from arg parsing
+	if (isGoodHuman.warnings) {
+		isGoodHuman.warnings.map((warning) => {
+			log.warn(warning);
+		});
 	}
 
-	if (SETTINGS.get.help) {
-		help();
-		clean();
-		process.exit();
-	}
-
-	log.start(`Blender v${version} starting`);
-
-	// SETTINGS.get.cwd = path.normalize(`${__dirname}/../tests/mock/mock-project1/`)
-	const cwd = SETTINGS.get.cwd ? path.resolve(process.cwd(), SETTINGS.get.cwd) : cwd;
-	if (cwd) {
-		log.info(`Running in ${color.yellow(cwd)}`);
-	}
+	// report on cwd
+	const cwd = SETTINGS.get.cwd;
+	log.info(`Running in ${color.yellow(cwd)}`);
 	D.log(`Running in ${color.yellow(cwd)}`);
 
+	// get all packages
 	PACKAGES.set = getPackages(cwd);
 
+	// run tester
 	if (SETTINGS.get.test) {
 		const result = tester();
 		exitHandler(result.code);
 	}
+
+	// run blender file generator
 
 	// // just showing that we can run the parser, will go elsewhere
 	// const thing = await parseComponent({
@@ -142,11 +152,31 @@ function exitHandler(exiting, error, debug = DEBUG) {
 	if (debug.errors) {
 		console.log();
 	} else {
-		log.success(
-			`Successfully blended ${color.yellow(PACKAGES.get.length)} packages in ${color.yellow(
-				TIME.stop()
-			)}\n`
-		);
+		const packages = PACKAGES.get.length;
+
+		if (SETTINGS.get.test) {
+			if (exiting > 0) {
+				log.error(
+					`Testing ${color.yellow(PACKAGES.get.length)} packages failed in ${color.yellow(
+						TIME.stop()
+					)}\n`
+				);
+			} else {
+				log.success(
+					`Testing ${color.yellow(PACKAGES.get.length)} packages passed in ${color.yellow(
+						TIME.stop()
+					)}\n`
+				);
+			}
+		} else if (packages > 0) {
+			log.success(
+				`Successfully blended ${color.yellow(PACKAGES.get.length)} packages in ${color.yellow(
+					TIME.stop()
+				)}\n`
+			);
+		} else {
+			log.success(`No packages were found in ${color.yellow(TIME.stop())}\n`);
+		}
 	}
 
 	clean();

@@ -89,7 +89,9 @@ const D = {
 		if (debug.set && debug.buffer.length && debug.enabled) {
 			console.log(debug.buffer.join('\n'));
 			debug.buffer = false;
-		} else if (!debug.set) {
+		}
+
+		if (!debug.set) {
 			debug.buffer = text;
 		} else if (debug.enabled) {
 			console.log(text);
@@ -163,7 +165,7 @@ const log = {
 	 */
 	info: (text) => {
 		if (DEBUG.mode === 'cli') {
-			console.info(`💡  ${text}`);
+			console.info(`💡  ${color.gray(text)}`);
 		}
 	},
 

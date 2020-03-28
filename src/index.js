@@ -15,9 +15,11 @@ const { DEBUG } = require('./log.js');
  * The blender API
  */
 function blender(options = {}) {
+	clean();
+
 	return new Promise(async (resolve, reject) => {
 		const { cwd = process.cwd() } = options;
-		DEBUG.mode = 'api';
+		DEBUG.mode = 'api'; // setting debug mode to api means no console.logs that clutters the output
 		const isGoodHuman = checkCliInput(options);
 
 		if (isGoodHuman.pass === false) {
@@ -33,8 +35,6 @@ function blender(options = {}) {
 		// 	brand: {},
 		// });
 		// console.log(thing);
-
-		clean();
 
 		resolve({
 			packages: PACKAGES.get,

@@ -38,7 +38,7 @@ const PACKAGES = {
  * @return {array} - An array of objects with package data
  */
 function getPackages(cwd = process.cwd()) {
-	D.header('getComponents', { cwd });
+	D.header('getPackages', { cwd });
 
 	const nodeModulesPath = path.normalize(`${cwd}/node_modules/`);
 
@@ -90,7 +90,7 @@ function getPackages(cwd = process.cwd()) {
 		}) // added each package.json blender section
 		.filter((module) => module.pkg); // remove all packages which don't support the blender
 
-	D.log(`getComponents return: "${color.yellow(JSON.stringify(packages))}"`);
+	D.log(`getPackages return: "${color.yellow(JSON.stringify(packages))}"`);
 
 	return packages;
 }

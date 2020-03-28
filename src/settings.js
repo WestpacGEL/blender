@@ -52,6 +52,7 @@ function getSettings(cliArgs, cwd = process.cwd(), options = CLIOPTIONS) {
 	const pkgOptions = getPkgOptions(cwd);
 
 	const settings = { ...defaults, ...pkgOptions, ...cliArgs };
+	settings.cwd = settings.cwd ? path.resolve(process.cwd(), settings.cwd) : process.cwd();
 
 	D.log(`getSettings return: "${color.yellow(JSON.stringify(settings))}"`);
 
@@ -210,6 +211,7 @@ function checkCliInput(cliArgs, options = CLIOPTIONS) {
 	const result = {
 		pass: true,
 		errors: [],
+		warnings: [],
 	};
 
 	const argDict = {};
@@ -259,7 +261,7 @@ function checkCliInput(cliArgs, options = CLIOPTIONS) {
 				);
 			}
 		} else {
-			log.warn(
+			result.warnings.push(
 				`The option ${color.yellow(key)} didn't watch any of blenders options and was ignored`
 			);
 		}
