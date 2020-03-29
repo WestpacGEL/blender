@@ -86,6 +86,7 @@ const DEBUG = {
  */
 const D = {
 	output(text, debug) {
+		// TODO add messages so error logs contain debug infos
 		if (debug.set && debug.buffer.length && debug.enabled) {
 			console.log(debug.buffer.join('\n'));
 			debug.buffer = false;

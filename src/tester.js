@@ -7,6 +7,7 @@ const path = require('path');
 
 const { parseComponent } = require('./parseCss.js');
 const { SETTINGS } = require('./settings.js');
+const { LOADING } = require('./loading.js');
 const { color } = require('./color.js');
 const { D } = require('./log.js');
 
@@ -17,14 +18,15 @@ function tester(packages) {
 		errors: [],
 	};
 
-	console.log(packages.length); // show loading if more than 30?
+	LOADING.start = { total: packages.length };
 	packages.map((pkg) => {
 		const parsedPkg = parseComponent({
 			componentPath: path.normalize(`${__dirname}/../tests/mock/recipe1.js`), // pkg.path
 			brand: SETTINGS.get.brand,
 		});
-		console.log(pkg.pkg.recipe);
-		console.log(parsedPkg.ids);
+		LOADING.tick();
+		// console.log(pkg.pkg.recipe);
+		// console.log(parsedPkg.ids);
 	});
 
 	// iterate `ids`

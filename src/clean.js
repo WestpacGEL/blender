@@ -5,6 +5,7 @@
  **/
 const { PACKAGES } = require('./packages.js');
 const { SETTINGS } = require('./settings.js');
+const { LOADING } = require('./loading.js');
 const { DEBUG, D } = require('./log.js');
 const { TIME } = require('./time.js');
 
@@ -14,6 +15,7 @@ const { TIME } = require('./time.js');
 function clean() {
 	D.header('clean');
 
+	LOADING.clean();
 	PACKAGES.clean();
 	SETTINGS.clean();
 	DEBUG.clean();
