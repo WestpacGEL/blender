@@ -321,15 +321,15 @@ describe('checkInput', () => {
 		const options = {
 			flag1: {
 				type: 'string',
-				arguments: ['dominik', 'tom'],
+				arguments: ['dominik', 'thomas'],
 			},
 			flag2: {
 				type: 'string',
-				arguments: ['dominik', 'tom'],
+				arguments: ['dominik', 'thomas'],
 			},
 			flag3: {
 				type: 'string',
-				arguments: ['dominik', 'tom'],
+				arguments: ['dominik', 'thomas'],
 			},
 		};
 
@@ -362,7 +362,21 @@ describe('checkInput', () => {
 			},
 		};
 
-		expect(checkInput({ flag1: ['dominik', 'tom'] }, options).pass).toBe(true);
+		expect(checkInput({ flag1: ['dominik', 'thomas'] }, options).pass).toBe(true);
 		expect(checkInput({ flag2: '' }, options).pass).toBe(false);
+	});
+
+	test('Invalid type is validated correctly', () => {
+		const options = {
+			flag1: {
+				type: 'dominik',
+			},
+			flag2: {
+				type: 'thomas',
+			},
+		};
+
+		expect(checkInput({ flag1: 'mock' }, options).pass).toBe(false);
+		expect(checkInput({ flag2: 'mock' }, options).pass).toBe(false);
 	});
 });
