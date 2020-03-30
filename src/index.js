@@ -5,27 +5,49 @@
  **/
 const path = require('path');
 
-const { SETTINGS, getSettings, checkCliInput } = require('./settings.js');
+const { SETTINGS, getSettings, checkInput } = require('./settings.js');
 const { PACKAGES, getPackages } = require('./packages.js');
-const { parseComponent } = require('./parseCss.js');
-const { time } = require('./time.js');
+const { clean } = require('./clean.js');
 const { DEBUG } = require('./log.js');
 
 /**
  * The blender API
  */
 function blender(options = {}) {
+	clean(); // clean memory
+
 	return new Promise(async (resolve, reject) => {
-		DEBUG.mode = 'api';
-		const isGoodHuman = checkCliInput(options);
+		DEBUG.mode = 'api'; // setting debug mode to api means no console.logs that clutters the output
+
+		// parse and check options
+		const isGoodHuman = checkInput(options);
+		SETTINGS.set = getSettings(options, options.cwd);
+		DEBUG.enabled = SETTINGS.get.debug;
 
 		if (isGoodHuman.pass === false) {
 			reject(isGoodHuman);
 		}
 
-		SETTINGS.set = getSettings(options);
-		DEBUG.enabled = SETTINGS.get.debug;
-		PACKAGES.set = getPackages();
+		// return version
+		if (SETTINGS.get.version) {
+			resolve(`v${version}`);
+			process.exit();
+		}
+
+		// get all packages
+		PACKAGES.set = getPackages(options.cwd);
+
+		// run tester
+		if (SETTINGS.get.test) {
+			const result = tester(PACKAGES.get);
+			if (result.code > 0) {
+				reject(result);
+			} else {
+				resolve(result);
+			}
+		}
+
+		// run blender file generator
 
 		// const thing = await parseComponent({
 		// 	componentPath: path.normalize(`${__dirname}/../tests/mock/recipe1.js`),
@@ -35,11 +57,14 @@ function blender(options = {}) {
 
 		resolve({
 			packages: PACKAGES.get,
+			options: { ...SETTINGS.get },
 		});
 	});
 }
 
-blender();
+blender({
+	cwd: path.normalize(`${__dirname}/../tests/mock/mock-project1/`),
+}).then((data) => console.log(JSON.stringify(data, null, 2)));
 
 module.exports = exports = {
 	blender,

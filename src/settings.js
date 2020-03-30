@@ -7,7 +7,7 @@
  * camelCase     - Convert a string to camel case
  * getPkgOptions - Get the blender settings from the package.json
  * getCliArgs    - Parse our cli options into an easily digestible object
- * checkCliInput - Check the cli input and log out helpful errors messages
+ * checkInput    - Check the cli input and log out helpful errors messages
  **/
 const path = require('path');
 const fs = require('fs');
@@ -30,6 +30,10 @@ const SETTINGS = {
 	set set(settings) {
 		this.store = settings;
 	},
+
+	clean() {
+		this.store = {};
+	},
 };
 
 /**
@@ -48,6 +52,7 @@ function getSettings(cliArgs, cwd = process.cwd(), options = CLIOPTIONS) {
 	const pkgOptions = getPkgOptions(cwd);
 
 	const settings = { ...defaults, ...pkgOptions, ...cliArgs };
+	settings.cwd = settings.cwd ? path.resolve(process.cwd(), settings.cwd) : process.cwd();
 
 	D.log(`getSettings return: "${color.yellow(JSON.stringify(settings))}"`);
 
@@ -201,11 +206,12 @@ function getCliArgs(options = CLIOPTIONS, inputArgs = process.argv) {
  *
  * @return {object}         - An object with errors and a boolean check
  */
-function checkCliInput(cliArgs, options = CLIOPTIONS) {
-	D.header('checkCliInput', { cliArgs, options });
+function checkInput(cliArgs, options = CLIOPTIONS) {
+	D.header('checkInput', { cliArgs, options });
 	const result = {
 		pass: true,
 		errors: [],
+		warnings: [],
 	};
 
 	const argDict = {};
@@ -255,13 +261,13 @@ function checkCliInput(cliArgs, options = CLIOPTIONS) {
 				);
 			}
 		} else {
-			log.warn(
+			result.warnings.push(
 				`The option ${color.yellow(key)} didn't watch any of blenders options and was ignored`
 			);
 		}
 	});
 
-	D.log(`checkCliInput return: "${color.yellow(JSON.stringify(result))}"`);
+	D.log(`checkInput return: "${color.yellow(JSON.stringify(result))}"`);
 
 	return result;
 }
@@ -272,5 +278,5 @@ module.exports = exports = {
 	camelCase,
 	getPkgOptions,
 	getCliArgs,
-	checkCliInput,
+	checkInput,
 };

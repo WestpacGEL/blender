@@ -25,7 +25,7 @@ describe('getSettings', () => {
 
 		const result = getSettings(cliArgs, cwd, options);
 
-		expect(result).toStrictEqual({});
+		expect(result).toMatchObject({});
 	});
 
 	test('Get default settings when nothing else is set', () => {
@@ -46,7 +46,7 @@ describe('getSettings', () => {
 
 		const result = getSettings(cliArgs, cwd, options);
 
-		expect(result).toStrictEqual({ flag1: 'foo', flag3: false });
+		expect(result).toMatchObject({ flag1: 'foo', flag3: false });
 	});
 
 	test('Get cli settings when nothing else is set', () => {
@@ -71,7 +71,7 @@ describe('getSettings', () => {
 
 		const result = getSettings(cliArgs, cwd, options);
 
-		expect(result).toStrictEqual({
+		expect(result).toMatchObject({
 			flag1: ['flag1Value1', 'flag1Value2', 'flag1Value3'],
 			flag3: true,
 			flag4: true,
@@ -86,7 +86,7 @@ describe('getSettings', () => {
 
 		const result = getSettings(cliArgs, cwd, options);
 
-		expect(result).toStrictEqual({ flag1: 'value for flag1', flag2: true, flag3: false });
+		expect(result).toMatchObject({ flag1: 'value for flag1', flag2: true, flag3: false });
 	});
 
 	test('Merge package settings over defaults', () => {
@@ -106,7 +106,7 @@ describe('getSettings', () => {
 
 		const result = getSettings(cliArgs, cwd, options);
 
-		expect(result).toStrictEqual({ flag1: 'value for flag1', flag2: true, flag3: false });
+		expect(result).toMatchObject({ flag1: 'value for flag1', flag2: true, flag3: false });
 	});
 
 	test('Merge cli settings over package settings over defaults', () => {
@@ -129,7 +129,7 @@ describe('getSettings', () => {
 
 		const result = getSettings(cliArgs, cwd, options);
 
-		expect(result).toStrictEqual({
+		expect(result).toMatchObject({
 			flag1: ['flag1Value1', 'flag1Value2', 'flag1Value3'],
 			flag2: true,
 			flag3: true,
@@ -151,7 +151,7 @@ describe('getSettings', () => {
 
 		const result = getSettings(cliArgs, cwd, options);
 
-		expect(result).toStrictEqual({
+		expect(result).toMatchObject({
 			camelCase: 'thing',
 			flag1: 'value for flag1',
 			flag2: true,
@@ -173,7 +173,7 @@ describe('getSettings', () => {
 
 		const result = getSettings(cliArgs, cwd, options);
 
-		expect(result).toStrictEqual({
+		expect(result).toMatchObject({
 			'--camel-case': 'thing',
 			flag1: 'value for flag1',
 			flag2: true,
@@ -190,7 +190,7 @@ describe('getSettings', () => {
 
 		const result = getSettings(cliArgs, cwd, options);
 
-		expect(result).toStrictEqual({});
+		expect(result).toMatchObject({});
 		expect(console.info.mock.calls.length).toBe(1);
 		expect(console.info.mock.calls[0][0].includes('found')).toBeTruthy();
 		expect(console.info.mock.calls[0][0].includes('package.json')).toBeTruthy();
@@ -214,7 +214,7 @@ describe('getSettings', () => {
 
 		const result = getSettings(cliArgs, cwd, options);
 
-		expect(result).toStrictEqual({
+		expect(result).toMatchObject({
 			flag1: 'value for flag1',
 			flag2: true,
 			flag3: true,

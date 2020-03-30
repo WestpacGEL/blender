@@ -1,7 +1,7 @@
 /**
  * All functions for keeping time
  *
- * time          - Keeping time
+ * TIME          - Keeping time
  * convertHrtime - Convert hrtime to seconds
  **/
 
@@ -10,7 +10,7 @@
  *
  * @type {Object}
  */
-const time = {
+const TIME = {
 	store: {
 		time: [],
 	},
@@ -23,6 +23,10 @@ const time = {
 		const elapsedTime = process.hrtime(this.store.time);
 		return `${convertHrtime(elapsedTime)}s`;
 	},
+
+	clean() {
+		this.store.time = [];
+	},
 };
 
 /**
@@ -30,15 +34,15 @@ const time = {
  *
  * @param {array} elapsedTime - The elapsed time started and stopped with process.hrtime
  */
-const convertHrtime = (elapsedTime) => {
+function convertHrtime(elapsedTime) {
 	if (Array.isArray(elapsedTime)) {
 		return (elapsedTime[0] + elapsedTime[1] / 1e9).toFixed(3);
 	} else {
 		return elapsedTime;
 	}
-};
+}
 
 module.exports = exports = {
-	time,
+	TIME,
 	convertHrtime,
 };
