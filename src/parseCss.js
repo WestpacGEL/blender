@@ -49,7 +49,6 @@ function parseComponent({ componentPath, componentName = 'default', brand }) {
 	let staticMarkup;
 
 	try {
-		require('@babel/register')({ ignore: [] });
 		Component = require(componentPath)[componentName];
 	} catch (error) {
 		D.error(`Component failed to be required at "${color.yellow(componentPath)}"`);
