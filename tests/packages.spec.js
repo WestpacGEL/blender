@@ -50,7 +50,10 @@ describe('getPackages', () => {
 		expect(result[1].path.endsWith('mock-project1/node_modules/@westpac/component2')).toBe(true);
 		expect(result[1].pkg).toStrictEqual({});
 		expect(result[2].path.endsWith('mock-project1/node_modules/component4')).toBe(true);
-		expect(result[2].pkg).toStrictEqual({ jquery: 'blender/jquery.js' });
+		expect(result[2].pkg).toStrictEqual({
+			jquery: 'blender/jquery.js',
+			recipe: 'blender/recipe.js',
+		});
 	});
 
 	test(`Warn if a package is included that doesn't exist`, () => {
@@ -73,7 +76,10 @@ describe('getPackages', () => {
 		expect(result[1].path.endsWith('mock-project1/node_modules/@westpac/component2')).toBe(true);
 		expect(result[1].pkg).toStrictEqual({});
 		expect(result[2].path.endsWith('mock-project1/node_modules/component4')).toBe(true);
-		expect(result[2].pkg).toStrictEqual({ jquery: 'blender/jquery.js' });
+		expect(result[2].pkg).toStrictEqual({
+			jquery: 'blender/jquery.js',
+			recipe: 'blender/recipe.js',
+		});
 		expect(console.warn.mock.calls.length).toBe(1);
 		expect(console.warn.mock.calls[0][0].includes('foo')).toBeTruthy();
 		expect(console.warn.mock.calls[0][0].includes('could not be found')).toBeTruthy();
@@ -95,7 +101,10 @@ describe('getPackages', () => {
 			recipe: 'blender/recipe.js',
 		});
 		expect(result[1].path.endsWith('mock-project1/node_modules/component4')).toBe(true);
-		expect(result[1].pkg).toStrictEqual({ jquery: 'blender/jquery.js' });
+		expect(result[1].pkg).toStrictEqual({
+			jquery: 'blender/jquery.js',
+			recipe: 'blender/recipe.js',
+		});
 	});
 });
 
