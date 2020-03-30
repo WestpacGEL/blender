@@ -29,7 +29,7 @@ describe('getPackages', () => {
 			recipe: 'blender/recipe.js',
 		});
 		expect(result[1].path.endsWith('mock-project1/node_modules/@westpac/component2')).toBe(true);
-		expect(result[1].pkg).toStrictEqual({});
+		expect(result[1].pkg).toStrictEqual({ recipe: 'blender/recipe.js' });
 	});
 
 	test('Include additional packages via the include option', () => {
@@ -48,7 +48,7 @@ describe('getPackages', () => {
 			recipe: 'blender/recipe.js',
 		});
 		expect(result[1].path.endsWith('mock-project1/node_modules/@westpac/component2')).toBe(true);
-		expect(result[1].pkg).toStrictEqual({});
+		expect(result[1].pkg).toStrictEqual({ recipe: 'blender/recipe.js' });
 		expect(result[2].path.endsWith('mock-project1/node_modules/component4')).toBe(true);
 		expect(result[2].pkg).toStrictEqual({
 			jquery: 'blender/jquery.js',
@@ -74,7 +74,7 @@ describe('getPackages', () => {
 			recipe: 'blender/recipe.js',
 		});
 		expect(result[1].path.endsWith('mock-project1/node_modules/@westpac/component2')).toBe(true);
-		expect(result[1].pkg).toStrictEqual({});
+		expect(result[1].pkg).toStrictEqual({ recipe: 'blender/recipe.js' });
 		expect(result[2].path.endsWith('mock-project1/node_modules/component4')).toBe(true);
 		expect(result[2].pkg).toStrictEqual({
 			jquery: 'blender/jquery.js',

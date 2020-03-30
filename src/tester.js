@@ -18,20 +18,19 @@ function tester(packages) {
 		errors: [],
 	};
 
-	LOADING.start = { total: packages.length };
-	packages.map((pkg) => {
+	// LOADING.start = { total: packages.length };
+	packages.map((thisPackage) => {
 		const parsedPkg = parseComponent({
-			componentPath: path.normalize(
-				`${__dirname}/../tests/mock/mock-project1/node_modules/@westpac/component1/blender/recipe.js`
-			), // pkg.path
+			componentPath: path.normalize(`${thisPackage.path}/${thisPackage.pkg.recipe}`),
 			componentName: 'AllStyles',
 			brand: SETTINGS.get.brand,
 		});
-		LOADING.tick();
-		// console.log(pkg.pkg.recipe);
-		// console.log(parsedPkg.ids);
+
+		console.log(parsedPkg);
+
+		// LOADING.tick();
 	});
-	LOADING.abort();
+	// LOADING.abort();
 
 	// iterate `ids`
 	// checks if the `id` exists in the css output
