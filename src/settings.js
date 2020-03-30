@@ -135,21 +135,23 @@ function getCliArgs(options = CLIOPTIONS, inputArgs = process.argv) {
 
 	const argDict = {};
 	Object.entries(options).map(([name, value]) => {
-		argDict[`--${name}`] = name;
+		argDict[`--${name}`] = { name, ...value };
 		if (value.flag) {
-			argDict[`-${value.flag}`] = name;
+			argDict[`-${value.flag}`] = { name, ...value };
 		}
 	});
 	D.log(`Created arguments dictonary: "${color.yellow(JSON.stringify(argDict))}"`);
 
 	const cliArgs = {};
 	let currentFlag = '';
+	let currentType = '';
 	inputArgs
 		.slice(2) // ignore the first two items as first is path to node binary and second is path to node script (this one)
 		.map((arg) => {
 			// catch all full size flags "--version", "--debug" and all single short flags "-v", "-d"
 			if (arg.startsWith('--') || (arg.startsWith('-') && arg.length === 2)) {
-				currentFlag = camelCase(argDict[arg]) || arg;
+				currentFlag = argDict[arg] ? camelCase(argDict[arg].name) : arg;
+				currentType = argDict[arg] ? argDict[arg].type : '';
 				cliArgs[currentFlag] = true;
 			}
 			// catch all combined short flags "-xyz"
@@ -158,7 +160,8 @@ function getCliArgs(options = CLIOPTIONS, inputArgs = process.argv) {
 					.slice(1) // remove the "-"       -> "xyz"
 					.split('') // split into each flag -> ["x","y","z"]
 					.map((flag) => {
-						currentFlag = camelCase(argDict[`-${flag}`]) || `-${flag}`;
+						currentFlag = argDict[`-${flag}`] ? camelCase(argDict[`-${flag}`].name) : `-${flag}`;
+						currentType = argDict[`-${flag}`] ? argDict[`-${flag}`].type : '';
 						cliArgs[currentFlag] = true;
 					});
 			}
@@ -176,6 +179,8 @@ function getCliArgs(options = CLIOPTIONS, inputArgs = process.argv) {
 						cliArgs[currentFlag].push(arg);
 					} else if (typeof cliArgs[currentFlag] === 'string') {
 						cliArgs[currentFlag] = [cliArgs[currentFlag], arg];
+					} else if (currentType === 'array') {
+						cliArgs[currentFlag] = [arg];
 					} else {
 						cliArgs[currentFlag] = arg;
 					}
@@ -210,46 +215,48 @@ function checkCliInput(cliArgs, options = CLIOPTIONS) {
 
 	Object.entries(cliArgs).map(([key, value]) => {
 		D.log(`Checking "${color.yellow(key)}"`);
-		if (options[key]) {
+		if (argDict[key]) {
 			// check types and check that the value matches at least one
 			if (
-				options[key].type === 'array' ? !Array.isArray(value) : typeof value !== options[key].type
+				argDict[key].type === 'array' ? !Array.isArray(value) : typeof value !== argDict[key].type
 			) {
 				D.error(
-					`Type mismatch found for "${color.yellow(key)}". Expected ${color.yellow(
-						options[key].type
-					)} but received ${color.yellow(typeof value)}`
+					`Type mismatch found for "${color.yellow(key)}". Expected "${color.yellow(
+						argDict[key].type
+					)}" but received "${color.yellow(typeof value)}"`
 				);
 				result.pass = false;
 				result.errors.push(
-					`The input ${color.yellow(value)} was expected to be ${color.yellow(options[key].type)}`
+					`Type mismatch found for "${color.yellow(key)}". Expected "${color.yellow(
+						argDict[key].type
+					)}" but received "${color.yellow(typeof value)}"`
 				);
 			}
 
 			// if we only support specific arguments for an option, make sure the one
 			// we're passing in is one we expect
 			if (
-				options[key].arguments &&
-				Array.isArray(options[key].arguments) &&
-				!options[key].arguments.includes(value)
+				argDict[key].arguments &&
+				Array.isArray(argDict[key].arguments) &&
+				!argDict[key].arguments.includes(value)
 			) {
 				D.error(
 					`Invalid argument for ${color.yellow(key)} Expected ${color.yellow(
-						options[key].arguments.join(', ')
+						argDict[key].arguments.join(', ')
 					)} but received ${color.yellow(value)}`
 				);
 				result.pass = false;
 				result.errors.push(
-					`The input ${color.yellow(
+					`The input for the option "${color.yellow(key)}" was "${color.yellow(
 						value
-					)} does not match any of the valid arguments ${color.yellow(
-						options[key].arguments.join(', ')
-					)}`
+					)}" which does not match any of the valid arguments "${color.yellow(
+						argDict[key].arguments.join(', ')
+					)}"`
 				);
 			}
 		} else {
 			log.warn(
-				`The option ${color.yellow(key)}] didn't watch any of blenders options and was ignored`
+				`The option ${color.yellow(key)} didn't watch any of blenders options and was ignored`
 			);
 		}
 	});

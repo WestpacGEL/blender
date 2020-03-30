@@ -25,14 +25,15 @@ const { time } = require('./time.js');
  */
 async function cli() {
 	time.start();
-	log.start(`Blender v${version} starting`);
 
 	const cliArgs = getCliArgs();
 	const isGoodHuman = checkCliInput(cliArgs);
 
 	if (isGoodHuman.pass === false) {
-		console.error(isGoodHuman.errors.join('\n'));
-		process.exit(1);
+		isGoodHuman.errors.map((error) => {
+			log.error(error);
+		});
+		exitHandler(1);
 	}
 
 	SETTINGS.set = getSettings(cliArgs);
@@ -40,14 +41,15 @@ async function cli() {
 
 	if (SETTINGS.get.version) {
 		console.log(`v${version}`);
-		process.exit(0);
+		process.exit();
 	}
 
 	if (SETTINGS.get.help) {
 		help();
-		process.exit(0);
+		process.exit();
 	}
 
+	log.start(`Blender v${version} starting`);
 	PACKAGES.set = getPackages(path.normalize(`${__dirname}/../tests/mock/mock-project1/`));
 
 	// // just showing that we can run the parser, will go elsewhere
@@ -58,9 +60,9 @@ async function cli() {
 
 	// console.log(thing);
 
-	process.on('exit', exitHandler); // on closing
-	process.on('SIGINT', exitHandler); // on [ctrl] + [c]
-	process.on('uncaughtException', exitHandler); // on uncaught exceptions
+	['exit', 'SIGINT', 'SIGUSR1', 'SIGUSR2', 'uncaughtException', 'SIGTERM'].forEach((eventType) => {
+		process.on(eventType, exitHandler.bind(null, eventType));
+	});
 }
 
 /**
@@ -82,7 +84,7 @@ function help(options = CLIOPTIONS) {
 	Object.entries(CLIOPTIONS).map(([name, option]) => {
 		console.log(
 			` ${color.bold(name.toUpperCase())}\n` +
-				color.cyan(` --${name}${color.white(',')} ${option.flag ? `-${option.flag}` : ''}\n`) +
+				color.cyan(` --${name}, ${option.flag ? `-${option.flag}` : ''}\n`) +
 				` ${option.description}\n` +
 				(option.arguments
 					? ` Possible arguments are: ${color.yellow(option.arguments.join(', '))}\n`
@@ -120,13 +122,17 @@ function exitHandler(exiting, error, debug = DEBUG) {
 		console.log(`\nErrors: ${debug.errors}\n`);
 	}
 
-	log.success(
-		`Successfully blended ${color.yellow(PACKAGES.get.length)} packages in ${color.yellow(
-			time.stop()
-		)}\n`
-	);
+	if (debug.errors) {
+		console.log();
+	} else {
+		log.success(
+			`Successfully blended ${color.yellow(PACKAGES.get.length)} packages in ${color.yellow(
+				time.stop()
+			)}\n`
+		);
+	}
 
-	process.exit(0);
+	process.exit(exiting ? 0 : exiting);
 }
 
 module.exports = exports = {

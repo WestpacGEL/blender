@@ -27,11 +27,11 @@ function blender(options = {}) {
 		DEBUG.enabled = SETTINGS.get.debug;
 		PACKAGES.set = getPackages();
 
-		const thing = await parseComponent({
-			componentPath: path.normalize(`${__dirname}/../tests/mock/recipe1.js`),
-			brand: {},
-		});
-		console.log(thing);
+		// const thing = await parseComponent({
+		// 	componentPath: path.normalize(`${__dirname}/../tests/mock/recipe1.js`),
+		// 	brand: {},
+		// });
+		// console.log(thing);
 
 		resolve({
 			packages: PACKAGES.get,
