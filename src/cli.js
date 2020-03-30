@@ -154,7 +154,9 @@ function exitHandler(exiting, error, debug = DEBUG) {
 		const packages = PACKAGES.get.length;
 
 		if (SETTINGS.get.test) {
-			if (exiting > 0) {
+			if (PACKAGES.get.length === 0) {
+				log.success(`No packages were found to be tested in ${color.yellow(TIME.stop())}\n`);
+			} else if (exiting > 0) {
 				log.error(
 					`Testing ${color.yellow(PACKAGES.get.length)} packages failed in ${color.yellow(
 						TIME.stop()

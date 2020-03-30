@@ -24,7 +24,10 @@ describe('getPackages', () => {
 
 		expect(result.length).toBe(2);
 		expect(result[0].path.endsWith('mock-project1/node_modules/@westpac/component1')).toBe(true);
-		expect(result[0].pkg).toStrictEqual({ jquery: 'blender/jquery.js' });
+		expect(result[0].pkg).toStrictEqual({
+			jquery: 'blender/jquery.js',
+			recipe: 'blender/recipe.js',
+		});
 		expect(result[1].path.endsWith('mock-project1/node_modules/@westpac/component2')).toBe(true);
 		expect(result[1].pkg).toStrictEqual({});
 	});
@@ -40,7 +43,10 @@ describe('getPackages', () => {
 
 		expect(result.length).toBe(3);
 		expect(result[0].path.endsWith('mock-project1/node_modules/@westpac/component1')).toBe(true);
-		expect(result[0].pkg).toStrictEqual({ jquery: 'blender/jquery.js' });
+		expect(result[0].pkg).toStrictEqual({
+			jquery: 'blender/jquery.js',
+			recipe: 'blender/recipe.js',
+		});
 		expect(result[1].path.endsWith('mock-project1/node_modules/@westpac/component2')).toBe(true);
 		expect(result[1].pkg).toStrictEqual({});
 		expect(result[2].path.endsWith('mock-project1/node_modules/component4')).toBe(true);
@@ -60,7 +66,10 @@ describe('getPackages', () => {
 
 		expect(result.length).toBe(3);
 		expect(result[0].path.endsWith('mock-project1/node_modules/@westpac/component1')).toBe(true);
-		expect(result[0].pkg).toStrictEqual({ jquery: 'blender/jquery.js' });
+		expect(result[0].pkg).toStrictEqual({
+			jquery: 'blender/jquery.js',
+			recipe: 'blender/recipe.js',
+		});
 		expect(result[1].path.endsWith('mock-project1/node_modules/@westpac/component2')).toBe(true);
 		expect(result[1].pkg).toStrictEqual({});
 		expect(result[2].path.endsWith('mock-project1/node_modules/component4')).toBe(true);
@@ -81,7 +90,10 @@ describe('getPackages', () => {
 
 		expect(result.length).toBe(2);
 		expect(result[0].path.endsWith('mock-project1/node_modules/@westpac/component1')).toBe(true);
-		expect(result[0].pkg).toStrictEqual({ jquery: 'blender/jquery.js' });
+		expect(result[0].pkg).toStrictEqual({
+			jquery: 'blender/jquery.js',
+			recipe: 'blender/recipe.js',
+		});
 		expect(result[1].path.endsWith('mock-project1/node_modules/component4')).toBe(true);
 		expect(result[1].pkg).toStrictEqual({ jquery: 'blender/jquery.js' });
 	});

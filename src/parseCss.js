@@ -8,7 +8,6 @@ const createEmotionServer = require('create-emotion-server').default;
 const createElement = require('react').createElement;
 const createCache = require('@emotion/cache').default;
 const { CacheProvider } = require('@emotion/core');
-const register = require('@babel/register');
 const fs = require('fs');
 
 const { color } = require('./color.js');
@@ -36,11 +35,12 @@ const { D } = require('./log.js');
  *
  * @param  {object}      options               - Arguments
  * @param  {string}      options.componentPath - The path to the component file
+ * @param  {string}      options.componentName - The name to the component
  * @param  {brandObject} options.brand         - The brand object
  *
  * @return {returnObject}                            -
  */
-function parseComponent({ componentPath, brand }) {
+function parseComponent({ componentPath, componentName = 'default', brand }) {
 	D.header('parseComponent', { componentPath, brand });
 
 	const cache = createCache();
@@ -49,7 +49,8 @@ function parseComponent({ componentPath, brand }) {
 	let staticMarkup;
 
 	try {
-		Component = require(componentPath).default;
+		require('@babel/register')({ ignore: [] });
+		Component = require(componentPath)[componentName];
 	} catch (error) {
 		D.error(`Component failed to be required at "${color.yellow(componentPath)}"`);
 		D.error(error);

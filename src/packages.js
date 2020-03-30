@@ -84,6 +84,7 @@ function getPackages(cwd = process.cwd()) {
 				);
 			}
 			return {
+				name: pkg.name,
 				path: module,
 				pkg: pkg.blender,
 			};

@@ -62,9 +62,9 @@ function blender(options = {}) {
 	});
 }
 
-blender({ cwd: path.normalize(`${__dirname}/../tests/mock/mock-project1/`) }).then((data) =>
-	console.log(JSON.stringify(data, null, 2))
-);
+blender({
+	cwd: path.normalize(`${__dirname}/../tests/mock/mock-project1/`),
+}).then((data) => console.log(JSON.stringify(data, null, 2)));
 
 module.exports = exports = {
 	blender,
