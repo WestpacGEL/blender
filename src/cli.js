@@ -156,13 +156,13 @@ function exitHandler(exiting, error, debug = DEBUG) {
 		if (SETTINGS.get.test) {
 			if (exiting > 0) {
 				log.error(
-					`Testing ${color.yellow(PACKAGES.get.length)} packages failed in ${color.yellow(
+					`Testing ${color.yellow(PACKAGES.get.length)} packages ${color.bold('failed')} in ${color.yellow(
 						TIME.stop()
 					)}\n`
 				);
 			} else {
 				log.success(
-					`Testing ${color.yellow(PACKAGES.get.length)} packages passed in ${color.yellow(
+					`Testing ${color.yellow(PACKAGES.get.length)} packages ${color.bold('passed')} in ${color.yellow(
 						TIME.stop()
 					)}\n`
 				);
