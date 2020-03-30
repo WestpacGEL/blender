@@ -84,6 +84,7 @@ function getPackages(cwd = process.cwd()) {
 				);
 			}
 			return {
+				name: pkg.name,
 				path: module,
 				pkg: pkg.blender,
 			};
@@ -91,6 +92,9 @@ function getPackages(cwd = process.cwd()) {
 		.filter((module) => module.pkg); // remove all packages which don't support the blender
 
 	D.log(`getPackages return: "${color.yellow(JSON.stringify(packages))}"`);
+
+	// we need to flag all packages with babel to include them
+	require('@babel/register')({ include: packages.map((pkg) => pkg.path) });
 
 	return packages;
 }

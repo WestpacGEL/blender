@@ -12,7 +12,7 @@ const { color } = require('./color.js');
 const { D } = require('./log.js');
 
 function tester(packages) {
-	D.header('tester');
+	D.header('tester', { packages });
 	const result = {
 		code: 0,
 		errors: [],
@@ -21,13 +21,17 @@ function tester(packages) {
 	LOADING.start = { total: packages.length };
 	packages.map((pkg) => {
 		const parsedPkg = parseComponent({
-			componentPath: path.normalize(`${__dirname}/../tests/mock/recipe1.js`), // pkg.path
+			componentPath: path.normalize(
+				`${__dirname}/../tests/mock/mock-project1/node_modules/@westpac/component1/blender/recipe.js`
+			), // pkg.path
+			componentName: 'AllStyles',
 			brand: SETTINGS.get.brand,
 		});
 		LOADING.tick();
 		// console.log(pkg.pkg.recipe);
 		// console.log(parsedPkg.ids);
 	});
+	LOADING.abort();
 
 	// iterate `ids`
 	// checks if the `id` exists in the css output

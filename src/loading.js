@@ -24,10 +24,8 @@ const LOADING = {
 
 	store: {},
 
-	set start({ total, minTotal }) {
-		this.store.total = total;
-		this.store.current = 0;
-		this.store.minTotal = minTotal ? minTotal : this.const.minTotal;
+	set start({ total, ...options }) {
+		this.store = { ...this.const, ...options, total, current: 0 };
 		this.display(true);
 	},
 
@@ -51,18 +49,18 @@ const LOADING = {
 			const percentage = String(Math.floor((this.store.current / this.store.total) * 100));
 			const width =
 				winSize.width -
-				this.const.left.length -
+				this.store.left.length -
 				bufferLeft.length -
 				bufferRight -
-				this.const.right.length;
+				this.store.right.length;
 			const segment = width / this.store.total;
 			const current = this.store.current > 0 ? Math.floor(segment * this.store.current) : 0;
 
 			process.stdout.write(
 				bufferLeft + // some space for breathing
-				this.const.left +
-				(current > 0 ? this.const.done.repeat(current) : '').padEnd(width, this.const.todo) + // the indicator bar
-				this.const.right +
+				this.store.left +
+				(current > 0 ? this.store.done.repeat(current) : '').padEnd(width, this.store.todo) + // the indicator bar
+				this.store.right +
 				' ' + // some space for breathing
 				percentage.padStart(3, ' ') + // the percentages
 					'%' // I have to add these comments because "prettier" is really "uglier"
