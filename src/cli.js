@@ -74,6 +74,12 @@ async function cli() {
 	// run tester
 	if (SETTINGS.get.test) {
 		const result = tester(PACKAGES.get);
+		if (result.errors) {
+			result.errors.map((error) => {
+				log.error(error);
+			});
+		}
+
 		exitHandler(result.code);
 	}
 
@@ -149,7 +155,7 @@ function exitHandler(exiting, error, debug = DEBUG) {
 	}
 
 	if (debug.errors) {
-		console.log();
+		log.error(`Blender stopped after ${color.yellow(TIME.stop())}\n`);
 	} else {
 		const packages = PACKAGES.get.length;
 
