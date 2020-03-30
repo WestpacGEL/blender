@@ -137,7 +137,7 @@ blender -t -b WBC --output path/to/all --output-css path/to/css --output-js path
                  │               └───────────┘                │
                  ▼                                            ▼
 ┌────────────────────────────────┐           ┌────────────────────────────────┐
-│             Tester             │           │            Blender             │
+│             Tester             │           │           Generator             │
 │ ┌────────────────────────────┐ │           │ ┌────────────────────────────┐ │
 │ │        modules loop        │ │           │ │      get core styles       │ │
 │ │                            │ │           │ └────────────────────────────┘ │
