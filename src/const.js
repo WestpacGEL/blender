@@ -11,6 +11,13 @@ const { color } = require('./color.js');
  * @type {Object}
  */
 const CLIOPTIONS = {
+	test: {
+		description: 'Run the blender in test mode',
+		example: 'blender -t',
+		flag: 't',
+		type: 'boolean',
+		default: false,
+	},
 	brand: {
 		description: 'Specify the brand you want to blend',
 		example: 'blender -b WBC',
@@ -101,10 +108,16 @@ const CLIOPTIONS = {
 	'tokens-format': {
 		description: 'Specify what format the tokens should be in',
 		example: 'blender -t json',
-		flag: 't',
+		flag: 'f',
 		type: 'string',
 		arguments: ['json', 'less', 'sass'],
 		default: 'json',
+	},
+	cwd: {
+		description: 'Specify the current working directory',
+		example: 'blender -C path/to/cwd',
+		flag: 'C',
+		type: 'string',
 	},
 	debug: {
 		description: 'Tell the blender to go into debug mode',

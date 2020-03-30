@@ -1,26 +1,34 @@
 /**
  * All functions for logging to the console
  *
- * DEBUG - DEBUG object for tracking debug mode, level and messages
- * D     - Debugging prettiness
- * log   - Logging prettiness
+ * DEBUGdefaults - The DEBUG default values for the store
+ * DEBUG         - DEBUG object for tracking debug mode, level, messages etc
+ * D             - Debugging prettiness
+ * log           - Logging prettiness
  **/
 const { color } = require('./color.js');
 
 /**
- * DEBUG object for tracking debug mode, level and messages
+ * The DEBUG default values for the store
+ *
+ * @type {Object}
+ */
+const DEBUGdefaults = {
+	mode: 'cli',
+	enabled: false,
+	errors: 0,
+	messages: [],
+	set: false,
+	buffer: [],
+};
+
+/**
+ * DEBUG object for tracking debug mode, level, messages etc
  *
  * @type {Object}
  */
 const DEBUG = {
-	store: {
-		mode: 'cli',
-		enabled: false,
-		errors: 0,
-		messages: [],
-		set: false,
-		buffer: [],
-	},
+	store: { ...DEBUGdefaults },
 
 	set mode(value) {
 		this.store.mode = value;
@@ -65,6 +73,10 @@ const DEBUG = {
 	get buffer() {
 		return this.store.buffer;
 	},
+
+	clean() {
+		this.store = DEBUGdefaults;
+	},
 };
 
 /**
@@ -74,10 +86,13 @@ const DEBUG = {
  */
 const D = {
 	output(text, debug) {
+		// TODO add messages so error logs contain debug infos
 		if (debug.set && debug.buffer.length && debug.enabled) {
 			console.log(debug.buffer.join('\n'));
 			debug.buffer = false;
-		} else if (!debug.set) {
+		}
+
+		if (!debug.set) {
 			debug.buffer = text;
 		} else if (debug.enabled) {
 			console.log(text);
@@ -88,15 +103,17 @@ const D = {
 	 * Log a header for a function call
 	 *
 	 * @param  {string}  name  - The name of the function
-	 * @param  {array}   args  - Arguments this function may have taken
+	 * @param  {object}  args  - Arguments this function may have taken
 	 * @param  {boolean} debug - Global debug mode on/off switch
 	 */
-	header(name, args = [], debug = DEBUG) {
+	header(name, args, debug = DEBUG) {
 		DEBUG.messages =
 			`${DEBUG.messages.length > 0 ? '\n\n' : ''}   ===== RUNNING "${name}" =====\n` +
-			`${JSON.stringify(args)}`;
+			`${args ? JSON.stringify(args) : ''}`;
 		this.output(
-			`\n===== RUNNING "${color.bold(name)}" =====\n${color.green(JSON.stringify(args))}`,
+			`\n===== RUNNING "${color.bold(name)}" =====${
+				args ? `\n${color.cyan(JSON.stringify(args))}` : ''
+			}`,
 			debug
 		);
 	},
@@ -149,7 +166,7 @@ const log = {
 	 */
 	info: (text) => {
 		if (DEBUG.mode === 'cli') {
-			console.info(`💡  ${text}`);
+			console.info(`💡  ${color.gray(text)}`);
 		}
 	},
 
