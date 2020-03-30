@@ -41,9 +41,9 @@ function tester(packages) {
 			result.errors.push(
 				`The package ${color.yellow(
 					thisPackage.name
-				)} included labels that can't be made human readable: "${color.yellow(
-					idResult.ids.join(', ')
-				)}"`
+				)} included labels that can't be made human readable:\n    ${color.yellow(
+					idResult.ids.join('\n    ')
+				)}`
 			);
 		}
 
