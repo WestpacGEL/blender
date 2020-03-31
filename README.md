@@ -19,57 +19,23 @@
 | `nuke`              | Remove all artifacts from including `node_modules` folder and lock files                  |
 | `fresh`             | Run `nuke` and `yarn` in sequence                                                         |
 
-## TODO
+## CLI
 
-- test script:
-- iterates the `ids`
-- checks if the `id` exists in the css output
-- checks if hash is different for same label
+You can run the blender as a cli tool.
+First install it via npm:
 
-```
-{
-	ids: [
-		"1jr47et",       // ignored cause it doesn't exists in css output
-		"dj1fv6",        // ignored cause it doesn't exists in css output
-		"vctdvy-alert",
-		"epbyb1-thing",  // found bug
-		"x1b3bk-thing",  // because these two have same label but different hash
-		"7qw58u-foo",
-		"1sa041k-bar",
-	],
-	css: "...",
-	html: "..."
-}
+```sh
+npm i -g @westpac/blender
 ```
 
-- blender script - looks into `package.json` for settings and merges them with cli settings
+Then you can run the `blender` command.
 
-```
-blender: {
-  cwd: 'path/to/cwd',
-  test: false,                       // run the blender test
-  scope: '@westpac',
-  output: 'path/to/all',             // will put all files in the same folder
-  outputCss: 'path/to/css',
-  outputJs: 'path/to/js',
-  outputHtml: 'path/to/html',
-  outputToken: 'path/to/token',
-  outputZip: true,
-  include: [                         // whitelist
-    '@westpac/button',
-    '@westpac/core'
-  ],
-  exclude: ['@westpac/tabcordion'],  // blacklist
-  prettify: true,
-  modules: true,
-  brand: 'WBC',
-  includeJquery: true,
-  versionInClass: true,
-  tokensFormat: 'less'
-}
+```sh
+cd path/to/my/project
+blender
 ```
 
-CLI options:
+The blender comes with the following settings:
 
 ```sh
 blender
@@ -81,6 +47,7 @@ blender
 	--output-html path/to/html
 	--output-token path/to/token
 	--output-zip
+	-f less                               # --tokens-format
 	-s "@westpac"                         # --scope
 	-i "@westpac/button" "@westpac/alert" # --include
 	-x "@westpac/button" "@westpac/alert" # --exclude
@@ -89,34 +56,67 @@ blender
 	-j                                    # --include-jquery
 	-m                                    # --modules
 	-c                                    # --version-in-class
-	-f less                               # --tokens-format
 	-d                                    # --debug
 	-v                                    # --version
 	-h                                    # --help
 ```
 
-An example would be:
+An example of running the blender with all flags would be:
 
 ```sh
 blender -t -b WBC --output path/to/all --output-css path/to/css --output-js path/to/js --output-html path/to/html --output-token path/to/token --output-zip -s "@westpac" --include "@westpac/button" "@westpac/core" -x "@westpac/tabcordion" -pjmcf less -dvh
 ```
 
-- iterates over each component (https://babeljs.io/docs/en/babel-register/)
-- generates the critical styles from the recipe file (includes all variations of the component)
-- generates the html from the template (includes only those that go into docs)
-- takes ids
-- removes hashes and `css-` prefix
-- adds package version
-- build html file with example codes for each component (a file per component plus an index file)
-- build css file
-- separate core
-- export js file for all tokens
-- remove all core css from each component
-- add core as separate thing on top
-- build js file (concat)
-- optionally include jquery file
-- zip it all up
-- profit
+_(💡  Note that you can combine boolean flags together: `blender -pmj` is the same as `blender -p -m -j`)_
+
+## API
+
+Running the tester programmatically is possible via node:
+
+```js
+const blender = require('@westopac/blender');
+
+const result = await blender({
+  cwd: 'path/to/cwd',
+  test: false,
+  scope: '@westpac',
+  output: 'path/to/all',
+  outputCss: 'path/to/css',
+  outputJs: 'path/to/js',
+  outputHtml: 'path/to/html',
+  outputToken: 'path/to/token',
+  outputZip: true,
+  tokensFormat: 'less',
+  include: [
+    '@westpac/button',
+    '@westpac/core'
+  ],
+  exclude: ['@westpac/tabcordion'],
+  prettify: true,
+  modules: true,
+  brand: 'WBC',
+  includeJquery: true,
+  versionInClass: true,
+});
+```
+
+
+## Tester
+
+The tester checked labels created by emotion for any hashes that can't be removed.
+If the tester finds labels have the same label but a different hash we can't remove the hashes easily and make the classes readable. See below example.
+
+```
+[
+	"1jr47et",       // ignored cause it doesn't exists in css output
+	"vctdvy-alert",
+	"epbyb1-thing",  // found bug
+	"7qw58u-foo",
+	"x1b3bk-thing",  // because these two have same label but different hash
+	"1sa041k-bar",
+],
+```
+
 
 ## Arch
 
