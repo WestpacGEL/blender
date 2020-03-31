@@ -1,8 +1,8 @@
 /**
  * All functions for around packages
  *
- * PACKAGES      - The packages store
- * getComponents - Handle exiting of program
+ * PACKAGES    - The packages store
+ * getPackages - Retrieve packages from the node_modules folder
  **/
 const path = require('path');
 const fs = require('fs');
@@ -26,6 +26,10 @@ const PACKAGES = {
 	set set(settings) {
 		this.store = settings;
 	},
+
+	clean() {
+		this.store = [];
+	},
 };
 
 /**
@@ -34,34 +38,42 @@ const PACKAGES = {
  * @return {array} - An array of objects with package data
  */
 function getPackages(cwd = process.cwd()) {
-	D.header('getComponents', { cwd });
+	D.header('getPackages', { cwd });
 
 	const nodeModulesPath = path.normalize(`${cwd}/node_modules/`);
 
-	const inScope = fs
-		.readdirSync(path.normalize(`${nodeModulesPath}/${SETTINGS.get.scope}`), {
-			withFileTypes: true,
-		}) // read all items in that folder
-		.filter((item) => !item.name.startsWith('.') && item.isDirectory()) // filter out dot files and non-folder
-		.map((folder) => path.normalize(`${nodeModulesPath}/${SETTINGS.get.scope}/${folder.name}`)); // add absolute path
+	let inScope = [];
+	try {
+		inScope = fs
+			.readdirSync(path.normalize(`${nodeModulesPath}/${SETTINGS.get.scope}`), {
+				withFileTypes: true,
+			}) // read all items in that folder
+			.filter((item) => !item.name.startsWith('.') && item.isDirectory()) // filter out dot files and non-folder
+			.map((folder) => path.normalize(`${nodeModulesPath}/${SETTINGS.get.scope}/${folder.name}`)); // add absolute path
+	} catch (error) {
+		if (error.code === 'ENOENT') {
+			D.log('No scope found');
+			D.log(error);
+		} else {
+			D.error(
+				`Something went wrong when trying to read packages at ${color.yellow(
+					`${nodeModulesPath}/${SETTINGS.get.scope}`
+				)}`
+			);
+			D.error(error);
+		}
+	}
 
 	D.log(`Retrived in scope packages: "${color.yellow(JSON.stringify(inScope))}"`);
 
-	const includes = (Array.isArray(SETTINGS.get.include)
-		? SETTINGS.get.include
-		: [SETTINGS.get.include]
-	).map((module) => path.normalize(`${nodeModulesPath}/${module}`));
+	const includes = SETTINGS.get.include.map((module) =>
+		path.normalize(`${nodeModulesPath}/${module}`)
+	);
 
 	D.log(`Retrived in included packages: "${color.yellow(JSON.stringify(includes))}"`);
 
 	const packages = [...inScope, ...includes] // merging both sets
-		.filter(
-			(module) =>
-				!(Array.isArray(SETTINGS.get.exclude)
-					? SETTINGS.get.exclude
-					: [SETTINGS.get.exclude]
-				).includes(module.replace(nodeModulesPath, ''))
-		) // filtered out all excludes
+		.filter((module) => !SETTINGS.get.exclude.includes(module.replace(nodeModulesPath, ''))) // filtered out all excludes
 		.map((module) => {
 			let pkg = { blender: false };
 			try {
@@ -72,13 +84,18 @@ function getPackages(cwd = process.cwd()) {
 				);
 			}
 			return {
+				name: pkg.name,
+				version: pkg.version,
 				path: module,
 				pkg: pkg.blender,
 			};
 		}) // added each package.json blender section
-		.filter((module) => module.pkg); // remove all packages which don't support the blender
+		.filter((module) => module.pkg && module.pkg.recipe); // remove all packages which don't support the blender
 
-	D.log(`getComponents return: "${color.yellow(JSON.stringify(packages))}"`);
+	D.log(`getPackages return: "${color.yellow(JSON.stringify(packages))}"`);
+
+	// we need to flag all packages with babel to include them
+	require('@babel/register')({ only: packages.map((pkg) => `${pkg.path}`) });
 
 	return packages;
 }

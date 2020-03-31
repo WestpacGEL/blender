@@ -9,14 +9,15 @@ const cfonts = require('cfonts');
 const path = require('path');
 const fs = require('fs');
 
-const { SETTINGS, getCliArgs, checkCliInput, getSettings } = require('./settings.js');
+const { SETTINGS, getCliArgs, checkInput, getSettings } = require('./settings.js');
 const { PACKAGES, getPackages } = require('./packages.js');
-const { parseComponent } = require('./parseCss.js');
 const { stripColor, color } = require('./color.js');
 const { version } = require('../package.json');
+const { DEBUG, D, log } = require('./log.js');
 const { CLIOPTIONS } = require('./const.js');
-const { DEBUG, log } = require('./log.js');
-const { time } = require('./time.js');
+const { tester } = require('./tester.js');
+const { clean } = require('./clean.js');
+const { TIME } = require('./time.js');
 
 /**
  * The CLI function
@@ -24,11 +25,30 @@ const { time } = require('./time.js');
  * @return {void}
  */
 async function cli() {
-	time.start();
+	TIME.start(); // start time keeping
+	D.header('cli');
 
+	// parse and check cli args
 	const cliArgs = getCliArgs();
-	const isGoodHuman = checkCliInput(cliArgs);
+	const isGoodHuman = checkInput(cliArgs);
+	SETTINGS.set = getSettings(cliArgs);
+	DEBUG.enabled = SETTINGS.get.debug;
 
+	// display version
+	if (SETTINGS.get.version) {
+		console.log(`v${version}`);
+		process.exit();
+	}
+
+	// display help
+	if (SETTINGS.get.help) {
+		help();
+		process.exit();
+	}
+
+	log.start(`Blender v${version}`);
+
+	// show error messages from arg parsing
 	if (isGoodHuman.pass === false) {
 		isGoodHuman.errors.map((error) => {
 			log.error(error);
@@ -36,28 +56,40 @@ async function cli() {
 		exitHandler(1);
 	}
 
-	SETTINGS.set = getSettings(cliArgs);
-	DEBUG.enabled = SETTINGS.get.debug;
-
-	if (SETTINGS.get.version) {
-		console.log(`v${version}`);
-		process.exit();
+	// show warnings from arg parsing
+	if (isGoodHuman.warnings) {
+		isGoodHuman.warnings.map((warning) => {
+			log.warn(warning);
+		});
 	}
 
-	if (SETTINGS.get.help) {
-		help();
-		process.exit();
+	// report on cwd
+	const cwd = SETTINGS.get.cwd;
+	log.info(`Running in ${color.yellow(cwd)}`);
+	D.log(`Running in ${color.yellow(cwd)}`);
+
+	// get all packages
+	PACKAGES.set = getPackages(cwd);
+
+	// run tester
+	if (SETTINGS.get.test) {
+		const result = tester(PACKAGES.get);
+		if (result.errors) {
+			result.messages.map((error) => {
+				log.error(error);
+			});
+		}
+
+		exitHandler(result.code);
 	}
 
-	log.start(`Blender v${version} starting`);
-	PACKAGES.set = getPackages(path.normalize(`${__dirname}/../tests/mock/mock-project1/`));
+	// run blender file generator
 
 	// // just showing that we can run the parser, will go elsewhere
 	// const thing = await parseComponent({
 	// 	componentPath: path.normalize(`${__dirname}/../tests/mock/recipe1.js`),
 	// 	brand: {},
 	// });
-
 	// console.log(thing);
 
 	['exit', 'SIGINT', 'SIGUSR1', 'SIGUSR2', 'uncaughtException', 'SIGTERM'].forEach((eventType) => {
@@ -107,7 +139,7 @@ function exitHandler(exiting, error, debug = DEBUG) {
 			debug.messages.join('\n') +
 			`\n\n` +
 			`Errors: ${debug.errors}\n` +
-			`Duration: ${time.stop()}\n`;
+			`Duration: ${TIME.stop()}\n`;
 		const logPath = path.normalize(`${process.cwd()}/blender-error.log`);
 
 		try {
@@ -123,16 +155,40 @@ function exitHandler(exiting, error, debug = DEBUG) {
 	}
 
 	if (debug.errors) {
-		console.log();
+		log.error(`Blender stopped after ${color.yellow(TIME.stop())}\n`);
 	} else {
-		log.success(
-			`Successfully blended ${color.yellow(PACKAGES.get.length)} packages in ${color.yellow(
-				time.stop()
-			)}\n`
-		);
+		const packages = PACKAGES.get.length;
+
+		if (SETTINGS.get.test) {
+			if (PACKAGES.get.length === 0) {
+				log.success(`No packages were found to be tested in ${color.yellow(TIME.stop())}\n`);
+			} else if (exiting > 0) {
+				log.error(
+					`Testing ${color.yellow(PACKAGES.get.length)} packages ${color.bold(
+						'failed'
+					)} in ${color.yellow(TIME.stop())}\n`
+				);
+			} else {
+				log.success(
+					`Testing ${color.yellow(PACKAGES.get.length)} packages ${color.bold(
+						'passed'
+					)} in ${color.yellow(TIME.stop())}\n`
+				);
+			}
+		} else if (packages > 0) {
+			log.success(
+				`Successfully blended ${color.yellow(PACKAGES.get.length)} packages in ${color.yellow(
+					TIME.stop()
+				)}\n`
+			);
+		} else {
+			log.success(`No packages were found in ${color.yellow(TIME.stop())}\n`);
+		}
 	}
 
-	process.exit(exiting ? 0 : exiting);
+	clean();
+
+	process.exit(exiting);
 }
 
 module.exports = exports = {

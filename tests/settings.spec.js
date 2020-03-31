@@ -3,11 +3,12 @@
  *
  * getSettings
  * getCliArgs
+ * checkInput
  * SETTINGS
  **/
 const path = require('path');
 
-const { getSettings, SETTINGS, getCliArgs } = require('../src/settings.js');
+const { getSettings, getCliArgs, checkInput, SETTINGS } = require('../src/settings.js');
 
 /**
  * getSettings
@@ -24,7 +25,7 @@ describe('getSettings', () => {
 
 		const result = getSettings(cliArgs, cwd, options);
 
-		expect(result).toStrictEqual({});
+		expect(result).toMatchObject({});
 	});
 
 	test('Get default settings when nothing else is set', () => {
@@ -45,7 +46,7 @@ describe('getSettings', () => {
 
 		const result = getSettings(cliArgs, cwd, options);
 
-		expect(result).toStrictEqual({ flag1: 'foo', flag3: false });
+		expect(result).toMatchObject({ flag1: 'foo', flag3: false });
 	});
 
 	test('Get cli settings when nothing else is set', () => {
@@ -70,7 +71,7 @@ describe('getSettings', () => {
 
 		const result = getSettings(cliArgs, cwd, options);
 
-		expect(result).toStrictEqual({
+		expect(result).toMatchObject({
 			flag1: ['flag1Value1', 'flag1Value2', 'flag1Value3'],
 			flag3: true,
 			flag4: true,
@@ -85,7 +86,7 @@ describe('getSettings', () => {
 
 		const result = getSettings(cliArgs, cwd, options);
 
-		expect(result).toStrictEqual({ flag1: 'value for flag1', flag2: true, flag3: false });
+		expect(result).toMatchObject({ flag1: 'value for flag1', flag2: true, flag3: false });
 	});
 
 	test('Merge package settings over defaults', () => {
@@ -105,7 +106,7 @@ describe('getSettings', () => {
 
 		const result = getSettings(cliArgs, cwd, options);
 
-		expect(result).toStrictEqual({ flag1: 'value for flag1', flag2: true, flag3: false });
+		expect(result).toMatchObject({ flag1: 'value for flag1', flag2: true, flag3: false });
 	});
 
 	test('Merge cli settings over package settings over defaults', () => {
@@ -128,7 +129,7 @@ describe('getSettings', () => {
 
 		const result = getSettings(cliArgs, cwd, options);
 
-		expect(result).toStrictEqual({
+		expect(result).toMatchObject({
 			flag1: ['flag1Value1', 'flag1Value2', 'flag1Value3'],
 			flag2: true,
 			flag3: true,
@@ -150,7 +151,7 @@ describe('getSettings', () => {
 
 		const result = getSettings(cliArgs, cwd, options);
 
-		expect(result).toStrictEqual({
+		expect(result).toMatchObject({
 			camelCase: 'thing',
 			flag1: 'value for flag1',
 			flag2: true,
@@ -172,7 +173,7 @@ describe('getSettings', () => {
 
 		const result = getSettings(cliArgs, cwd, options);
 
-		expect(result).toStrictEqual({
+		expect(result).toMatchObject({
 			'--camel-case': 'thing',
 			flag1: 'value for flag1',
 			flag2: true,
@@ -189,7 +190,7 @@ describe('getSettings', () => {
 
 		const result = getSettings(cliArgs, cwd, options);
 
-		expect(result).toStrictEqual({});
+		expect(result).toMatchObject({});
 		expect(console.info.mock.calls.length).toBe(1);
 		expect(console.info.mock.calls[0][0].includes('found')).toBeTruthy();
 		expect(console.info.mock.calls[0][0].includes('package.json')).toBeTruthy();
@@ -213,7 +214,7 @@ describe('getSettings', () => {
 
 		const result = getSettings(cliArgs, cwd, options);
 
-		expect(result).toStrictEqual({
+		expect(result).toMatchObject({
 			flag1: 'value for flag1',
 			flag2: true,
 			flag3: true,
@@ -309,5 +310,73 @@ describe('SETTINGS', () => {
 		SETTINGS.set = settings;
 
 		expect(SETTINGS.get).toStrictEqual(settings);
+	});
+});
+
+/**
+ * SETTINGS
+ */
+describe('checkInput', () => {
+	test('Arguments are validated correctly', () => {
+		const options = {
+			flag1: {
+				type: 'string',
+				arguments: ['dominik', 'thomas'],
+			},
+			flag2: {
+				type: 'string',
+				arguments: ['dominik', 'thomas'],
+			},
+			flag3: {
+				type: 'string',
+				arguments: ['dominik', 'thomas'],
+			},
+		};
+
+		expect(checkInput({ flag1: 'dominik' }, options).pass).toBe(true);
+		expect(checkInput({ flag2: 'alex' }, options).pass).toBe(false);
+		expect(checkInput({ flag3: true }, options).pass).toBe(false);
+	});
+
+	test('String type is validated correctly', () => {
+		const options = {
+			flag1: {
+				type: 'string',
+			},
+			flag2: {
+				type: 'string',
+			},
+		};
+
+		expect(checkInput({ flag1: 'dominik' }, options).pass).toBe(true);
+		expect(checkInput({ flag2: true }, options).pass).toBe(false);
+	});
+
+	test('Array type is validated correctly', () => {
+		const options = {
+			flag1: {
+				type: 'array',
+			},
+			flag2: {
+				type: 'array',
+			},
+		};
+
+		expect(checkInput({ flag1: ['dominik', 'thomas'] }, options).pass).toBe(true);
+		expect(checkInput({ flag2: '' }, options).pass).toBe(false);
+	});
+
+	test('Invalid type is validated correctly', () => {
+		const options = {
+			flag1: {
+				type: 'dominik',
+			},
+			flag2: {
+				type: 'thomas',
+			},
+		};
+
+		expect(checkInput({ flag1: 'mock' }, options).pass).toBe(false);
+		expect(checkInput({ flag2: 'mock' }, options).pass).toBe(false);
 	});
 });

@@ -21,7 +21,10 @@
 
 ## TODO
 
-- test script: - iterates the `ids` - checks if the `id` exists in the css output - checks if hash is different for same label
+- test script:
+- iterates the `ids`
+- checks if the `id` exists in the css output
+- checks if hash is different for same label
 
 ```
 {
@@ -43,6 +46,8 @@
 
 ```
 blender: {
+  cwd: 'path/to/cwd',
+  test: false,                       // run the blender test
   scope: '@westpac',
   output: 'path/to/all',             // will put all files in the same folder
   outputCss: 'path/to/css',
@@ -68,6 +73,7 @@ CLI options:
 
 ```sh
 blender
+	-t                                    # --test
 	-b WBC                                # --brand
 	-o path/to                            # --output
 	--output-css path/to/css
@@ -78,11 +84,12 @@ blender
 	-s "@westpac"                         # --scope
 	-i "@westpac/button" "@westpac/alert" # --include
 	-x "@westpac/button" "@westpac/alert" # --exclude
+	-C path/to/cwd                        # --cwd
 	-p                                    # --prettify
 	-j                                    # --include-jquery
 	-m                                    # --modules
 	-c                                    # --version-in-class
-	-t less                               # --tokens-format
+	-f less                               # --tokens-format
 	-d                                    # --debug
 	-v                                    # --version
 	-h                                    # --help
@@ -91,7 +98,7 @@ blender
 An example would be:
 
 ```sh
-blender -b WBC --output path/to/all --output-css path/to/css --output-js path/to/js --output-html path/to/html --output-token path/to/token --output-zip -s "@westpac" --include "@westpac/button" "@westpac/core" -x "@westpac/tabcordion" -pjmct less -dvh
+blender -t -b WBC --output path/to/all --output-css path/to/css --output-js path/to/js --output-html path/to/html --output-token path/to/token --output-zip -s "@westpac" --include "@westpac/button" "@westpac/core" -x "@westpac/tabcordion" -pjmcf less -dvh
 ```
 
 - iterates over each component (https://babeljs.io/docs/en/babel-register/)
@@ -130,7 +137,7 @@ blender -b WBC --output path/to/all --output-css path/to/css --output-js path/to
                  │               └───────────┘                │
                  ▼                                            ▼
 ┌────────────────────────────────┐           ┌────────────────────────────────┐
-│             Tester             │           │            Blender             │
+│             Tester             │           │           Generator             │
 │ ┌────────────────────────────┐ │           │ ┌────────────────────────────┐ │
 │ │        modules loop        │ │           │ │      get core styles       │ │
 │ │                            │ │           │ └────────────────────────────┘ │
