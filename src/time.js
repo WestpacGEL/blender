@@ -21,7 +21,12 @@ const TIME = {
 
 	stop() {
 		const elapsedTime = process.hrtime(this.store.time);
+		this.clean();
 		return `${convertHrtime(elapsedTime)}s`;
+	},
+
+	hasStopped() {
+		return this.store.time.length === 0;
 	},
 
 	clean() {

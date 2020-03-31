@@ -85,16 +85,17 @@ function getPackages(cwd = process.cwd()) {
 			}
 			return {
 				name: pkg.name,
+				version: pkg.version,
 				path: module,
 				pkg: pkg.blender,
 			};
 		}) // added each package.json blender section
-		.filter((module) => module.pkg); // remove all packages which don't support the blender
+		.filter((module) => module.pkg && module.pkg.recipe); // remove all packages which don't support the blender
 
 	D.log(`getPackages return: "${color.yellow(JSON.stringify(packages))}"`);
 
 	// we need to flag all packages with babel to include them
-	require('@babel/register')({ include: packages.map((pkg) => pkg.path) });
+	require('@babel/register')({ only: packages.map((pkg) => `${pkg.path}`) });
 
 	return packages;
 }

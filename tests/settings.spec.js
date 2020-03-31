@@ -3,11 +3,12 @@
  *
  * getSettings
  * getCliArgs
+ * checkInput
  * SETTINGS
  **/
 const path = require('path');
 
-const { getSettings, SETTINGS, getCliArgs } = require('../src/settings.js');
+const { getSettings, getCliArgs, checkInput, SETTINGS } = require('../src/settings.js');
 
 /**
  * getSettings
@@ -309,5 +310,73 @@ describe('SETTINGS', () => {
 		SETTINGS.set = settings;
 
 		expect(SETTINGS.get).toStrictEqual(settings);
+	});
+});
+
+/**
+ * SETTINGS
+ */
+describe('checkInput', () => {
+	test('Arguments are validated correctly', () => {
+		const options = {
+			flag1: {
+				type: 'string',
+				arguments: ['dominik', 'thomas'],
+			},
+			flag2: {
+				type: 'string',
+				arguments: ['dominik', 'thomas'],
+			},
+			flag3: {
+				type: 'string',
+				arguments: ['dominik', 'thomas'],
+			},
+		};
+
+		expect(checkInput({ flag1: 'dominik' }, options).pass).toBe(true);
+		expect(checkInput({ flag2: 'alex' }, options).pass).toBe(false);
+		expect(checkInput({ flag3: true }, options).pass).toBe(false);
+	});
+
+	test('String type is validated correctly', () => {
+		const options = {
+			flag1: {
+				type: 'string',
+			},
+			flag2: {
+				type: 'string',
+			},
+		};
+
+		expect(checkInput({ flag1: 'dominik' }, options).pass).toBe(true);
+		expect(checkInput({ flag2: true }, options).pass).toBe(false);
+	});
+
+	test('Array type is validated correctly', () => {
+		const options = {
+			flag1: {
+				type: 'array',
+			},
+			flag2: {
+				type: 'array',
+			},
+		};
+
+		expect(checkInput({ flag1: ['dominik', 'thomas'] }, options).pass).toBe(true);
+		expect(checkInput({ flag2: '' }, options).pass).toBe(false);
+	});
+
+	test('Invalid type is validated correctly', () => {
+		const options = {
+			flag1: {
+				type: 'dominik',
+			},
+			flag2: {
+				type: 'thomas',
+			},
+		};
+
+		expect(checkInput({ flag1: 'mock' }, options).pass).toBe(false);
+		expect(checkInput({ flag2: 'mock' }, options).pass).toBe(false);
 	});
 });
