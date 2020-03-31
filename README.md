@@ -67,7 +67,7 @@ An example of running the blender with all flags would be:
 blender -t -b WBC --output path/to/all --output-css path/to/css --output-js path/to/js --output-html path/to/html --output-token path/to/token --output-zip -s "@westpac" --include "@westpac/button" "@westpac/core" -x "@westpac/tabcordion" -pjmcf less -dvh
 ```
 
-_(💡  Note that you can combine boolean flags together: `blender -pmj` is the same as `blender -p -m -j`)_
+_(💡 Note that you can combine boolean flags together: `blender -pmj` is the same as `blender -p -m -j`)_
 
 ## API
 
@@ -77,29 +77,25 @@ Running the tester programmatically is possible via node:
 const blender = require('@westopac/blender');
 
 const result = await blender({
-  cwd: 'path/to/cwd',
-  test: false,
-  scope: '@westpac',
-  output: 'path/to/all',
-  outputCss: 'path/to/css',
-  outputJs: 'path/to/js',
-  outputHtml: 'path/to/html',
-  outputToken: 'path/to/token',
-  outputZip: true,
-  tokensFormat: 'less',
-  include: [
-    '@westpac/button',
-    '@westpac/core'
-  ],
-  exclude: ['@westpac/tabcordion'],
-  prettify: true,
-  modules: true,
-  brand: 'WBC',
-  includeJquery: true,
-  versionInClass: true,
+	cwd: 'path/to/cwd',
+	test: false,
+	scope: '@westpac',
+	output: 'path/to/all',
+	outputCss: 'path/to/css',
+	outputJs: 'path/to/js',
+	outputHtml: 'path/to/html',
+	outputToken: 'path/to/token',
+	outputZip: true,
+	tokensFormat: 'less',
+	include: ['@westpac/button', '@westpac/core'],
+	exclude: ['@westpac/tabcordion'],
+	prettify: true,
+	modules: true,
+	brand: 'WBC',
+	includeJquery: true,
+	versionInClass: true,
 });
 ```
-
 
 ## Tester
 
@@ -116,7 +112,6 @@ If the tester finds labels have the same label but a different hash we can't rem
 	"1sa041k-bar",
 ],
 ```
-
 
 ## Arch
 
