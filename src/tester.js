@@ -1,7 +1,9 @@
 /**
  * All functions for the blender tester
  *
- * tester - TODO
+ * tester      - The tester function
+ * getValidIds - Filter out all ids whcih have not been used in the css output
+ * checkIds    - Check ids for duplication
  **/
 const path = require('path');
 
@@ -11,6 +13,13 @@ const { LOADING } = require('./loading.js');
 const { color } = require('./color.js');
 const { D } = require('./log.js');
 
+/**
+ * The tester function
+ *
+ * @param  {array}  packages - An array of all packages
+ *
+ * @return {object}          - An object with return code and possible errors
+ */
 function tester(packages) {
 	D.header('tester', { packages });
 	const result = {
