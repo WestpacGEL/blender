@@ -89,7 +89,7 @@ async function cli() {
 		process.exit(result.code);
 	}
 
-	const result = generator();
+	const result = generator(PACKAGES.get);
 	if (result.messages) {
 		result.messages.map((error) => {
 			log.error(error);
