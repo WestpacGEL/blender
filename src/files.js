@@ -33,7 +33,7 @@ const FILES = {
 };
 
 function sleep(millis) {
-	return new Promise(resolve => setTimeout(resolve, millis));
+	return new Promise((resolve) => setTimeout(resolve, millis));
 }
 
 FILES.add = { name: 'thing1.js', path: 'path/to', content: "alert('Hello World');" };
@@ -209,7 +209,7 @@ async function saveFiles() {
 	if (SETTINGS.get.outputZip) {
 		D.log(`Generating zip file`);
 
-		LOADING.start = { total: FILES.get.size };
+		LOADING.start = { left: '  ', total: FILES.get.size };
 
 		// create an archiver instance we can add to if we're zipping the files
 		const output = SETTINGS.get.output ? fs.createWriteStream(__dirname + '/output.zip') : null;
@@ -268,7 +268,7 @@ async function saveFiles() {
 	) {
 		D.log(`Saving files`);
 
-		LOADING.start = { total: FILES.get.size };
+		LOADING.start = { left: '  ', total: FILES.get.size };
 
 		const writeFile = (name, path, content) => {
 			// create directory if it doesn't already exist
@@ -284,7 +284,7 @@ async function saveFiles() {
 			});
 		};
 
-		FILES.get.forEach(async({ name, path, content }) => {
+		FILES.get.forEach(async ({ name, path, content }) => {
 			// save all files to a directory
 			if (SETTINGS.get.output) {
 				writeFile(name, SETTINGS.get.output, content);
@@ -306,12 +306,14 @@ async function saveFiles() {
 				writeFile(name, SETTINGS.get.outputHtml, content);
 			}
 
+			// TODO: Get clarification on this
+			// save tokens
 			// if (SETTINGS.get.outputTokens) {
 			// 	// tokens-format, default as json but can be 'json', 'less', 'sass'
 			// 	writeFile(name, SETTINGS.get.outputHtml, content);
 			// }
 
-			await sleep(1000);
+			await sleep(2000 * Math.random());
 
 			LOADING.tick();
 		});
