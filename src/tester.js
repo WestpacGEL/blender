@@ -16,6 +16,7 @@ function tester(packages) {
 	const result = {
 		code: 0,
 		errors: [],
+		messages: [],
 	};
 
 	LOADING.start = { total: packages.length };
@@ -29,7 +30,11 @@ function tester(packages) {
 		});
 
 		if (parsedPkg.status === 'error') {
-			result.errors.push(parsedPkg.message);
+			result.errors.push({
+				package: thisPackage.name,
+				error: parsedPkg.message,
+			});
+			result.messages.push(parsedPkg.message);
 			result.code = 1;
 		}
 
@@ -38,7 +43,11 @@ function tester(packages) {
 
 		if (idResult.code === 1) {
 			result.code = 1;
-			result.errors.push(
+			result.errors.push({
+				package: thisPackage.name,
+				error: idResult.ids,
+			});
+			result.messages.push(
 				`The package ${color.yellow(
 					thisPackage.name
 				)} included labels that can't be made human readable:\n    ${color.yellow(

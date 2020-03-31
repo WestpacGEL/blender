@@ -14,8 +14,8 @@ const { PACKAGES, getPackages } = require('./packages.js');
 const { stripColor, color } = require('./color.js');
 const { version } = require('../package.json');
 const { DEBUG, D, log } = require('./log.js');
-const { tester } = require('./tester.js');
 const { CLIOPTIONS } = require('./const.js');
+const { tester } = require('./tester.js');
 const { clean } = require('./clean.js');
 const { TIME } = require('./time.js');
 
@@ -75,7 +75,7 @@ async function cli() {
 	if (SETTINGS.get.test) {
 		const result = tester(PACKAGES.get);
 		if (result.errors) {
-			result.errors.map((error) => {
+			result.messages.map((error) => {
 				log.error(error);
 			});
 		}
