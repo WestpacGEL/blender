@@ -23,7 +23,7 @@ const FILES = {
 		this.store.set(`${path}/${name}`, {
 			name,
 			path,
-			...rest
+			...rest,
 		});
 	},
 
@@ -36,46 +36,246 @@ function sleep(millis) {
 	return new Promise((resolve) => setTimeout(resolve, millis));
 }
 
-FILES.add = { name: 'thing1.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
-FILES.add = { name: 'thing2.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
-FILES.add = { name: 'thing3.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
-FILES.add = { name: 'thing4.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
-FILES.add = { name: 'thing5.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
-FILES.add = { name: 'thing6.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
-FILES.add = { name: 'thing7.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
-FILES.add = { name: 'thing8.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
-FILES.add = { name: 'thing9.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
-FILES.add = { name: 'thing10.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
-FILES.add = { name: 'thing11.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
-FILES.add = { name: 'thing12.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
-FILES.add = { name: 'thing13.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
-FILES.add = { name: 'thing14.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
-FILES.add = { name: 'thing15.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
-FILES.add = { name: 'thing16.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
-FILES.add = { name: 'thing17.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
-FILES.add = { name: 'thing18.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
-FILES.add = { name: 'thing19.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
-FILES.add = { name: 'thing20.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
-FILES.add = { name: 'thing21.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
-FILES.add = { name: 'thing22.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
-FILES.add = { name: 'thing23.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
-FILES.add = { name: 'thing24.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
-FILES.add = { name: 'thing25.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
-FILES.add = { name: 'thing26.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
-FILES.add = { name: 'thing27.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
-FILES.add = { name: 'thing28.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
-FILES.add = { name: 'thing29.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
-FILES.add = { name: 'thing30.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
-FILES.add = { name: 'thing31.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
-FILES.add = { name: 'thing32.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
-FILES.add = { name: 'thing33.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
-FILES.add = { name: 'thing34.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
-FILES.add = { name: 'thing35.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
-FILES.add = { name: 'thing36.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
-FILES.add = { name: 'thing37.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
-FILES.add = { name: 'thing38.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
-FILES.add = { name: 'thing39.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
-FILES.add = { name: 'thing40.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
+FILES.add = {
+	name: 'thing1.js',
+	path: 'path/to',
+	content: "alert('Hello World');",
+	category: 'js',
+};
+FILES.add = {
+	name: 'thing2.js',
+	path: 'path/to',
+	content: "alert('Hello World');",
+	category: 'js',
+};
+FILES.add = {
+	name: 'thing3.js',
+	path: 'path/to',
+	content: "alert('Hello World');",
+	category: 'js',
+};
+FILES.add = {
+	name: 'thing4.js',
+	path: 'path/to',
+	content: "alert('Hello World');",
+	category: 'js',
+};
+FILES.add = {
+	name: 'thing5.js',
+	path: 'path/to',
+	content: "alert('Hello World');",
+	category: 'js',
+};
+FILES.add = {
+	name: 'thing6.js',
+	path: 'path/to',
+	content: "alert('Hello World');",
+	category: 'js',
+};
+FILES.add = {
+	name: 'thing7.js',
+	path: 'path/to',
+	content: "alert('Hello World');",
+	category: 'js',
+};
+FILES.add = {
+	name: 'thing8.js',
+	path: 'path/to',
+	content: "alert('Hello World');",
+	category: 'js',
+};
+FILES.add = {
+	name: 'thing9.js',
+	path: 'path/to',
+	content: "alert('Hello World');",
+	category: 'js',
+};
+FILES.add = {
+	name: 'thing10.js',
+	path: 'path/to',
+	content: "alert('Hello World');",
+	category: 'js',
+};
+FILES.add = {
+	name: 'thing11.js',
+	path: 'path/to',
+	content: "alert('Hello World');",
+	category: 'js',
+};
+FILES.add = {
+	name: 'thing12.js',
+	path: 'path/to',
+	content: "alert('Hello World');",
+	category: 'js',
+};
+FILES.add = {
+	name: 'thing13.js',
+	path: 'path/to',
+	content: "alert('Hello World');",
+	category: 'js',
+};
+FILES.add = {
+	name: 'thing14.js',
+	path: 'path/to',
+	content: "alert('Hello World');",
+	category: 'js',
+};
+FILES.add = {
+	name: 'thing15.js',
+	path: 'path/to',
+	content: "alert('Hello World');",
+	category: 'js',
+};
+FILES.add = {
+	name: 'thing16.js',
+	path: 'path/to',
+	content: "alert('Hello World');",
+	category: 'js',
+};
+FILES.add = {
+	name: 'thing17.js',
+	path: 'path/to',
+	content: "alert('Hello World');",
+	category: 'js',
+};
+FILES.add = {
+	name: 'thing18.js',
+	path: 'path/to',
+	content: "alert('Hello World');",
+	category: 'js',
+};
+FILES.add = {
+	name: 'thing19.js',
+	path: 'path/to',
+	content: "alert('Hello World');",
+	category: 'js',
+};
+FILES.add = {
+	name: 'thing20.js',
+	path: 'path/to',
+	content: "alert('Hello World');",
+	category: 'js',
+};
+FILES.add = {
+	name: 'thing21.css',
+	path: 'path/to',
+	content: 'body { background red; }',
+	category: 'css',
+};
+FILES.add = {
+	name: 'thing22.css',
+	path: 'path/to',
+	content: 'body { background red; }',
+	category: 'css',
+};
+FILES.add = {
+	name: 'thing23.css',
+	path: 'path/to',
+	content: 'body { background red; }',
+	category: 'css',
+};
+FILES.add = {
+	name: 'thing24.css',
+	path: 'path/to',
+	content: 'body { background red; }',
+	category: 'css',
+};
+FILES.add = {
+	name: 'thing25.css',
+	path: 'path/to',
+	content: 'body { background red; }',
+	category: 'css',
+};
+FILES.add = {
+	name: 'thing26.css',
+	path: 'path/to',
+	content: 'body { background red; }',
+	category: 'css',
+};
+FILES.add = {
+	name: 'thing27.css',
+	path: 'path/to',
+	content: 'body { background red; }',
+	category: 'css',
+};
+FILES.add = {
+	name: 'thing28.css',
+	path: 'path/to',
+	content: 'body { background red; }',
+	category: 'css',
+};
+FILES.add = {
+	name: 'thing29.css',
+	path: 'path/to',
+	content: 'body { background red; }',
+	category: 'css',
+};
+FILES.add = {
+	name: 'thing30.css',
+	path: 'path/to',
+	content: 'body { background red; }',
+	category: 'css',
+};
+FILES.add = {
+	name: 'thing31.css',
+	path: 'path/to',
+	content: 'body { background red; }',
+	category: 'css',
+};
+FILES.add = {
+	name: 'thing32.css',
+	path: 'path/to',
+	content: 'body { background red; }',
+	category: 'css',
+};
+FILES.add = {
+	name: 'thing33.css',
+	path: 'path/to',
+	content: 'body { background red; }',
+	category: 'css',
+};
+FILES.add = {
+	name: 'thing34.css',
+	path: 'path/to',
+	content: 'body { background red; }',
+	category: 'css',
+};
+FILES.add = {
+	name: 'thing35.css',
+	path: 'path/to',
+	content: 'body { background red; }',
+	category: 'css',
+};
+FILES.add = {
+	name: 'thing36.css',
+	path: 'path/to',
+	content: 'body { background red; }',
+	category: 'css',
+};
+FILES.add = {
+	name: 'thing37.css',
+	path: 'path/to',
+	content: 'body { background red; }',
+	category: 'css',
+};
+FILES.add = {
+	name: 'thing38.css',
+	path: 'path/to',
+	content: 'body { background red; }',
+	category: 'css',
+};
+FILES.add = {
+	name: 'thing39.css',
+	path: 'path/to',
+	content: 'body { background red; }',
+	category: 'css',
+};
+FILES.add = {
+	name: 'thing40.css',
+	path: 'path/to',
+	content: 'body { background red; }',
+	category: 'css',
+};
 FILES.add = {
 	name: 'thing41.html',
 	path: 'path/to',
