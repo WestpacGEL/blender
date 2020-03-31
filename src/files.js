@@ -186,13 +186,13 @@ async function saveFiles() {
 	DEBUG.enabled = true; // SETTINGS.get.debug;
 
 	// testing overrides
-	// SETTINGS.set = { outputZip: true };
+	SETTINGS.set = { outputZip: true };
 	// SETTINGS.set = { output: 'test' };
-	SETTINGS.set = {
-		outputCss: 'test/css',
-		outputJs: 'test/js',
-		outputHtml: 'test/html',
-	};
+	// SETTINGS.set = {
+	// 	outputCss: 'test/css',
+	// 	outputJs: 'test/js',
+	// 	outputHtml: 'test/html',
+	// };
 
 	D.log(`Settings: ${JSON.stringify(SETTINGS.get)}`);
 
@@ -202,10 +202,6 @@ async function saveFiles() {
 	};
 
 	// handle zip files
-	/*
-		output: 'path/to/all' // this writes it to disk, otherwise just returns it, CLI report didn't give it a place so it's gone now
-		outputZip: true
-	*/
 	if (SETTINGS.get.outputZip) {
 		D.log(`Generating zip file`);
 
@@ -257,6 +253,7 @@ async function saveFiles() {
 
 		// if we aren't outputing it anywhere, just return the zip directly
 		if (!output) {
+			// console.log(archive);
 			return archive;
 		}
 	} else if (
@@ -318,7 +315,9 @@ async function saveFiles() {
 			LOADING.tick();
 		});
 
-		// LOADING.abort();
+		// console.log(result);
+
+		LOADING.abort();
 
 		return result;
 	} else {

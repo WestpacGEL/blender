@@ -80,5 +80,6 @@ bin
 # mock files
 !tests/mock/**/node_modules/
 
-# file tests
+# file testing
 test/
+*.zip
