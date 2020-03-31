@@ -19,11 +19,11 @@ const FILES = {
 		return this.store;
 	},
 
-	set add({ name, path, content }) {
+	set add({ name, path, ...rest }) {
 		this.store.set(`${path}/${name}`, {
 			name,
 			path,
-			content,
+			...rest
 		});
 	},
 
@@ -36,162 +36,208 @@ function sleep(millis) {
 	return new Promise((resolve) => setTimeout(resolve, millis));
 }
 
-FILES.add = { name: 'thing1.js', path: 'path/to', content: "alert('Hello World');" };
-FILES.add = { name: 'thing2.js', path: 'path/to', content: "alert('Hello World');" };
-FILES.add = { name: 'thing3.js', path: 'path/to', content: "alert('Hello World');" };
-FILES.add = { name: 'thing4.js', path: 'path/to', content: "alert('Hello World');" };
-FILES.add = { name: 'thing5.js', path: 'path/to', content: "alert('Hello World');" };
-FILES.add = { name: 'thing6.js', path: 'path/to', content: "alert('Hello World');" };
-FILES.add = { name: 'thing7.js', path: 'path/to', content: "alert('Hello World');" };
-FILES.add = { name: 'thing8.js', path: 'path/to', content: "alert('Hello World');" };
-FILES.add = { name: 'thing9.js', path: 'path/to', content: "alert('Hello World');" };
-FILES.add = { name: 'thing10.js', path: 'path/to', content: "alert('Hello World');" };
-FILES.add = { name: 'thing11.js', path: 'path/to', content: "alert('Hello World');" };
-FILES.add = { name: 'thing12.js', path: 'path/to', content: "alert('Hello World');" };
-FILES.add = { name: 'thing13.js', path: 'path/to', content: "alert('Hello World');" };
-FILES.add = { name: 'thing14.js', path: 'path/to', content: "alert('Hello World');" };
-FILES.add = { name: 'thing15.js', path: 'path/to', content: "alert('Hello World');" };
-FILES.add = { name: 'thing16.js', path: 'path/to', content: "alert('Hello World');" };
-FILES.add = { name: 'thing17.js', path: 'path/to', content: "alert('Hello World');" };
-FILES.add = { name: 'thing18.js', path: 'path/to', content: "alert('Hello World');" };
-FILES.add = { name: 'thing19.js', path: 'path/to', content: "alert('Hello World');" };
-FILES.add = { name: 'thing20.js', path: 'path/to', content: "alert('Hello World');" };
-FILES.add = { name: 'thing21.css', path: 'path/to', content: 'body { background red; }' };
-FILES.add = { name: 'thing22.css', path: 'path/to', content: 'body { background red; }' };
-FILES.add = { name: 'thing23.css', path: 'path/to', content: 'body { background red; }' };
-FILES.add = { name: 'thing24.css', path: 'path/to', content: 'body { background red; }' };
-FILES.add = { name: 'thing25.css', path: 'path/to', content: 'body { background red; }' };
-FILES.add = { name: 'thing26.css', path: 'path/to', content: 'body { background red; }' };
-FILES.add = { name: 'thing27.css', path: 'path/to', content: 'body { background red; }' };
-FILES.add = { name: 'thing28.css', path: 'path/to', content: 'body { background red; }' };
-FILES.add = { name: 'thing29.css', path: 'path/to', content: 'body { background red; }' };
-FILES.add = { name: 'thing30.css', path: 'path/to', content: 'body { background red; }' };
-FILES.add = { name: 'thing31.css', path: 'path/to', content: 'body { background red; }' };
-FILES.add = { name: 'thing32.css', path: 'path/to', content: 'body { background red; }' };
-FILES.add = { name: 'thing33.css', path: 'path/to', content: 'body { background red; }' };
-FILES.add = { name: 'thing34.css', path: 'path/to', content: 'body { background red; }' };
-FILES.add = { name: 'thing35.css', path: 'path/to', content: 'body { background red; }' };
-FILES.add = { name: 'thing36.css', path: 'path/to', content: 'body { background red; }' };
-FILES.add = { name: 'thing37.css', path: 'path/to', content: 'body { background red; }' };
-FILES.add = { name: 'thing38.css', path: 'path/to', content: 'body { background red; }' };
-FILES.add = { name: 'thing39.css', path: 'path/to', content: 'body { background red; }' };
-FILES.add = { name: 'thing40.css', path: 'path/to', content: 'body { background red; }' };
+FILES.add = { name: 'thing1.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
+FILES.add = { name: 'thing2.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
+FILES.add = { name: 'thing3.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
+FILES.add = { name: 'thing4.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
+FILES.add = { name: 'thing5.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
+FILES.add = { name: 'thing6.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
+FILES.add = { name: 'thing7.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
+FILES.add = { name: 'thing8.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
+FILES.add = { name: 'thing9.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
+FILES.add = { name: 'thing10.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
+FILES.add = { name: 'thing11.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
+FILES.add = { name: 'thing12.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
+FILES.add = { name: 'thing13.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
+FILES.add = { name: 'thing14.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
+FILES.add = { name: 'thing15.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
+FILES.add = { name: 'thing16.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
+FILES.add = { name: 'thing17.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
+FILES.add = { name: 'thing18.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
+FILES.add = { name: 'thing19.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
+FILES.add = { name: 'thing20.js', path: 'path/to', content: "alert('Hello World');", category: 'js' };
+FILES.add = { name: 'thing21.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
+FILES.add = { name: 'thing22.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
+FILES.add = { name: 'thing23.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
+FILES.add = { name: 'thing24.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
+FILES.add = { name: 'thing25.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
+FILES.add = { name: 'thing26.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
+FILES.add = { name: 'thing27.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
+FILES.add = { name: 'thing28.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
+FILES.add = { name: 'thing29.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
+FILES.add = { name: 'thing30.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
+FILES.add = { name: 'thing31.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
+FILES.add = { name: 'thing32.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
+FILES.add = { name: 'thing33.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
+FILES.add = { name: 'thing34.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
+FILES.add = { name: 'thing35.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
+FILES.add = { name: 'thing36.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
+FILES.add = { name: 'thing37.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
+FILES.add = { name: 'thing38.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
+FILES.add = { name: 'thing39.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
+FILES.add = { name: 'thing40.css', path: 'path/to', content: 'body { background red; }', category: 'css' };
 FILES.add = {
 	name: 'thing41.html',
 	path: 'path/to',
 	content: '<html><title /><body>Hello World</body></html>',
+	category: 'html',
 };
 FILES.add = {
 	name: 'thing42.html',
 	path: 'path/to',
 	content: '<html><title /><body>Hello World</body></html>',
+	category: 'html',
 };
 FILES.add = {
 	name: 'thing43.html',
 	path: 'path/to',
 	content: '<html><title /><body>Hello World</body></html>',
+	category: 'html',
 };
 FILES.add = {
 	name: 'thing44.html',
 	path: 'path/to',
 	content: '<html><title /><body>Hello World</body></html>',
+	category: 'html',
 };
 FILES.add = {
 	name: 'thing45.html',
 	path: 'path/to',
 	content: '<html><title /><body>Hello World</body></html>',
+	category: 'html',
 };
 FILES.add = {
 	name: 'thing46.html',
 	path: 'path/to',
 	content: '<html><title /><body>Hello World</body></html>',
+	category: 'html',
 };
 FILES.add = {
 	name: 'thing47.html',
 	path: 'path/to',
 	content: '<html><title /><body>Hello World</body></html>',
+	category: 'html',
 };
 FILES.add = {
 	name: 'thing48.html',
 	path: 'path/to',
 	content: '<html><title /><body>Hello World</body></html>',
+	category: 'html',
 };
 FILES.add = {
 	name: 'thing49.html',
 	path: 'path/to',
 	content: '<html><title /><body>Hello World</body></html>',
+	category: 'html',
 };
 FILES.add = {
 	name: 'thing50.html',
 	path: 'path/to',
 	content: '<html><title /><body>Hello World</body></html>',
+	category: 'html',
 };
 FILES.add = {
 	name: 'thing51.html',
 	path: 'path/to',
 	content: '<html><title /><body>Hello World</body></html>',
+	category: 'html',
 };
 FILES.add = {
 	name: 'thing52.html',
 	path: 'path/to',
 	content: '<html><title /><body>Hello World</body></html>',
+	category: 'html',
 };
 FILES.add = {
 	name: 'thing53.html',
 	path: 'path/to',
 	content: '<html><title /><body>Hello World</body></html>',
+	category: 'html',
 };
 FILES.add = {
 	name: 'thing54.html',
 	path: 'path/to',
 	content: '<html><title /><body>Hello World</body></html>',
+	category: 'html',
 };
 FILES.add = {
 	name: 'thing55.html',
 	path: 'path/to',
 	content: '<html><title /><body>Hello World</body></html>',
+	category: 'html',
 };
 FILES.add = {
 	name: 'thing56.html',
 	path: 'path/to',
 	content: '<html><title /><body>Hello World</body></html>',
+	category: 'html',
 };
 FILES.add = {
 	name: 'thing57.html',
 	path: 'path/to',
 	content: '<html><title /><body>Hello World</body></html>',
+	category: 'html',
 };
 FILES.add = {
 	name: 'thing58.html',
 	path: 'path/to',
 	content: '<html><title /><body>Hello World</body></html>',
+	category: 'html',
 };
 FILES.add = {
 	name: 'thing59.html',
 	path: 'path/to',
 	content: '<html><title /><body>Hello World</body></html>',
+	category: 'html',
 };
 FILES.add = {
 	name: 'thing60.html',
 	path: 'path/to',
 	content: '<html><title /><body>Hello World</body></html>',
+	category: 'html',
+};
+FILES.add = {
+	name: 'token.json',
+	path: 'path/to',
+	content: '{"bg": "#bada55"}',
+	category: 'token',
+};
+FILES.add = {
+	name: 'token.css',
+	path: 'path/to',
+	content: 'root{--bg:#bada55;}',
+	category: 'token',
+};
+FILES.add = {
+	name: 'token.less',
+	path: 'path/to',
+	content: '@bg: #bada55;',
+	category: 'token',
+};
+FILES.add = {
+	name: 'token.sass',
+	path: 'path/to',
+	content: '$bg: "#bada55";',
+	category: 'token',
 };
 
 async function saveFiles() {
-	D.header('saveFiles');
+	// TODO: return promise, try async first
 
-	// TODO: Add loader here, know how many files there are, start loader with this many
-	// see how fast it is, if non progress with 50, change minFiles to a different number
+	D.header('saveFiles');
 
 	DEBUG.enabled = true; // SETTINGS.get.debug;
 
+	LOADING.start = { total: FILES.get.size };
+
 	// testing overrides
-	SETTINGS.set = { outputZip: true };
+	// SETTINGS.set = { outputZip: true, output: '/' };
 	// SETTINGS.set = { output: 'test' };
 	// SETTINGS.set = {
 	// 	outputCss: 'test/css',
 	// 	outputJs: 'test/js',
 	// 	outputHtml: 'test/html',
+	// 	outputToken: 'test/tokens',
 	// };
 
 	D.log(`Settings: ${JSON.stringify(SETTINGS.get)}`);
@@ -204,8 +250,6 @@ async function saveFiles() {
 	// handle zip files
 	if (SETTINGS.get.outputZip) {
 		D.log(`Generating zip file`);
-
-		LOADING.start = { left: '  ', total: FILES.get.size };
 
 		// create an archiver instance we can add to if we're zipping the files
 		const output = SETTINGS.get.output ? fs.createWriteStream(__dirname + '/output.zip') : null;
@@ -222,7 +266,7 @@ async function saveFiles() {
 		archive.on('warning', (err) => {
 			result.code = 1;
 			if (err.code === 'ENOENT') {
-				result.errors.push(`Could not find file or directory`);
+				result.errors.push(`Could not find file or directory: ${err}`);
 			} else {
 				result.errors.push(`Error archiving files: ${err}`);
 			}
@@ -234,10 +278,11 @@ async function saveFiles() {
 			result.errors.push(`Error archiving files: ${err}`);
 		});
 
-		FILES.get.forEach(({ name, path, content }) => {
+		FILES.get.forEach(async ({ name, path, content }) => {
 			// append each file to the zip
 			archive.append(content, { name: `${path}/${name}` }, 'utf-8');
 
+			await sleep(2000 * Math.random());
 			LOADING.tick();
 		});
 
@@ -249,11 +294,9 @@ async function saveFiles() {
 		// finish off zip process
 		archive.finalize();
 
-		LOADING.abort();
-
 		// if we aren't outputing it anywhere, just return the zip directly
 		if (!output) {
-			// console.log(archive);
+			LOADING.abort();
 			return archive;
 		}
 	} else if (
@@ -265,23 +308,7 @@ async function saveFiles() {
 	) {
 		D.log(`Saving files`);
 
-		LOADING.start = { left: '  ', total: FILES.get.size };
-
-		const writeFile = (name, path, content) => {
-			// create directory if it doesn't already exist
-			if (!fs.existsSync(path)) {
-				fs.mkdirSync(path, { recursive: true });
-			}
-			// write file to specified path with content
-			fs.writeFileSync(`${path}/${name}`, content, (err) => {
-				if (err) {
-					result.code = 1;
-					result.errors.push(`Error outputting file: ${err}`);
-				}
-			});
-		};
-
-		FILES.get.forEach(async ({ name, path, content }) => {
+		FILES.get.forEach(async ({ name, path, content, category }) => {
 			// save all files to a directory
 			if (SETTINGS.get.output) {
 				writeFile(name, SETTINGS.get.output, content);
@@ -289,42 +316,65 @@ async function saveFiles() {
 			}
 
 			// save styles
-			if (SETTINGS.get.outputCss && /css|less|sass/.test(name)) {
+			if (SETTINGS.get.outputCss && category === 'css') {
 				writeFile(name, SETTINGS.get.outputCss, content);
 			}
 
 			// save javascript
-			if (SETTINGS.get.outputJs && name.includes('js')) {
+			if (SETTINGS.get.outputJs && category === 'js') {
 				writeFile(name, SETTINGS.get.outputJs, content);
 			}
 
 			// save html
-			if (SETTINGS.get.outputHtml && name.includes('html')) {
+			if (SETTINGS.get.outputHtml && category === 'html') {
 				writeFile(name, SETTINGS.get.outputHtml, content);
 			}
 
-			// TODO: Get clarification on this
 			// save tokens
-			// if (SETTINGS.get.outputTokens) {
-			// 	// tokens-format, default as json but can be 'json', 'less', 'sass'
-			// 	writeFile(name, SETTINGS.get.outputHtml, content);
-			// }
+			if (SETTINGS.get.outputToken && category === 'token') {
+				writeFile(name, SETTINGS.get.outputToken, content);
+			}
 
 			await sleep(2000 * Math.random());
-
 			LOADING.tick();
 		});
-
-		// console.log(result);
 
 		LOADING.abort();
 
 		return result;
 	} else {
 		D.log(`Returning files`);
-
+		LOADING.abort();
 		return [...FILES.get];
 	}
+
+	LOADING.abort();
+}
+
+function writeFile(name, path, content) {
+	// TODO: return promise, try async first
+
+	// create directory if it doesn't already exist
+	if (!fs.existsSync(path)) {
+		fs.mkdirSync(path, { recursive: true }, (err) => {
+			if (err) {
+				result.code = 1;
+				result.errors.push(`Error creating directory: ${err}`);
+			}
+		});
+	}
+	// write file to specified path with content
+	fs.writeFileSync(`${path}/${name}`, content, (err) => {
+		if (err) {
+			result.code = 1;
+			result.errors.push(`Error outputting file: ${err}`);
+		}
+	});
 }
 
 return saveFiles();
+
+module.exports = exports = {
+	saveFiles,
+	writeFile,
+};
