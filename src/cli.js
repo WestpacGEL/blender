@@ -129,9 +129,9 @@ function help(options = CLIOPTIONS) {
 /**
  * Handle exiting of program
  *
- * @param {null}    _       - null for bind
- * @param {object}  error   - The return code
- * @param {boolean} debug   - Global debug mode on/off switch
+ * @param {null}           _       - null for bind
+ * @param {string|number}  error   - The return code
+ * @param {boolean}        debug   - Global debug mode on/off switch
  */
 function exitHandler(_, error, debug = DEBUG) {
 	if (!TIME.hasStopped()) {
