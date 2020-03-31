@@ -38,7 +38,19 @@ function generator(packages) {
 			result.code = 1;
 		}
 
-		// generate stuff
+		// generate stuff:
+		// get core styles
+		// build tokens
+		// modules loop
+		// compile module
+		// get docs html
+		// get recipe styles
+		// ids loop
+		// generate class names
+		// replace prefix in css
+		// build html file(s)
+		// build css file(s)
+		// concat js file(s)
 
 		LOADING.tick();
 	});
