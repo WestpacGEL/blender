@@ -52,7 +52,10 @@ function getSettings(cliArgs, cwd = process.cwd(), options = CLIOPTIONS) {
 	const pkgOptions = getPkgOptions(cwd);
 
 	const settings = { ...defaults, ...pkgOptions, ...cliArgs };
-	settings.cwd = settings.cwd ? path.resolve(process.cwd(), settings.cwd) : process.cwd();
+	settings.cwd =
+		settings.cwd && typeof settings.cwd === 'string'
+			? path.resolve(process.cwd(), settings.cwd)
+			: process.cwd();
 
 	D.log(`getSettings return: "${color.yellow(JSON.stringify(settings))}"`);
 
