@@ -581,7 +581,7 @@ function writeFile(name, path, content) {
 	});
 }
 
-return saveFiles();
+saveFiles();
 
 module.exports = exports = {
 	saveFiles,
