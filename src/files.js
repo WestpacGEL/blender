@@ -421,154 +421,169 @@ FILES.add = {
 	category: 'token',
 };
 
-async function saveFiles() {
-	// TODO: return promise, try async first
+function saveFiles() {
+	return new Promise(async (resolve, reject) => {
 
-	D.header('saveFiles');
+		D.header('saveFiles');
 
-	DEBUG.enabled = true; // SETTINGS.get.debug;
+		DEBUG.enabled = true; // SETTINGS.get.debug;
 
-	LOADING.start = { total: FILES.get.size };
+		LOADING.start = { total: FILES.get.size };
 
-	// testing overrides
-	// SETTINGS.set = { outputZip: true, output: '/' };
-	// SETTINGS.set = { output: 'test' };
-	// SETTINGS.set = {
-	// 	outputCss: 'test/css',
-	// 	outputJs: 'test/js',
-	// 	outputHtml: 'test/html',
-	// 	outputToken: 'test/tokens',
-	// };
+		// testing overrides
+		// SETTINGS.set = { outputZip: true, output: '/' };
+		// SETTINGS.set = { output: 'test' };
+		// SETTINGS.set = {
+		// 	outputCss: 'test/css',
+		// 	outputJs: 'test/js',
+		// 	outputHtml: 'test/html',
+		// 	outputToken: 'test/tokens',
+		// };
 
-	D.log(`Settings: ${JSON.stringify(SETTINGS.get)}`);
+		D.log(`Settings: ${JSON.stringify(SETTINGS.get)}`);
 
-	const result = {
-		code: 0,
-		errors: [],
-	};
+		const result = {
+			code: 0,
+			errors: [],
+		};
 
-	// handle zip files
-	if (SETTINGS.get.outputZip) {
-		D.log(`Generating zip file`);
+		// handle zip files
+		if (SETTINGS.get.outputZip) {
+			D.log(`Generating zip file`);
 
-		// create an archiver instance we can add to if we're zipping the files
-		const output = SETTINGS.get.output ? fs.createWriteStream(__dirname + '/output.zip') : null;
-		const archive = archiver('zip');
+			// create an archiver instance we can add to if we're zipping the files
+			const output = SETTINGS.get.output ? fs.createWriteStream(__dirname + '/output.zip') : null;
+			const archive = archiver('zip');
 
-		// listen for archive data to be written to disk
-		if (output) {
-			output.on('close', () => {
-				D.log(`Zip file written as ${color.yellow(archive.pointer())} total bytes`);
+			// listen for archive data to be written to disk
+			if (output) {
+				output.on('close', (err) => {
+					if (err) {
+						result.errors.push(`Error archiving files: ${err}`);
+						return reject(result);
+					}
+					D.log(`Zip file written`);
+				});
+			}
+
+			// catch warnings
+			archive.on('warning', (err) => {
+				result.code = 1;
+				if (err.code === 'ENOENT') {
+					result.errors.push(`Could not find file or directory: ${err}`);
+				} else {
+					result.errors.push(`Error archiving files: ${err}`);
+				}
+				return reject(result);
 			});
-		}
 
-		// catch warnings
-		archive.on('warning', (err) => {
-			result.code = 1;
-			if (err.code === 'ENOENT') {
-				result.errors.push(`Could not find file or directory: ${err}`);
-			} else {
+			// catch errors
+			archive.on('error', (err) => {
+				result.code = 1;
 				result.errors.push(`Error archiving files: ${err}`);
+				return reject(result);
+			});
+
+			FILES.get.forEach(async ({ name, path, content }) => {
+				// append each file to the zip
+				archive.append(content, { name: `${path}/${name}` }, 'utf-8');
+
+				await sleep(2000 * Math.random());
+				LOADING.tick();
+			});
+
+			// write output to file if saving to disk
+			if (output) {
+				archive.pipe(output);
 			}
-		});
 
-		// catch errors
-		archive.on('error', (err) => {
-			result.code = 1;
-			result.errors.push(`Error archiving files: ${err}`);
-		});
+			// finish off zip process
+			archive.finalize();
 
-		FILES.get.forEach(async ({ name, path, content }) => {
-			// append each file to the zip
-			archive.append(content, { name: `${path}/${name}` }, 'utf-8');
+			// if we aren't outputing it anywhere, just return the zip directly
+			if (!output) {
+				LOADING.abort();
+				return resolve(archive);
+			}
 
-			await sleep(2000 * Math.random());
-			LOADING.tick();
-		});
+		} else if (
+			SETTINGS.get.output ||
+			SETTINGS.get.outputCss ||
+			SETTINGS.get.outputJs ||
+			SETTINGS.get.outputHtml ||
+			SETTINGS.get.outputToken
+		) {
 
-		// write output to file if saving to disk
-		if (output) {
-			archive.pipe(output);
-		}
+			D.log(`Saving files`);
 
-		// finish off zip process
-		archive.finalize();
+			FILES.get.forEach(async ({ name, path, content, category }) => {
 
-		// if we aren't outputing it anywhere, just return the zip directly
-		if (!output) {
+				// save all files to a directory
+				if (SETTINGS.get.output) {
+					writeFile(name, SETTINGS.get.output, content);
+				}
+				// save styles
+				else if (SETTINGS.get.outputCss && category === 'css') {
+					writeFile(name, SETTINGS.get.outputCss, content);
+				}
+				// save javascript
+				else if (SETTINGS.get.outputJs && category === 'js') {
+					writeFile(name, SETTINGS.get.outputJs, content);
+				}
+				// save html
+				else if (SETTINGS.get.outputHtml && category === 'html') {
+					writeFile(name, SETTINGS.get.outputHtml, content);
+				}
+				// save tokens
+				else if (SETTINGS.get.outputToken && category === 'token') {
+					writeFile(name, SETTINGS.get.outputToken, content);
+				}
+
+				await sleep(2000 * Math.random());
+				LOADING.tick();
+			});
+
 			LOADING.abort();
-			return archive;
+			return resolve(result);
+
+		} else {
+
+			D.log(`Returning files`);
+			LOADING.abort();
+			return resolve([...FILES.get]);
+
 		}
-	} else if (
-		SETTINGS.get.output ||
-		SETTINGS.get.outputCss ||
-		SETTINGS.get.outputJs ||
-		SETTINGS.get.outputHtml ||
-		SETTINGS.get.outputToken
-	) {
-		D.log(`Saving files`);
-
-		FILES.get.forEach(async ({ name, path, content, category }) => {
-			// save all files to a directory
-			if (SETTINGS.get.output) {
-				writeFile(name, SETTINGS.get.output, content);
-				return;
-			}
-
-			// save styles
-			if (SETTINGS.get.outputCss && category === 'css') {
-				writeFile(name, SETTINGS.get.outputCss, content);
-			}
-
-			// save javascript
-			if (SETTINGS.get.outputJs && category === 'js') {
-				writeFile(name, SETTINGS.get.outputJs, content);
-			}
-
-			// save html
-			if (SETTINGS.get.outputHtml && category === 'html') {
-				writeFile(name, SETTINGS.get.outputHtml, content);
-			}
-
-			// save tokens
-			if (SETTINGS.get.outputToken && category === 'token') {
-				writeFile(name, SETTINGS.get.outputToken, content);
-			}
-
-			await sleep(2000 * Math.random());
-			LOADING.tick();
-		});
 
 		LOADING.abort();
 
-		return result;
-	} else {
-		D.log(`Returning files`);
-		LOADING.abort();
-		return [...FILES.get];
-	}
-
-	LOADING.abort();
+	});
 }
 
 function writeFile(name, path, content) {
-	// TODO: return promise, try async first
+	return new Promise(async (resolve, reject) => {
 
-	// create directory if it doesn't already exist
-	if (!fs.existsSync(path)) {
-		fs.mkdirSync(path, { recursive: true }, (err) => {
+		// create directory if it doesn't already exist
+		if (!fs.existsSync(path)) {
+			fs.mkdirSync(path, { recursive: true }, (err) => {
+				if (err) {
+					result.code = 1;
+					result.errors.push(`Error creating directory: ${err}`);
+					return reject(result);
+				}
+				return resolve(result);
+			});
+		}
+
+		// write file to specified path with content
+		fs.writeFileSync(`${path}/${name}`, content, (err) => {
 			if (err) {
 				result.code = 1;
-				result.errors.push(`Error creating directory: ${err}`);
+				result.errors.push(`Error outputting file: ${err}`);
+				return reject(result);
 			}
+			return resolve(result);
 		});
-	}
-	// write file to specified path with content
-	fs.writeFileSync(`${path}/${name}`, content, (err) => {
-		if (err) {
-			result.code = 1;
-			result.errors.push(`Error outputting file: ${err}`);
-		}
+
 	});
 }
 
