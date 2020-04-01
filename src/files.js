@@ -32,10 +32,6 @@ const FILES = {
 	},
 };
 
-function sleep(millis) {
-	return new Promise((resolve) => setTimeout(resolve, millis));
-}
-
 FILES.add = {
 	name: 'thing1.js',
 	path: 'path/to',
@@ -422,7 +418,7 @@ FILES.add = {
 };
 
 function saveFiles() {
-	return new Promise(async (resolve, reject) => {
+	return new Promise((resolve, reject) => {
 
 		DEBUG.enabled = true; // SETTINGS.get.debug;
 
@@ -484,11 +480,10 @@ function saveFiles() {
 				return reject(result);
 			});
 
-			FILES.get.forEach(async ({ name, path, content }) => {
+			FILES.get.forEach(({ name, path, content }) => {
 				// append each file to the zip
 				archive.append(content, { name: `${path}/${name}` }, 'utf-8');
 
-				await sleep(2000 * Math.random());
 				LOADING.tick();
 			});
 
@@ -539,7 +534,6 @@ function saveFiles() {
 					writeFile(name, SETTINGS.get.outputToken, content);
 				}
 
-				await sleep(2000 * Math.random());
 				LOADING.tick();
 			});
 
