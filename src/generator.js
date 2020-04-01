@@ -153,7 +153,7 @@ function compileTokens(tokens, lang) {
 	];
 
 	if (lang === 'json') {
-		const tokensWithComment = { ...{ '_': comment }, ...tokens };
+		const tokensWithComment = { ...{ _: comment }, ...tokens };
 		result += JSON.stringify(tokensWithComment, null, '\t');
 	} else {
 		Object.entries(tokens).map(([name, value]) => {
