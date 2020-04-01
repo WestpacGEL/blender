@@ -46,9 +46,9 @@ const CLIOPTIONS = {
 		example: 'blender --output-css path/to/html',
 		type: 'string',
 	},
-	'output-token': {
-		description: 'Specify where the blender should save the token file to',
-		example: 'blender --output-token path/to/token',
+	'output-tokens': {
+		description: 'Specify where the blender should save the tokens file to',
+		example: 'blender --output-tokens path/to/tokens',
 		type: 'string',
 	},
 	'output-zip': {
@@ -110,7 +110,7 @@ const CLIOPTIONS = {
 		example: 'blender -t json',
 		flag: 'f',
 		type: 'string',
-		arguments: ['json', 'less', 'sass'],
+		arguments: ['json', 'less', 'sass', 'scss', 'css'],
 		default: 'json',
 	},
 	cwd: {
