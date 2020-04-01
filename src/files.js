@@ -424,9 +424,9 @@ FILES.add = {
 function saveFiles() {
 	return new Promise(async (resolve, reject) => {
 
-		D.header('saveFiles');
-
 		DEBUG.enabled = true; // SETTINGS.get.debug;
+
+		D.header('saveFiles');
 
 		LOADING.start = { total: FILES.get.size };
 
@@ -548,7 +548,7 @@ function saveFiles() {
 
 		} else {
 
-			D.log(`Returning files`);
+			D.log(`Returning files directly`);
 			LOADING.abort();
 			return resolve([...FILES.get]);
 
