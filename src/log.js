@@ -166,7 +166,7 @@ const log = {
 	 */
 	info: (text) => {
 		if (DEBUG.mode === 'cli') {
-			console.info(`💡  ${color.gray(text)}`);
+			console.info(color.gray(`☏  ${text}`));
 		}
 	},
 
@@ -177,7 +177,7 @@ const log = {
 	 */
 	success: (text) => {
 		if (DEBUG.mode === 'cli') {
-			console.log(`🚀  ${color.green(text)}`);
+			console.log(color.green(`☀  ${text}`));
 		}
 	},
 
@@ -188,7 +188,7 @@ const log = {
 	 */
 	warn: (text) => {
 		if (DEBUG.mode === 'cli') {
-			console.warn(`⚠️  ${color.yellow(text)}`);
+			console.warn(color.yellow(`⚠  ${text}`));
 		}
 	},
 
@@ -199,7 +199,7 @@ const log = {
 	 */
 	error: (text) => {
 		if (DEBUG.mode === 'cli') {
-			console.error(`🛑  ${color.red(text)}`);
+			console.error(color.red(`☁  ${text}`));
 		}
 	},
 };
