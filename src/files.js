@@ -433,7 +433,7 @@ function saveFiles() {
 		// 	outputCss: 'test/css',
 		// 	outputJs: 'test/js',
 		// 	outputHtml: 'test/html',
-		// 	outputToken: 'test/tokens',
+		// 	outputTokens: 'test/tokens',
 		// };
 
 		D.log(`Settings: ${JSON.stringify(SETTINGS.get)}`);
@@ -506,7 +506,7 @@ function saveFiles() {
 			SETTINGS.get.outputCss ||
 			SETTINGS.get.outputJs ||
 			SETTINGS.get.outputHtml ||
-			SETTINGS.get.outputToken
+			SETTINGS.get.outputTokens
 		) {
 
 			D.log(`Saving files`);
@@ -530,8 +530,8 @@ function saveFiles() {
 					writeFile(name, SETTINGS.get.outputHtml, content);
 				}
 				// save tokens
-				else if (SETTINGS.get.outputToken && category === 'token') {
-					writeFile(name, SETTINGS.get.outputToken, content);
+				else if (SETTINGS.get.outputTokens && category === 'token') {
+					writeFile(name, SETTINGS.get.outputTokens, content);
 				}
 
 				LOADING.tick();
