@@ -419,7 +419,6 @@ FILES.add = {
 
 function saveFiles() {
 	return new Promise((resolve, reject) => {
-
 		DEBUG.enabled = true; // SETTINGS.get.debug;
 
 		D.header('saveFiles');
@@ -500,7 +499,6 @@ function saveFiles() {
 				LOADING.abort();
 				return resolve(archive);
 			}
-
 		} else if (
 			SETTINGS.get.output ||
 			SETTINGS.get.outputCss ||
@@ -508,11 +506,9 @@ function saveFiles() {
 			SETTINGS.get.outputHtml ||
 			SETTINGS.get.outputTokens
 		) {
-
 			D.log(`Saving files`);
 
 			FILES.get.forEach(async ({ name, path, content, category }) => {
-
 				// save all files to a directory
 				if (SETTINGS.get.output) {
 					writeFile(name, SETTINGS.get.output, content);
@@ -539,23 +535,18 @@ function saveFiles() {
 
 			LOADING.abort();
 			return resolve(result);
-
 		} else {
-
 			D.log(`Returning files directly`);
 			LOADING.abort();
 			return resolve([...FILES.get]);
-
 		}
 
 		LOADING.abort();
-
 	});
 }
 
 function writeFile(name, path, content) {
 	return new Promise(async (resolve, reject) => {
-
 		// create directory if it doesn't already exist
 		if (!fs.existsSync(path)) {
 			fs.mkdirSync(path, { recursive: true }, (err) => {
@@ -577,7 +568,6 @@ function writeFile(name, path, content) {
 			}
 			return resolve(result);
 		});
-
 	});
 }
 
