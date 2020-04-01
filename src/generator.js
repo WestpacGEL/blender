@@ -52,7 +52,7 @@ function generator(packages) {
 		}
 
 		// Building tokens
-		if (thisPackage.pkg.token) {
+		if (thisPackage.pkg.tokens) {
 			const tokens = require(thisPackage.path).default;
 			if (SETTINGS.get.tokensFormat === 'json' && SETTINGS.get.outputTokens) {
 				// add tokens to file store
