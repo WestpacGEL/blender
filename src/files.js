@@ -40,17 +40,7 @@ function saveFiles() {
 
 		LOADING.start = { total: FILES.get.size };
 
-		// testing overrides
-		// SETTINGS.set = { outputZip: true, output: '/' };
-		// SETTINGS.set = { output: 'test' };
-		// SETTINGS.set = {
-		// 	outputCss: 'test/css',
-		// 	outputJs: 'test/js',
-		// 	outputHtml: 'test/html',
-		// 	outputTokens: 'test/tokens',
-		// };
-
-		// D.log(`Settings: ${JSON.stringify(SETTINGS.get)}`);
+		D.log(`Settings: ${JSON.stringify(SETTINGS.get)}`);
 
 		const result = {
 			code: 0,
@@ -61,20 +51,32 @@ function saveFiles() {
 		if (SETTINGS.get.outputZip) {
 			D.log(`Generating zip file`);
 
-			// create an archiver instance we can add to if we're zipping the files
-			const zipPath = path.resolve(process.cwd(),`${SETTINGS.get.output}/blender.zip`);
-			const output = SETTINGS.get.output ? fs.createWriteStream(zipPath) : null;
+			// create an archiver instance
 			const archive = archiver('zip');
 
-			// listen for archive data to be written to disk
-			if (output) {
-				output.on('close', (err) => {
+			let zipOutput = null;
+
+			// write to disk if output is provided
+			if (SETTINGS.get.output) {
+
+				// constract the path we'll be outputing the zip file to
+				const outputPath = path.resolve(process.cwd(), SETTINGS.get.output);
+
+				// create directory if it doesn't already exist
+				if (!fs.existsSync(outputPath)) {
+					fs.mkdirSync(outputPath, { recursive: true }, (err) => {});
+				}
+
+				const zipPath = `${outputPath}/blender.zip`;
+					zipOutput = fs.createWriteStream(zipPath);
+
+				zipOutput.on('close', (err) => {
 					if (err) {
 						result.code = 1;
 						result.errors.push(`Error archiving files: ${err}`);
 					}
-					D.log(`Zip file written to: ${color.yellow(zipPath)}`);
-					console.log(`Zip file written to: ${color.yellow(zipPath)}`);
+					D.log(`Zip file written to path: ${color.yellow(zipPath)}`);
+					console.log(`Zip file written to path: ${color.yellow(zipPath)}`);
 					if (result.code === 1) {
 						reject(result);
 					} else {
@@ -102,20 +104,19 @@ function saveFiles() {
 			FILES.get.forEach(({ name, path, content }) => {
 				// append each file to the zip
 				archive.append(content, { name: `${path}/${name}` }, 'utf-8');
-
 				LOADING.tick();
 			});
 
 			// write output to file if saving to disk
-			if (output) {
-				archive.pipe(output);
+			if (SETTINGS.get.output) {
+				archive.pipe(zipOutput);
 			}
 
 			// finish off zip process
 			archive.finalize();
 
 			// if we aren't outputing it anywhere, just return the zip directly
-			if (!output) {
+			if (!SETTINGS.get.output) {
 				LOADING.abort();
 				result.files = [{ name: 'blender.zip', path: '', content: archive }];
 				if (result.code === 1) {
@@ -184,7 +185,7 @@ function saveFiles() {
 	});
 }
 
-function writeFile(name, path, content) {
+function writeFile(fileName, outputPath, fileContent) {
 
 	const result = {
 		code: 0,
@@ -194,8 +195,8 @@ function writeFile(name, path, content) {
 	return new Promise((resolve, reject) => {
 
 		// create directory if it doesn't already exist
-		if (!fs.existsSync(path)) {
-			fs.mkdirSync(path, { recursive: true }, (err) => {
+		if (!fs.existsSync(outputPath)) {
+			fs.mkdirSync(outputPath, { recursive: true }, (err) => {
 				if (err) {
 					result.code = 1;
 					result.errors.push(`Error creating directory: ${err}`);
@@ -205,8 +206,8 @@ function writeFile(name, path, content) {
 			});
 		}
 
-		// write file to specified path with content
-		fs.writeFileSync(`${path}/${name}`, content, (err) => {
+		// write file to specified outputPath with fileContent
+		fs.writeFileSync(`${outputPath}/${fileName}`, fileContent, (err) => {
 			if (err) {
 				result.code = 1;
 				result.errors.push(`Error outputting file: ${err}`);
