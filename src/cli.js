@@ -529,24 +529,28 @@ function exitHandler(_, error, debug = DEBUG) {
 			clean();
 			process.exit(error);
 		} else {
-			if ((error && error !== 1) || debug.errors > 0) {
-				// const messages =
-				// 	debug.messages.join('\n') + `\n\n` + `Errors: ${debug.errors}\n` + `Duration: ${time}\n`;
-				// const logPath = path.normalize(`${process.cwd()}/blender-error.log`);
-				//
-				// try {
-				// 	fs.writeFileSync(logPath, stripColor(messages), { encoding: 'utf8' });
-				// } catch (error) {
-				// 	console.error(`Unable to write error log file to "${logPath}"`);
-				// 	console.error(error);
-				// }
+			if ((error && error !== 1) || debug.errorCount > 0) {
+				const messages = debug.messages
+					? debug.messages.join('\n') +
+					  `\n\n` +
+					  `Errors: ${debug.errorCount}\n` +
+					  `Duration: ${time}\n`
+					: [];
+				const logPath = path.normalize(`${process.cwd()}/blender-error.log`);
+
+				try {
+					fs.writeFileSync(logPath, stripColor(messages), { encoding: 'utf8' });
+				} catch (error) {
+					console.error(`Unable to write error log file to "${logPath}"`);
+					console.error(error);
+				}
 			}
 
 			if (debug.enabled) {
-				console.log(`\nErrors: ${debug.errors}\n`);
+				console.log(`\nErrors: ${debug.errorCount}\n`);
 			}
 
-			if (debug.errors) {
+			if (debug.errorCount) {
 				log.error(`Blender stopped after ${color.yellow(time)}\n`);
 			} else {
 				const packages = PACKAGES.get.length;
