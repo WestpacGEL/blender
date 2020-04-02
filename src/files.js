@@ -37,7 +37,6 @@ function saveFiles() {
 	D.header('saveFiles');
 
 	return new Promise((resolve, reject) => {
-
 		LOADING.start = { total: FILES.get.size };
 
 		D.log(`Settings: ${JSON.stringify(SETTINGS.get)}`);
@@ -58,7 +57,6 @@ function saveFiles() {
 
 			// write to disk if output is provided
 			if (SETTINGS.get.output) {
-
 				// constract the path we'll be outputing the zip file to
 				const outputPath = path.resolve(process.cwd(), SETTINGS.get.output);
 
@@ -68,7 +66,7 @@ function saveFiles() {
 				}
 
 				const zipPath = `${outputPath}/blender.zip`;
-					zipOutput = fs.createWriteStream(zipPath);
+				zipOutput = fs.createWriteStream(zipPath);
 
 				zipOutput.on('close', (err) => {
 					if (err) {
@@ -125,7 +123,6 @@ function saveFiles() {
 					resolve(result);
 				}
 			}
-
 		} else if (
 			SETTINGS.get.output ||
 			SETTINGS.get.outputCss ||
@@ -133,13 +130,11 @@ function saveFiles() {
 			SETTINGS.get.outputHtml ||
 			SETTINGS.get.outputTokens
 		) {
-
 			D.log(`Saving files`);
 
 			const allFiles = [];
 
 			FILES.get.forEach(async ({ name, path, content, category }) => {
-
 				// save all files to a directory
 				if (SETTINGS.get.output) {
 					allFiles.push(writeFile(name, SETTINGS.get.output, content));
@@ -162,38 +157,33 @@ function saveFiles() {
 				}
 
 				LOADING.tick();
-
 			});
 
-			Promise.all(allFiles).then(() => {
-				LOADING.abort();
-				resolve(result);
-			}).catch((err) => {
-				reject(err);
-			});
-
+			Promise.all(allFiles)
+				.then(() => {
+					LOADING.abort();
+					resolve(result);
+				})
+				.catch((err) => {
+					reject(err);
+				});
 		} else {
-
 			D.log(`Returning files directly`);
 			LOADING.abort();
 
 			result.files = FILES.get;
 			resolve(result);
-
 		}
-
 	});
 }
 
 function writeFile(fileName, outputPath, fileContent) {
-
 	const result = {
 		code: 0,
 		errors: [],
 	};
 
 	return new Promise((resolve, reject) => {
-
 		// create directory if it doesn't already exist
 		if (!fs.existsSync(outputPath)) {
 			fs.mkdirSync(outputPath, { recursive: true }, (err) => {
@@ -215,7 +205,6 @@ function writeFile(fileName, outputPath, fileContent) {
 			}
 			resolve(result);
 		});
-
 	});
 }
 
