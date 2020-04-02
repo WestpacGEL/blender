@@ -482,6 +482,8 @@ async function cli() {
 		category: 'token',
 	};
 
+	// generator...
+
 	await saveFiles();
 }
 

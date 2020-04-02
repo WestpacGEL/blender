@@ -33,6 +33,11 @@ const FILES = {
 	},
 };
 
+/**
+ * Save Files function
+ *
+ * @return {type}  - Return a promise
+ */
 function saveFiles() {
 	D.header('saveFiles');
 
@@ -53,36 +58,6 @@ function saveFiles() {
 			// create an archiver instance
 			const archive = archiver('zip');
 
-			let zipOutput = null;
-
-			// write to disk if output is provided
-			if (SETTINGS.get.output) {
-				// constract the path we'll be outputing the zip file to
-				const outputPath = path.resolve(process.cwd(), SETTINGS.get.output);
-
-				// create directory if it doesn't already exist
-				if (!fs.existsSync(outputPath)) {
-					fs.mkdirSync(outputPath, { recursive: true }, (err) => {});
-				}
-
-				const zipPath = `${outputPath}/blender.zip`;
-				zipOutput = fs.createWriteStream(zipPath);
-
-				zipOutput.on('close', (err) => {
-					if (err) {
-						result.code = 1;
-						result.errors.push(`Error archiving files: ${err}`);
-					}
-					D.log(`Zip file written to path: ${color.yellow(zipPath)}`);
-					console.log(`Zip file written to path: ${color.yellow(zipPath)}`);
-					if (result.code === 1) {
-						reject(result);
-					} else {
-						resolve(result);
-					}
-				});
-			}
-
 			// catch warnings
 			archive.on('warning', (err) => {
 				result.code = 1;
@@ -98,6 +73,41 @@ function saveFiles() {
 				result.code = 1;
 				result.errors.push(`Error archiving files: ${err}`);
 			});
+
+			let zipOutput = null;
+
+			// write to disk if output is provided
+			if (SETTINGS.get.output) {
+				// constract the path we'll be outputing the zip file to
+				const outputPath = path.resolve(process.cwd(), SETTINGS.get.output);
+
+				// create directory if it doesn't already exist
+				if (!fs.existsSync(outputPath)) {
+					fs.mkdirSync(outputPath, { recursive: true }, (err) => {
+						if (err) {
+							result.code = 1;
+							result.errors.push(`Error creating directory: ${err}`);
+							reject(result);
+						}
+					});
+				}
+
+				const zipPath = `${outputPath}/blender.zip`;
+				zipOutput = fs.createWriteStream(zipPath);
+
+				zipOutput.on('close', (err) => {
+					if (err) {
+						result.code = 1;
+						result.errors.push(`Error archiving files: ${err}`);
+					}
+					D.log(`Zip file written to path: ${color.yellow(zipPath)}`);
+					if (result.code === 1) {
+						reject(result);
+					} else {
+						resolve(result);
+					}
+				});
+			}
 
 			FILES.get.forEach(({ name, path, content }) => {
 				// append each file to the zip
@@ -123,39 +133,14 @@ function saveFiles() {
 					resolve(result);
 				}
 			}
-		} else if (
-			SETTINGS.get.output ||
-			SETTINGS.get.outputCss ||
-			SETTINGS.get.outputJs ||
-			SETTINGS.get.outputHtml ||
-			SETTINGS.get.outputTokens
-		) {
+		} else if (SETTINGS.get.output) {
 			D.log(`Saving files`);
 
 			const allFiles = [];
 
 			FILES.get.forEach(async ({ name, path, content, category }) => {
 				// save all files to a directory
-				if (SETTINGS.get.output) {
-					allFiles.push(writeFile(name, SETTINGS.get.output, content));
-				}
-				// save styles
-				else if (SETTINGS.get.outputCss && category === 'css') {
-					allFiles.push(writeFile(name, SETTINGS.get.outputCss, content));
-				}
-				// save javascript
-				else if (SETTINGS.get.outputJs && category === 'js') {
-					allFiles.push(writeFile(name, SETTINGS.get.outputJs, content));
-				}
-				// save html
-				else if (SETTINGS.get.outputHtml && category === 'html') {
-					allFiles.push(writeFile(name, SETTINGS.get.outputHtml, content));
-				}
-				// save tokens
-				else if (SETTINGS.get.outputTokens && category === 'token') {
-					allFiles.push(writeFile(name, SETTINGS.get.outputTokens, content));
-				}
-
+				allFiles.push(writeFile(name, path, content));
 				LOADING.tick();
 			});
 
@@ -177,6 +162,14 @@ function saveFiles() {
 	});
 }
 
+/**
+ * Write the files
+ *
+ * @param  {type} fileName    - Name of the file
+ * @param  {type} outputPath  - Where the file gets outputted
+ * @param  {type} fileContent - Contents of the file
+ * @return {type}             - Return a promise
+ */
 function writeFile(fileName, outputPath, fileContent) {
 	const result = {
 		code: 0,
