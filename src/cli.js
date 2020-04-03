@@ -97,11 +97,11 @@ async function cli() {
 		});
 	}
 
-	FILES.add = {
-		name: 'thing1.js',
-		path: 'path/to',
-		content: "alert('Hello World');",
-	};
+	// FILES.add = {
+	// 	name: 'thing1.js',
+	// 	path: 'path/to',
+	// 	content: "alert('Hello World');",
+	// };
 	// FILES.add = {
 	// 	name: 'thing2.js',
 	// 	path: 'path/to',
