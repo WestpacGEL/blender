@@ -81,5 +81,4 @@ bin
 !tests/mock/**/node_modules/
 
 # file testing
-test/
 *.zip
