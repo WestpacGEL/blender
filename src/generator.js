@@ -14,6 +14,7 @@ const { parseComponent } = require('./parseCss.js');
 const { version } = require('../package.json');
 const { SETTINGS } = require('./settings.js');
 const { LOADING } = require('./loading.js');
+const { FILES } = require('./files.js');
 const { color } = require('./color.js');
 const { D } = require('./log.js');
 
@@ -36,7 +37,8 @@ function generator(packages) {
 		(SETTINGS.get.output &&
 			!SETTINGS.get.outputCss &&
 			!SETTINGS.get.outputJs &&
-			!SETTINGS.get.outputHtml) ||
+			!SETTINGS.get.outputHtml &&
+			!SETTINGS.get.outputTokens) ||
 		SETTINGS.get.outputTokens
 			? true
 			: false;
@@ -44,7 +46,8 @@ function generator(packages) {
 		(SETTINGS.get.output &&
 			!SETTINGS.get.outputCss &&
 			!SETTINGS.get.outputJs &&
-			!SETTINGS.get.outputHtml) ||
+			!SETTINGS.get.outputHtml &&
+			!SETTINGS.get.outputTokens) ||
 		SETTINGS.get.outputCss
 			? true
 			: false;
@@ -52,7 +55,8 @@ function generator(packages) {
 		(SETTINGS.get.output &&
 			!SETTINGS.get.outputCss &&
 			!SETTINGS.get.outputJs &&
-			!SETTINGS.get.outputHtml) ||
+			!SETTINGS.get.outputHtml &&
+			!SETTINGS.get.outputTokens) ||
 		SETTINGS.get.outputJs
 			? true
 			: false;
@@ -60,7 +64,8 @@ function generator(packages) {
 		(SETTINGS.get.output &&
 			!SETTINGS.get.outputCss &&
 			!SETTINGS.get.outputJs &&
-			!SETTINGS.get.outputHtml) ||
+			!SETTINGS.get.outputHtml &&
+			!SETTINGS.get.outputTokens) ||
 		SETTINGS.get.outputHtml
 			? true
 			: false;
@@ -73,7 +78,7 @@ function generator(packages) {
 				// get core styles
 			}
 
-			if (includeJS && thisPackage.pkg.jquery && SETTINGS.get.includeJquery) {
+			if (includeJS && core.pkg.jquery && SETTINGS.get.includeJquery) {
 				// get jquery
 			}
 		});
@@ -82,24 +87,6 @@ function generator(packages) {
 	packages.map((thisPackage) => {
 		D.log(`generating for ${color.yellow(thisPackage.name)}`);
 
-		let parsedPkg;
-		if (thisPackage.pkg.recipe) {
-			parsedPkg = parseComponent({
-				componentPath: path.normalize(`${thisPackage.path}/${thisPackage.pkg.recipe}`),
-				componentName: 'AllStyles',
-				brand: SETTINGS.get.brand,
-			});
-
-			if (parsedPkg.status === 'error') {
-				result.errors.push({
-					package: thisPackage.name,
-					error: parsedPkg.message,
-				});
-				result.messages.push(parsedPkg.message);
-				result.code = 1;
-			}
-		}
-
 		// Building tokens
 		if (includeTokens && thisPackage.pkg.tokens) {
 			let tokens = require(thisPackage.path).default;
@@ -107,18 +94,52 @@ function generator(packages) {
 				tokens = flattenTokens(tokens);
 			}
 			const compiledTokens = compileTokens(tokens, SETTINGS.get.tokensFormat);
-			console.log(`include tokens for ${thisPackage.name}`);
-			// add compiledTokens to file store
+
+			let filePath = SETTINGS.get.outputTokens || SETTINGS.get.output;
+			if (SETTINGS.get.outputZip) {
+				filePath = 'blender/';
+			}
+			const name = `tokens.${SETTINGS.get.tokensFormat}`;
+
+			D.log(
+				`Adding tokens to store at path ${color.yellow(filePath)} and name ${color.yellow(name)}`
+			);
+			FILES.add = {
+				name,
+				path: filePath,
+				content: compiledTokens,
+			};
 		}
 
 		let parsedData = {};
 		if ((includeCSS && thisPackage.pkg.recipe) || (includeHTML && thisPackage.pkg.recipe)) {
-			// parseCSS and add to parsedData
-			// parsedData[thisPackage.name] = parseComponent();
+			D.log(`Parsing package`);
+
+			let parsedPkg;
+			if (thisPackage.pkg.recipe) {
+				parsedPkg = parseComponent({
+					componentPath: path.normalize(`${thisPackage.path}/${thisPackage.pkg.recipe}`),
+					componentName: 'AllStyles',
+					brand: SETTINGS.get.brand,
+				});
+
+				if (parsedPkg.status === 'error') {
+					result.errors.push({
+						package: thisPackage.name,
+						error: parsedPkg.message,
+					});
+					result.messages.push(parsedPkg.message);
+					result.code = 1;
+				}
+			}
+
+			parsedData[thisPackage.name] = parsedPkg;
 		}
 
 		// Building CSS
 		if (includeCSS && thisPackage.pkg.recipe) {
+			D.log(`Creating css files`);
+
 			const filePath = SETTINGS.get.outputCss || SETTINGS.get.output;
 			const { css } = parsedData[thisPackage.name];
 			const cssFiles = generateCSSFile(css);
@@ -129,6 +150,8 @@ function generator(packages) {
 
 		// Building HTML
 		if (includeHTML && thisPackage.pkg.recipe) {
+			D.log(`Creating html files`);
+
 			const filePath = SETTINGS.get.outputHtml || SETTINGS.get.output;
 			const { html } = parsedData[thisPackage.name];
 			const htmlFiles = generateHTMLFile(html);
@@ -139,6 +162,8 @@ function generator(packages) {
 
 		// Building JS
 		if (includeJS && thisPackage.pkg.jquery) {
+			D.log(`Creating js files`);
+
 			const filePath = SETTINGS.get.outputJs || SETTINGS.get.output;
 			const jsFiles = generateJSFile(thisPackage);
 			// add jsFiles to file store
