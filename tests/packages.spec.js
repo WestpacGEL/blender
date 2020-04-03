@@ -107,7 +107,7 @@ describe('getPackages', () => {
 		});
 	});
 
-	test.only('Exclude packages with scope and excluded once', () => {
+	test('Exclude packages with scope and excluded once', () => {
 		SETTINGS.set = {
 			scope: '@bank',
 			include: [],
@@ -123,7 +123,7 @@ describe('getPackages', () => {
 		});
 	});
 
-	test.only('Exclude packages without scope and included once', () => {
+	test('Exclude packages without scope and included once', () => {
 		SETTINGS.set = {
 			include: ['@bank/component1'],
 			exclude: [],
@@ -139,7 +139,7 @@ describe('getPackages', () => {
 		});
 	});
 
-	test.only('Include two packages without scope from two different folders', () => {
+	test('Include two packages without scope from two different folders', () => {
 		SETTINGS.set = {
 			include: ['@bank/component1', '@westpac/component1'],
 			exclude: [],
@@ -160,7 +160,7 @@ describe('getPackages', () => {
 		});
 	});
 
-	test.only('Include one package without scope that does not exist', () => {
+	test('Include one package without scope that does not exist', () => {
 		console.warn = jest.fn();
 
 		SETTINGS.set = {
