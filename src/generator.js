@@ -29,6 +29,44 @@ function generator(packages) {
 		messages: [],
 	};
 
+	const includeTokens =
+		(SETTINGS.get.output &&
+			!SETTINGS.get.outputCss &&
+			!SETTINGS.get.outputJs &&
+			!SETTINGS.get.outputHtml) ||
+		SETTINGS.get.outputTokens
+			? true
+			: false;
+	const includeCSS =
+		(SETTINGS.get.output &&
+			!SETTINGS.get.outputCss &&
+			!SETTINGS.get.outputJs &&
+			!SETTINGS.get.outputHtml) ||
+		SETTINGS.get.outputCss
+			? true
+			: false;
+	const includeJS =
+		(SETTINGS.get.output &&
+			!SETTINGS.get.outputCss &&
+			!SETTINGS.get.outputJs &&
+			!SETTINGS.get.outputHtml) ||
+		SETTINGS.get.outputJs
+			? true
+			: false;
+	const includeHTML =
+		(SETTINGS.get.output &&
+			!SETTINGS.get.outputCss &&
+			!SETTINGS.get.outputJs &&
+			!SETTINGS.get.outputHtml) ||
+		SETTINGS.get.outputHtml
+			? true
+			: false;
+
+	// Building CSS
+	if (includeCSS) {
+		// get core styles
+	}
+
 	LOADING.start = { total: packages.length };
 	packages.map((thisPackage) => {
 		D.log(`generating for ${color.yellow(thisPackage.name)}`);
@@ -52,14 +90,36 @@ function generator(packages) {
 		}
 
 		// Building tokens
-		if (thisPackage.pkg.tokens) {
+		if (includeTokens && thisPackage.pkg.tokens) {
 			let tokens = require(thisPackage.path).default;
 			if (SETTINGS.get.tokensFormat !== 'json') {
 				tokens = flattenTokens(tokens);
 			}
 			const compiledTokens = compileTokens(tokens, SETTINGS.get.tokensFormat);
+			console.log(`include tokens for ${thisPackage.name}`);
 			// add compiledTokens to file store
-			console.log(compiledTokens);
+		}
+
+		// Building CSS
+		if (includeCSS && thisPackage.pkg.recipe) {
+			const filePath = SETTINGS.get.outputCss || SETTINGS.get.output;
+			console.log(`include css for ${thisPackage.name}`);
+			// get packages styles
+		}
+
+		// Building JS
+		if (includeJS && thisPackage.pkg.jquery) {
+			const filePath = SETTINGS.get.outputJs || SETTINGS.get.output;
+			console.log(`include js for ${thisPackage.name}`);
+			// include jquery source
+			// concat all jquery
+		}
+
+		// Building HTML
+		if (includeHTML && thisPackage.pkg.recipe) {
+			const filePath = SETTINGS.get.outputHtml || SETTINGS.get.output;
+			console.log(`include html for ${thisPackage.name}`);
+			// build html docs
 		}
 
 		// console.log(thisPackage);
