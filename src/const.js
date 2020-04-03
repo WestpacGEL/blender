@@ -110,7 +110,7 @@ const CLIOPTIONS = {
 		example: 'blender -t json',
 		flag: 'f',
 		type: 'string',
-		arguments: ['json', 'less', 'sass'],
+		arguments: ['json', 'css', 'less', 'sass'],
 		default: 'json',
 	},
 	cwd: {

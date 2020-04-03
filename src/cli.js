@@ -12,6 +12,7 @@ const fs = require('fs');
 const { SETTINGS, getCliArgs, checkInput, getSettings } = require('./settings.js');
 const { PACKAGES, getPackages } = require('./packages.js');
 const { stripColor, color } = require('./color.js');
+const { FILES, saveFiles } = require('./files.js');
 const { generator } = require('./generator.js');
 const { version } = require('../package.json');
 const { DEBUG, D, log } = require('./log.js');
@@ -95,6 +96,395 @@ async function cli() {
 			log.error(error);
 		});
 	}
+
+	// FILES.add = {
+	// 	name: 'thing1.js',
+	// 	path: 'path/to',
+	// 	content: "alert('Hello World');",
+	// 	category: 'js',
+	// };
+	// FILES.add = {
+	// 	name: 'thing2.js',
+	// 	path: 'path/to',
+	// 	content: "alert('Hello World');",
+	// 	category: 'js',
+	// };
+	// FILES.add = {
+	// 	name: 'thing3.js',
+	// 	path: 'path/to',
+	// 	content: "alert('Hello World');",
+	// 	category: 'js',
+	// };
+	// FILES.add = {
+	// 	name: 'thing4.js',
+	// 	path: 'path/to',
+	// 	content: "alert('Hello World');",
+	// 	category: 'js',
+	// };
+	// FILES.add = {
+	// 	name: 'thing5.js',
+	// 	path: 'path/to',
+	// 	content: "alert('Hello World');",
+	// 	category: 'js',
+	// };
+	// FILES.add = {
+	// 	name: 'thing6.js',
+	// 	path: 'path/to',
+	// 	content: "alert('Hello World');",
+	// 	category: 'js',
+	// };
+	// FILES.add = {
+	// 	name: 'thing7.js',
+	// 	path: 'path/to',
+	// 	content: "alert('Hello World');",
+	// 	category: 'js',
+	// };
+	// FILES.add = {
+	// 	name: 'thing8.js',
+	// 	path: 'path/to',
+	// 	content: "alert('Hello World');",
+	// 	category: 'js',
+	// };
+	// FILES.add = {
+	// 	name: 'thing9.js',
+	// 	path: 'path/to',
+	// 	content: "alert('Hello World');",
+	// 	category: 'js',
+	// };
+	// FILES.add = {
+	// 	name: 'thing10.js',
+	// 	path: 'path/to',
+	// 	content: "alert('Hello World');",
+	// 	category: 'js',
+	// };
+	// FILES.add = {
+	// 	name: 'thing11.js',
+	// 	path: 'path/to',
+	// 	content: "alert('Hello World');",
+	// 	category: 'js',
+	// };
+	// FILES.add = {
+	// 	name: 'thing12.js',
+	// 	path: 'path/to',
+	// 	content: "alert('Hello World');",
+	// 	category: 'js',
+	// };
+	// FILES.add = {
+	// 	name: 'thing13.js',
+	// 	path: 'path/to',
+	// 	content: "alert('Hello World');",
+	// 	category: 'js',
+	// };
+	// FILES.add = {
+	// 	name: 'thing14.js',
+	// 	path: 'path/to',
+	// 	content: "alert('Hello World');",
+	// 	category: 'js',
+	// };
+	// FILES.add = {
+	// 	name: 'thing15.js',
+	// 	path: 'path/to',
+	// 	content: "alert('Hello World');",
+	// 	category: 'js',
+	// };
+	// FILES.add = {
+	// 	name: 'thing16.js',
+	// 	path: 'path/to',
+	// 	content: "alert('Hello World');",
+	// 	category: 'js',
+	// };
+	// FILES.add = {
+	// 	name: 'thing17.js',
+	// 	path: 'path/to',
+	// 	content: "alert('Hello World');",
+	// 	category: 'js',
+	// };
+	// FILES.add = {
+	// 	name: 'thing18.js',
+	// 	path: 'path/to',
+	// 	content: "alert('Hello World');",
+	// 	category: 'js',
+	// };
+	// FILES.add = {
+	// 	name: 'thing19.js',
+	// 	path: 'path/to',
+	// 	content: "alert('Hello World');",
+	// 	category: 'js',
+	// };
+	// FILES.add = {
+	// 	name: 'thing20.js',
+	// 	path: 'path/to',
+	// 	content: "alert('Hello World');",
+	// 	category: 'js',
+	// };
+	// FILES.add = {
+	// 	name: 'thing21.css',
+	// 	path: 'path/to',
+	// 	content: 'body { background red; }',
+	// 	category: 'css',
+	// };
+	// FILES.add = {
+	// 	name: 'thing22.css',
+	// 	path: 'path/to',
+	// 	content: 'body { background red; }',
+	// 	category: 'css',
+	// };
+	// FILES.add = {
+	// 	name: 'thing23.css',
+	// 	path: 'path/to',
+	// 	content: 'body { background red; }',
+	// 	category: 'css',
+	// };
+	// FILES.add = {
+	// 	name: 'thing24.css',
+	// 	path: 'path/to',
+	// 	content: 'body { background red; }',
+	// 	category: 'css',
+	// };
+	// FILES.add = {
+	// 	name: 'thing25.css',
+	// 	path: 'path/to',
+	// 	content: 'body { background red; }',
+	// 	category: 'css',
+	// };
+	// FILES.add = {
+	// 	name: 'thing26.css',
+	// 	path: 'path/to',
+	// 	content: 'body { background red; }',
+	// 	category: 'css',
+	// };
+	// FILES.add = {
+	// 	name: 'thing27.css',
+	// 	path: 'path/to',
+	// 	content: 'body { background red; }',
+	// 	category: 'css',
+	// };
+	// FILES.add = {
+	// 	name: 'thing28.css',
+	// 	path: 'path/to',
+	// 	content: 'body { background red; }',
+	// 	category: 'css',
+	// };
+	// FILES.add = {
+	// 	name: 'thing29.css',
+	// 	path: 'path/to',
+	// 	content: 'body { background red; }',
+	// 	category: 'css',
+	// };
+	// FILES.add = {
+	// 	name: 'thing30.css',
+	// 	path: 'path/to',
+	// 	content: 'body { background red; }',
+	// 	category: 'css',
+	// };
+	// FILES.add = {
+	// 	name: 'thing31.css',
+	// 	path: 'path/to',
+	// 	content: 'body { background red; }',
+	// 	category: 'css',
+	// };
+	// FILES.add = {
+	// 	name: 'thing32.css',
+	// 	path: 'path/to',
+	// 	content: 'body { background red; }',
+	// 	category: 'css',
+	// };
+	// FILES.add = {
+	// 	name: 'thing33.css',
+	// 	path: 'path/to',
+	// 	content: 'body { background red; }',
+	// 	category: 'css',
+	// };
+	// FILES.add = {
+	// 	name: 'thing34.css',
+	// 	path: 'path/to',
+	// 	content: 'body { background red; }',
+	// 	category: 'css',
+	// };
+	// FILES.add = {
+	// 	name: 'thing35.css',
+	// 	path: 'path/to',
+	// 	content: 'body { background red; }',
+	// 	category: 'css',
+	// };
+	// FILES.add = {
+	// 	name: 'thing36.css',
+	// 	path: 'path/to',
+	// 	content: 'body { background red; }',
+	// 	category: 'css',
+	// };
+	// FILES.add = {
+	// 	name: 'thing37.css',
+	// 	path: 'path/to',
+	// 	content: 'body { background red; }',
+	// 	category: 'css',
+	// };
+	// FILES.add = {
+	// 	name: 'thing38.css',
+	// 	path: 'path/to',
+	// 	content: 'body { background red; }',
+	// 	category: 'css',
+	// };
+	// FILES.add = {
+	// 	name: 'thing39.css',
+	// 	path: 'path/to',
+	// 	content: 'body { background red; }',
+	// 	category: 'css',
+	// };
+	// FILES.add = {
+	// 	name: 'thing40.css',
+	// 	path: 'path/to',
+	// 	content: 'body { background red; }',
+	// 	category: 'css',
+	// };
+	// FILES.add = {
+	// 	name: 'thing41.html',
+	// 	path: 'path/to',
+	// 	content: '<html><title /><body>Hello World</body></html>',
+	// 	category: 'html',
+	// };
+	// FILES.add = {
+	// 	name: 'thing42.html',
+	// 	path: 'path/to',
+	// 	content: '<html><title /><body>Hello World</body></html>',
+	// 	category: 'html',
+	// };
+	// FILES.add = {
+	// 	name: 'thing43.html',
+	// 	path: 'path/to',
+	// 	content: '<html><title /><body>Hello World</body></html>',
+	// 	category: 'html',
+	// };
+	// FILES.add = {
+	// 	name: 'thing44.html',
+	// 	path: 'path/to',
+	// 	content: '<html><title /><body>Hello World</body></html>',
+	// 	category: 'html',
+	// };
+	// FILES.add = {
+	// 	name: 'thing45.html',
+	// 	path: 'path/to',
+	// 	content: '<html><title /><body>Hello World</body></html>',
+	// 	category: 'html',
+	// };
+	// FILES.add = {
+	// 	name: 'thing46.html',
+	// 	path: 'path/to',
+	// 	content: '<html><title /><body>Hello World</body></html>',
+	// 	category: 'html',
+	// };
+	// FILES.add = {
+	// 	name: 'thing47.html',
+	// 	path: 'path/to',
+	// 	content: '<html><title /><body>Hello World</body></html>',
+	// 	category: 'html',
+	// };
+	// FILES.add = {
+	// 	name: 'thing48.html',
+	// 	path: 'path/to',
+	// 	content: '<html><title /><body>Hello World</body></html>',
+	// 	category: 'html',
+	// };
+	// FILES.add = {
+	// 	name: 'thing49.html',
+	// 	path: 'path/to',
+	// 	content: '<html><title /><body>Hello World</body></html>',
+	// 	category: 'html',
+	// };
+	// FILES.add = {
+	// 	name: 'thing50.html',
+	// 	path: 'path/to',
+	// 	content: '<html><title /><body>Hello World</body></html>',
+	// 	category: 'html',
+	// };
+	// FILES.add = {
+	// 	name: 'thing51.html',
+	// 	path: 'path/to',
+	// 	content: '<html><title /><body>Hello World</body></html>',
+	// 	category: 'html',
+	// };
+	// FILES.add = {
+	// 	name: 'thing52.html',
+	// 	path: 'path/to',
+	// 	content: '<html><title /><body>Hello World</body></html>',
+	// 	category: 'html',
+	// };
+	// FILES.add = {
+	// 	name: 'thing53.html',
+	// 	path: 'path/to',
+	// 	content: '<html><title /><body>Hello World</body></html>',
+	// 	category: 'html',
+	// };
+	// FILES.add = {
+	// 	name: 'thing54.html',
+	// 	path: 'path/to',
+	// 	content: '<html><title /><body>Hello World</body></html>',
+	// 	category: 'html',
+	// };
+	// FILES.add = {
+	// 	name: 'thing55.html',
+	// 	path: 'path/to',
+	// 	content: '<html><title /><body>Hello World</body></html>',
+	// 	category: 'html',
+	// };
+	// FILES.add = {
+	// 	name: 'thing56.html',
+	// 	path: 'path/to',
+	// 	content: '<html><title /><body>Hello World</body></html>',
+	// 	category: 'html',
+	// };
+	// FILES.add = {
+	// 	name: 'thing57.html',
+	// 	path: 'path/to',
+	// 	content: '<html><title /><body>Hello World</body></html>',
+	// 	category: 'html',
+	// };
+	// FILES.add = {
+	// 	name: 'thing58.html',
+	// 	path: 'path/to',
+	// 	content: '<html><title /><body>Hello World</body></html>',
+	// 	category: 'html',
+	// };
+	// FILES.add = {
+	// 	name: 'thing59.html',
+	// 	path: 'path/to',
+	// 	content: '<html><title /><body>Hello World</body></html>',
+	// 	category: 'html',
+	// };
+	// FILES.add = {
+	// 	name: 'thing60.html',
+	// 	path: 'path/to',
+	// 	content: '<html><title /><body>Hello World</body></html>',
+	// 	category: 'html',
+	// };
+	// FILES.add = {
+	// 	name: 'token.json',
+	// 	path: 'path/to',
+	// 	content: '{"bg": "#bada55"}',
+	// 	category: 'token',
+	// };
+	// FILES.add = {
+	// 	name: 'token.css',
+	// 	path: 'path/to',
+	// 	content: 'root{--bg:#bada55;}',
+	// 	category: 'token',
+	// };
+	// FILES.add = {
+	// 	name: 'token.less',
+	// 	path: 'path/to',
+	// 	content: '@bg: #bada55;',
+	// 	category: 'token',
+	// };
+	// FILES.add = {
+	// 	name: 'token.sass',
+	// 	path: 'path/to',
+	// 	content: '$bg: "#bada55";',
+	// 	category: 'token',
+	// };
+
+	// generator...
+
+	await saveFiles();
 }
 
 /**
