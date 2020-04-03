@@ -7,6 +7,9 @@
  **/
 const path = require('path');
 
+const { generateHTMLFile } = require('./generate-html.js');
+const { generateCSSFile } = require('./generate-css.js');
+const { generateJSFile } = require('./generate-js.js');
 const { parseComponent } = require('./parseCss.js');
 const { version } = require('../package.json');
 const { SETTINGS } = require('./settings.js');
@@ -62,10 +65,18 @@ function generator(packages) {
 			? true
 			: false;
 
-	// Building CSS
-	if (includeCSS) {
-		// get core styles
-	}
+	// Building core
+	packages
+		.filter((pkg) => pkg.pkg.isCore) // we filter out all core packages
+		.map((core) => {
+			if (includeCSS && core.pkg.recipe) {
+				// get core styles
+			}
+
+			if (includeJS && thisPackage.pkg.jquery && SETTINGS.get.includeJquery) {
+				// get jquery
+			}
+		});
 
 	LOADING.start = { total: packages.length };
 	packages.map((thisPackage) => {
@@ -100,42 +111,40 @@ function generator(packages) {
 			// add compiledTokens to file store
 		}
 
+		let parsedData = {};
+		if ((includeCSS && thisPackage.pkg.recipe) || (includeHTML && thisPackage.pkg.recipe)) {
+			// parseCSS and add to parsedData
+			// parsedData[thisPackage.name] = parseComponent();
+		}
+
 		// Building CSS
 		if (includeCSS && thisPackage.pkg.recipe) {
 			const filePath = SETTINGS.get.outputCss || SETTINGS.get.output;
-			console.log(`include css for ${thisPackage.name}`);
-			// get packages styles
-		}
+			const { css } = parsedData[thisPackage.name];
+			const cssFiles = generateCSSFile(css);
+			// add cssFiles to file store
 
-		// Building JS
-		if (includeJS && thisPackage.pkg.jquery) {
-			const filePath = SETTINGS.get.outputJs || SETTINGS.get.output;
-			console.log(`include js for ${thisPackage.name}`);
-			// include jquery source
-			// concat all jquery
+			console.log(`include css for ${thisPackage.name}`);
 		}
 
 		// Building HTML
 		if (includeHTML && thisPackage.pkg.recipe) {
 			const filePath = SETTINGS.get.outputHtml || SETTINGS.get.output;
+			const { html } = parsedData[thisPackage.name];
+			const htmlFiles = generateHTMLFile(html);
+			// add htmlFiles to file store
+
 			console.log(`include html for ${thisPackage.name}`);
-			// build html docs
 		}
 
-		// console.log(thisPackage);
+		// Building JS
+		if (includeJS && thisPackage.pkg.jquery) {
+			const filePath = SETTINGS.get.outputJs || SETTINGS.get.output;
+			const jsFiles = generateJSFile(thisPackage);
+			// add jsFiles to file store
 
-		// generate stuff:
-		// get core styles
-		// modules loop
-		// compile module
-		// get docs html
-		// get recipe styles
-		// ids loop
-		// generate class names
-		// replace prefix in css
-		// build html file(s)
-		// build css file(s)
-		// concat js file(s)
+			console.log(`include js for ${thisPackage.name}`);
+		}
 
 		LOADING.tick();
 	});

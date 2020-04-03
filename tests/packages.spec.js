@@ -105,6 +105,7 @@ describe('getPackages', () => {
 		expect(result[0].pkg).toStrictEqual({
 			jquery: 'blender/jquery.js',
 			recipe: 'blender/recipe.js',
+			isCore: true,
 		});
 		expect(result[1].path.endsWith('mock-project1/node_modules/@westpac/wbc')).toBe(true);
 		expect(result[1].pkg).toStrictEqual({ tokens: true });
