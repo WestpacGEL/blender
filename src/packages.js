@@ -43,24 +43,28 @@ function getPackages(cwd = process.cwd()) {
 	const nodeModulesPath = path.normalize(`${cwd}/node_modules/`);
 
 	let inScope = [];
-	try {
-		inScope = fs
-			.readdirSync(path.normalize(`${nodeModulesPath}/${SETTINGS.get.scope}`), {
-				withFileTypes: true,
-			}) // read all items in that folder
-			.filter((item) => !item.name.startsWith('.') && item.isDirectory()) // filter out dot files and non-folder
-			.map((folder) => path.normalize(`${nodeModulesPath}/${SETTINGS.get.scope}/${folder.name}`)); // add absolute path
-	} catch (error) {
-		if (error.code === 'ENOENT') {
-			D.log('No scope found');
-			D.log(error);
-		} else {
-			D.error(
-				`Something went wrong when trying to read packages at ${color.yellow(
-					`${nodeModulesPath}/${SETTINGS.get.scope}`
-				)}`
-			);
-			D.error(error);
+	if (SETTINGS.get.scope) {
+		try {
+			inScope = fs
+				.readdirSync(path.normalize(`${nodeModulesPath}/${SETTINGS.get.scope}`), {
+					withFileTypes: true,
+				}) // read all items in that folder
+				.filter(
+					(item) => !item.name.startsWith('.') && !item.name.startsWith('@') && item.isDirectory()
+				) // filter out dot files and non-folder
+				.map((folder) => path.normalize(`${nodeModulesPath}/${SETTINGS.get.scope}/${folder.name}`)); // add absolute path
+		} catch (error) {
+			if (error.code === 'ENOENT') {
+				D.log('No scope found');
+				D.log(error);
+			} else {
+				D.error(
+					`Something went wrong when trying to read packages at ${color.yellow(
+						`${nodeModulesPath}/${SETTINGS.get.scope}`
+					)}`
+				);
+				D.error(error);
+			}
 		}
 	}
 
