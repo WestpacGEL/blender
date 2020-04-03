@@ -90,12 +90,12 @@ async function cli() {
 		process.exit(result.code);
 	}
 
-	// const result = generator(PACKAGES.get);
-	// if (result.messages) {
-	// 	result.messages.map((error) => {
-	// 		log.error(error);
-	// 	});
-	// }
+	const result = generator(PACKAGES.get);
+	if (result.messages) {
+		result.messages.map((error) => {
+			log.error(error);
+		});
+	}
 
 	FILES.add = {
 		name: 'thing1.js',
