@@ -70,6 +70,8 @@ async function cli() {
 		});
 	}
 
+	// get brand
+
 	// report on cwd
 	const cwd = SETTINGS.get.cwd;
 	log.info(`Running in ${color.yellow(cwd)}`);

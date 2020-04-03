@@ -41,7 +41,7 @@ const { D } = require('./log.js');
  * @return {returnObject}                            -
  */
 function parseComponent({ componentPath, componentName = 'default', brand }) {
-	D.header('parseComponent', { componentPath, brand });
+	D.header('parseComponent', { componentPath, componentName, brand });
 
 	const cache = createCache();
 	const { extractCritical } = createEmotionServer(cache);
