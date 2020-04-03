@@ -29,44 +29,46 @@ function tester(packages) {
 	};
 
 	LOADING.start = { total: packages.length };
-	packages.map((thisPackage) => {
-		D.log(`Testing ${color.yellow(thisPackage.name)}`);
+	packages
+		.filter((thisPackage) => thisPackage.pkg.recipe)
+		.map((thisPackage) => {
+			D.log(`Testing ${color.yellow(thisPackage.name)}`);
 
-		const parsedPkg = parseComponent({
-			componentPath: path.normalize(`${thisPackage.path}/${thisPackage.pkg.recipe}`),
-			componentName: 'AllStyles',
-			brand: SETTINGS.get.brand,
+			const parsedPkg = parseComponent({
+				componentPath: path.normalize(`${thisPackage.path}/${thisPackage.pkg.recipe}`),
+				componentName: 'AllStyles',
+				brand: SETTINGS.get.brand,
+			});
+
+			if (parsedPkg.status === 'error') {
+				result.errors.push({
+					package: thisPackage.name,
+					error: parsedPkg.message,
+				});
+				result.messages.push(parsedPkg.message);
+				result.code = 1;
+			} else {
+				const ids = getValidIds(parsedPkg.ids, parsedPkg.css);
+				const idResult = checkIds(ids);
+
+				if (idResult.code === 1) {
+					result.code = 1;
+					result.errors.push({
+						package: thisPackage.name,
+						error: idResult.ids,
+					});
+					result.messages.push(
+						`The package ${color.yellow(
+							thisPackage.name
+						)} included labels that can't be made human readable:\n    ${color.yellow(
+							idResult.ids.join('\n    ')
+						)}`
+					);
+				}
+			}
+
+			LOADING.tick();
 		});
-
-		if (parsedPkg.status === 'error') {
-			result.errors.push({
-				package: thisPackage.name,
-				error: parsedPkg.message,
-			});
-			result.messages.push(parsedPkg.message);
-			result.code = 1;
-		}
-
-		const ids = getValidIds(parsedPkg.ids, parsedPkg.css);
-		const idResult = checkIds(ids);
-
-		if (idResult.code === 1) {
-			result.code = 1;
-			result.errors.push({
-				package: thisPackage.name,
-				error: idResult.ids,
-			});
-			result.messages.push(
-				`The package ${color.yellow(
-					thisPackage.name
-				)} included labels that can't be made human readable:\n    ${color.yellow(
-					idResult.ids.join('\n    ')
-				)}`
-			);
-		}
-
-		LOADING.tick();
-	});
 	LOADING.abort();
 
 	D.log(`tester return: "${color.yellow(JSON.stringify(result))}"`);
