@@ -2,7 +2,8 @@
  * All functions for the blender tester
  *
  * tester      - The tester function
- * getValidIds - Filter out all ids whcih have not been used in the css output
+ * testLabels  - Test the parsed output for unlabeled hashes
+ * getValidIds - Filter out all ids which have not been used in the css output
  * checkIds    - Check ids for duplication
  **/
 const path = require('path');
@@ -47,8 +48,7 @@ function tester(packages) {
 				result.messages.push(parsedPkg.message);
 				result.code = 1;
 			} else {
-				const ids = getValidIds(parsedPkg.ids, parsedPkg.css);
-				const idResult = checkIds(ids);
+				const idResult = testLabels(parsedPkg);
 
 				if (idResult.code === 1) {
 					result.code = 1;
@@ -73,6 +73,18 @@ function tester(packages) {
 	D.log(`tester return: "${color.yellow(JSON.stringify(result))}"`);
 
 	return result;
+}
+
+/**
+ * Test the parsed output for unlabeled hashes
+ *
+ * @param  {object} parsedPkg - The parse output of parseComponent
+ *
+ * @return {object}           - An object with all failing ids
+ */
+function testLabels(parsedPkg) {
+	const ids = getValidIds(parsedPkg.ids, parsedPkg.css);
+	return checkIds(ids);
 }
 
 /**
@@ -122,4 +134,7 @@ function checkIds(ids) {
 
 module.exports = exports = {
 	tester,
+	testLabels,
+	getValidIds,
+	checkIds,
 };
