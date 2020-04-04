@@ -2,16 +2,15 @@
  * All functions for the generator
  *
  * generator     - Generate files from our blender packages
- * flattenTokens - Flatten a nested object recursively into a single dimensional object
- * compileTokens - Compile flat tokens into supported languages
  **/
 const path = require('path');
 
+const { generateTokenFile } = require('./generate-tokens.js');
 const { generateHTMLFile } = require('./generate-html.js');
 const { generateCSSFile } = require('./generate-css.js');
 const { generateJSFile } = require('./generate-js.js');
 const { parseComponent } = require('./parseCss.js');
-const { version } = require('../package.json');
+const { testLabels } = require('./tester.js');
 const { SETTINGS } = require('./settings.js');
 const { LOADING } = require('./loading.js');
 const { FILES } = require('./files.js');
@@ -33,52 +32,21 @@ function generator(packages) {
 		messages: [],
 	};
 
-	const includeTokens =
-		(SETTINGS.get.output &&
-			!SETTINGS.get.outputCss &&
-			!SETTINGS.get.outputJs &&
-			!SETTINGS.get.outputHtml &&
-			!SETTINGS.get.outputTokens) ||
-		SETTINGS.get.outputTokens
-			? true
-			: false;
-	const includeCSS =
-		(SETTINGS.get.output &&
-			!SETTINGS.get.outputCss &&
-			!SETTINGS.get.outputJs &&
-			!SETTINGS.get.outputHtml &&
-			!SETTINGS.get.outputTokens) ||
-		SETTINGS.get.outputCss
-			? true
-			: false;
-	const includeJS =
-		(SETTINGS.get.output &&
-			!SETTINGS.get.outputCss &&
-			!SETTINGS.get.outputJs &&
-			!SETTINGS.get.outputHtml &&
-			!SETTINGS.get.outputTokens) ||
-		SETTINGS.get.outputJs
-			? true
-			: false;
-	const includeHTML =
-		(SETTINGS.get.output &&
-			!SETTINGS.get.outputCss &&
-			!SETTINGS.get.outputJs &&
-			!SETTINGS.get.outputHtml &&
-			!SETTINGS.get.outputTokens) ||
-		SETTINGS.get.outputHtml
-			? true
-			: false;
-
 	// Building core
 	packages
 		.filter((pkg) => pkg.pkg.isCore) // we filter out all core packages
 		.map((core) => {
-			if (includeCSS && core.pkg.recipe) {
+			if (SETTINGS.get.outputCss && core.pkg.recipe) {
+				const parsedPkg = parseComponent({
+					componentPath: path.normalize(`${core.path}/${core.pkg.recipe}`),
+					componentName: 'AllStyles',
+				});
+				console.log(testLabels(parsedPkg));
+				console.log(parsedPkg);
 				// get core styles
 			}
 
-			if (includeJS && core.pkg.jquery && SETTINGS.get.includeJquery) {
+			if (SETTINGS.get.outputJs && core.pkg.jquery && SETTINGS.get.includeJquery) {
 				// get jquery
 			}
 		});
@@ -88,12 +56,8 @@ function generator(packages) {
 		D.log(`generating for ${color.yellow(thisPackage.name)}`);
 
 		// Building tokens
-		if (includeTokens && thisPackage.pkg.tokens) {
-			let tokens = require(thisPackage.path).default;
-			if (SETTINGS.get.tokensFormat !== 'json') {
-				tokens = flattenTokens(tokens);
-			}
-			const compiledTokens = compileTokens(tokens, SETTINGS.get.tokensFormat);
+		if (SETTINGS.get.outputTokens && thisPackage.pkg.tokens) {
+			const compiledTokens = generateTokenFile(thisPackage.path, SETTINGS.get.tokensFormat);
 
 			let filePath = SETTINGS.get.outputTokens || SETTINGS.get.output;
 			if (SETTINGS.get.outputZip) {
@@ -112,7 +76,10 @@ function generator(packages) {
 		}
 
 		let parsedData = {};
-		if ((includeCSS && thisPackage.pkg.recipe) || (includeHTML && thisPackage.pkg.recipe)) {
+		if (
+			(SETTINGS.get.outputCSS && thisPackage.pkg.recipe) ||
+			(SETTINGS.get.outputHtml && thisPackage.pkg.recipe)
+		) {
 			D.log(`Parsing package`);
 
 			let parsedPkg;
@@ -136,7 +103,7 @@ function generator(packages) {
 		}
 
 		// Building CSS
-		if (includeCSS && thisPackage.pkg.recipe) {
+		if (SETTINGS.get.outputCSS && thisPackage.pkg.recipe) {
 			D.log(`Creating css files`);
 
 			const filePath = SETTINGS.get.outputCss || SETTINGS.get.output;
@@ -148,7 +115,7 @@ function generator(packages) {
 		}
 
 		// Building HTML
-		if (includeHTML && thisPackage.pkg.recipe) {
+		if (SETTINGS.get.outputHtml && thisPackage.pkg.recipe) {
 			D.log(`Creating html files`);
 
 			const filePath = SETTINGS.get.outputHtml || SETTINGS.get.output;
@@ -160,7 +127,7 @@ function generator(packages) {
 		}
 
 		// Building JS
-		if (includeJS && thisPackage.pkg.jquery) {
+		if (SETTINGS.get.outputJs && thisPackage.pkg.jquery) {
 			D.log(`Creating js files`);
 
 			const filePath = SETTINGS.get.outputJs || SETTINGS.get.output;
@@ -179,96 +146,6 @@ function generator(packages) {
 	return result;
 }
 
-/**
- * Flatten a nested object recursively into a single dimensional object
- *
- * @param  {object} tokens - The tokens in a nested object
- * @param  {string} key    - The current key
- * @param  {object} list   - The accumulated list thus far
- *
- * @return {object}        - A flat single dimensional object
- */
-function flattenTokens(tokens, key = '', list = {}) {
-	const seperator = key === '' ? '' : '_';
-
-	if (typeof tokens === 'object' && !Array.isArray(tokens)) {
-		Object.entries(tokens).map(([name, value]) => {
-			if (typeof value === 'string') {
-				list[`${key}${seperator}${name}`] = value;
-			} else if (typeof value === 'number') {
-				list[`${key}${seperator}${name}`] = value;
-			} else if (typeof value === 'object') {
-				return { ...list, ...flattenTokens(value, `${key}${seperator}${name}`, list) };
-			} else {
-			}
-		});
-
-		return list;
-	} else if (Array.isArray(tokens)) {
-		tokens.map((token, i) => {
-			if (typeof token === 'string') {
-				list[`${key}-${i}`] = token;
-			} else {
-				return { ...list, ...flattenTokens(token, `${key}${i}`, list) };
-			}
-		});
-
-		return list;
-	}
-}
-
-/**
- * Compile flat tokens into supported languages
- *
- * @param  {object} tokens - The flat single dimensional tokens object
- * @param  {string} lang   - The language to compile to
- *
- * @return {string}        - The tokens in the specified language
- */
-function compileTokens(tokens, lang) {
-	let result = '';
-	result += ``;
-
-	const langMap = {
-		less: '@',
-		scss: '$',
-		sass: '$',
-		css: '--',
-	};
-
-	const comment = [
-		`/**********************************************************`,
-		`             █▄▄ █   █▀▀ █▄ █ █▀▄ █▀▀ █▀█`,
-		`             █▄█ █▄▄ ██▄ █ ▀█ █▄▀ ██▄ █▀▄`,
-		`   == THIS FILE WAS GENERATED BY THE BLENDER v${version} ==`,
-		`You can exclude this file from your version control system`,
-		`**********************************************************/`,
-	];
-
-	if (lang === 'json') {
-		const tokensWithComment = { ...{ _: comment }, ...tokens };
-		result += JSON.stringify(tokensWithComment, null, '\t');
-	} else {
-		Object.entries(tokens).map(([name, value]) => {
-			if (name === 'BRAND') {
-				result += `${langMap[lang]}${name}: "${value}";\n`;
-			} else {
-				result += `${langMap[lang]}${name}: ${value};\n`;
-			}
-		});
-
-		if (lang === 'css') {
-			result = `root {\n${result}}`;
-		}
-
-		result = `${comment.join('\n')}\n\n${result}`;
-	}
-
-	return result;
-}
-
 module.exports = exports = {
 	generator,
-	flattenTokens,
-	compileTokens,
 };
