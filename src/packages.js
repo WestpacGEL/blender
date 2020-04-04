@@ -79,7 +79,7 @@ function getPackages(cwd = process.cwd()) {
 	D.log(`Retrived in included packages: "${color.yellow(JSON.stringify(includes))}"`);
 
 	const packages = [...inScope, ...includes] // merging both sets
-		.filter((module) => !SETTINGS.get.exclude.includes(module.replace(nodeModulesPath, ''))) // filtered out all excludes
+		// .filter((module) => !SETTINGS.get.exclude.includes(module.replace(nodeModulesPath, ''))) // filtered out all excludes
 		.map((module) => {
 			let pkg = { blender: false };
 			try {
@@ -96,7 +96,17 @@ function getPackages(cwd = process.cwd()) {
 				pkg: pkg.blender,
 			};
 		}) // added each package.json blender section
-		.filter((module) => module.pkg); // remove all packages which don't support the blender
+		.filter((module) => {
+			// remove all packages which don't support the blender
+			if (!module.pkg) {
+				return false;
+			}
+			// remove all packages which have been excluded except those that are marked as core
+			if (SETTINGS.get.exclude.includes(module.name) && !module.pkg.isCore) {
+				return false;
+			}
+			return true;
+		});
 
 	D.log(`getPackages return: "${color.yellow(JSON.stringify(packages))}"`);
 
