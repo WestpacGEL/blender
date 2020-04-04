@@ -53,9 +53,9 @@ blender
 	-x "@westpac/button" "@westpac/alert" # --exclude
 	-D path/to/cwd                        # --cwd
 	-p                                    # --prettify
-	-J                                    # --include-jquery
+	-J                                    # --exclude-jquery
 	-m                                    # --modules
-	-C                                    # --version-in-class
+	-C                                    # --no-version-in-class
 	-d                                    # --debug
 	-v                                    # --version
 	-H                                    # --help

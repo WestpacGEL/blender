@@ -89,12 +89,12 @@ const CLIOPTIONS = {
 		type: 'boolean',
 		default: false,
 	},
-	'include-jquery': {
-		description: 'Specify if you want to include jQuery in your blend',
+	'exclude-jquery': {
+		description: `Specify if you don't want to include jQuery in your blend`,
 		example: 'blender -J',
 		flag: 'J',
 		type: 'boolean',
-		default: true,
+		default: false,
 	},
 	modules: {
 		description: 'Specify if you want each component to be output separately',
@@ -103,12 +103,12 @@ const CLIOPTIONS = {
 		type: 'boolean',
 		default: false,
 	},
-	'version-in-class': {
-		description: 'Specify if you want the component version included in the css classes',
+	'no-version-in-class': {
+		description: `Specify if you don't want the component version included in your css classes`,
 		example: 'blender -C',
 		flag: 'C',
 		type: 'boolean',
-		default: true,
+		default: false,
 	},
 	'tokens-format': {
 		description: 'Specify what format the tokens should be in',
