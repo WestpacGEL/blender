@@ -35,7 +35,9 @@ const PACKAGES = {
 /**
  * Retrieve packages from the node_modules folder
  *
- * @return {array} - An array of objects with package data
+ * @param  {string} cwd - The current working directory
+ *
+ * @return {array}      - An array of objects with package data
  */
 function getPackages(cwd = process.cwd()) {
 	D.header('getPackages', { cwd });

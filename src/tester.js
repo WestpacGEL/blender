@@ -37,7 +37,6 @@ function tester(packages) {
 			const parsedPkg = parseComponent({
 				componentPath: path.normalize(`${thisPackage.path}/${thisPackage.pkg.recipe}`),
 				componentName: 'AllStyles',
-				brand: SETTINGS.get.brand,
 			});
 
 			if (parsedPkg.status === 'error') {
