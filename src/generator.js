@@ -75,6 +75,7 @@ function generator(packages) {
 			};
 		}
 
+		// parse recipe once if either html or css output is enabled
 		let parsedData = {};
 		if (
 			(SETTINGS.get.outputCSS && thisPackage.pkg.recipe) ||
