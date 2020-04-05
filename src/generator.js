@@ -91,7 +91,7 @@ function generator(packages) {
 				if (SETTINGS.get.outputZip) {
 					filePath = 'blender/';
 				}
-				filePath = path.normalize(`${filePath}/docs/components/`);
+				filePath = path.normalize(`${filePath}/docs/packages/`);
 				const name = `core.html`;
 
 				docs.push({
@@ -190,7 +190,7 @@ function generator(packages) {
 				if (SETTINGS.get.outputZip) {
 					filePath = 'blender/';
 				}
-				filePath = path.normalize(`${filePath}/docs/components/`);
+				filePath = path.normalize(`${filePath}/docs/packages/`);
 				const name = `${stripScope(thisPackage.name)}.html`;
 
 				docs.push({
