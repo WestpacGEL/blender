@@ -1,7 +1,7 @@
 /**
  * All functions to generate css and html
  *
- * generateCssHtml - TODO
+ * generateCssHtml - Generate the css and html from a recipe
  * convertClasses  - Convert the parsed css classes into human readable classes
  **/
 const path = require('path');
@@ -12,7 +12,16 @@ const { SETTINGS } = require('./settings.js');
 const { color } = require('./color.js');
 const { D } = require('./log.js');
 
-function generateCssHtml(pkg) {
+/**
+ * Generate the css and html from a recipe
+ *
+ * @param  {object} options.pkg           - The package object with blender key
+ * @param  {string} options.coreCSS       - The core styles to be removed
+ * @param  {string} options.componentName - The name of the recipe component
+ *
+ * @return {object}                       - A result object with css and html keys
+ */
+function generateCssHtml({ pkg, coreCSS = '', componentName = 'AllStyles' }) {
 	const result = {
 		code: 0,
 		errors: [],
@@ -21,7 +30,7 @@ function generateCssHtml(pkg) {
 
 	const parsedPkg = parseComponent({
 		componentPath: path.normalize(`${pkg.path}/${pkg.pkg.recipe}`),
-		componentName: 'AllStyles',
+		componentName,
 	});
 
 	const testResults = testLabels(parsedPkg);
@@ -40,13 +49,15 @@ function generateCssHtml(pkg) {
 		);
 	}
 
+	parsedPkg.css = parsedPkg.css.replace(coreCSS, ''); // remove core css
+
 	const { css, html } = convertClasses(parsedPkg, pkg.version);
-	console.log({ css });
 
 	return {
 		...result,
 		css,
 		html,
+		oldCss: parsedPkg.css,
 	};
 }
 
@@ -61,8 +72,8 @@ function generateCssHtml(pkg) {
  * @return {object}              - An object with the same html and css but with human readable classes
  */
 function convertClasses({ css, html, ids }, version) {
-	let humanReadableCSS;
-	let humanReadableHTML;
+	let humanReadableCSS = css;
+	let humanReadableHTML = html;
 
 	ids.map((id) => {
 		const oldClass = new RegExp(`css-${id}`, 'g');
@@ -72,8 +83,8 @@ function convertClasses({ css, html, ids }, version) {
 			(SETTINGS.get.noVersionInClass ? '-' : `-v${versionString}-`) +
 			id.split('-').slice(1).join('-');
 
-		humanReadableCSS = css.replace(oldClass, newClass);
-		humanReadableHTML = html.replace(oldClass, newClass);
+		humanReadableCSS = humanReadableCSS.replace(oldClass, newClass);
+		humanReadableHTML = humanReadableHTML.replace(oldClass, newClass);
 	});
 
 	return {
