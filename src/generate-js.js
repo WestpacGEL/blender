@@ -11,6 +11,7 @@ const { color } = require('./color.js');
 const { D } = require('./log.js');
 
 function generateJSFile(pkg) {
+	D.header('generateJSFile', { pkg });
 	const pkgPath = path.normalize(`${pkg.path}/${pkg.pkg.js}`);
 
 	let js = null;
