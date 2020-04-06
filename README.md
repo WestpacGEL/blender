@@ -92,7 +92,7 @@ const result = await blender({
 	prettify: true,
 	modules: true,
 	brand: 'WBC',
-	includeJquery: true,
+	excludeJquery: false,
 	versionInClass: true,
 });
 ```
