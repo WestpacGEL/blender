@@ -122,6 +122,75 @@ describe('getPackages', () => {
 			recipe: 'blender/recipe.js',
 		});
 	});
+
+	test('Exclude packages with scope and excluded once', () => {
+		SETTINGS.set = {
+			scope: '@bank',
+			include: [],
+			exclude: ['@bank/component1'],
+		};
+
+		const result = getPackages(path.normalize(`${__dirname}/../tests/mock/mock-project4/`));
+
+		expect(result.length).toBe(1);
+		expect(result[0].path.endsWith('mock-project4/node_modules/@bank/component2')).toBe(true);
+		expect(result[0].pkg).toStrictEqual({
+			recipe: 'blender/recipe.js',
+		});
+	});
+
+	test('Exclude packages without scope and included once', () => {
+		SETTINGS.set = {
+			include: ['@bank/component1'],
+			exclude: [],
+		};
+
+		const result = getPackages(path.normalize(`${__dirname}/../tests/mock/mock-project4/`));
+
+		expect(result.length).toBe(1);
+		expect(result[0].path.endsWith('mock-project4/node_modules/@bank/component1')).toBe(true);
+		expect(result[0].pkg).toStrictEqual({
+			js: 'blender/script.js',
+			recipe: 'blender/recipe.js',
+		});
+	});
+
+	test('Include two packages without scope from two different folders', () => {
+		SETTINGS.set = {
+			include: ['@bank/component1', '@westpac/component1'],
+			exclude: [],
+		};
+
+		const result = getPackages(path.normalize(`${__dirname}/../tests/mock/mock-project4/`));
+
+		expect(result.length).toBe(2);
+		expect(result[0].path.endsWith('mock-project4/node_modules/@bank/component1')).toBe(true);
+		expect(result[0].pkg).toStrictEqual({
+			js: 'blender/script.js',
+			recipe: 'blender/recipe.js',
+		});
+		expect(result[1].path.endsWith('mock-project4/node_modules/@westpac/component1')).toBe(true);
+		expect(result[1].pkg).toStrictEqual({
+			js: 'blender/script.js',
+			recipe: 'blender/recipe.js',
+		});
+	});
+
+	test('Include one package without scope that does not exist', () => {
+		console.warn = jest.fn();
+
+		SETTINGS.set = {
+			include: ['@bank/component1'],
+			exclude: [],
+		};
+
+		const result = getPackages(path.normalize(`${__dirname}/../tests/mock/mock-project1/`));
+
+		expect(result.length).toBe(0);
+		expect(console.warn.mock.calls.length).toBe(1);
+		expect(console.warn.mock.calls[0][0].includes('@bank/component1')).toBeTruthy();
+		expect(console.warn.mock.calls[0][0].includes('could not be found')).toBeTruthy();
+	});
 });
 
 /**

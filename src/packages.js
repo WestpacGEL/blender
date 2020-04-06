@@ -70,13 +70,13 @@ function getPackages(cwd = process.cwd()) {
 		}
 	}
 
-	D.log(`Retrived in scope packages: "${color.yellow(JSON.stringify(inScope))}"`);
+	D.log(`Retrieved in scope packages: "${color.yellow(JSON.stringify(inScope))}"`);
 
 	const includes = SETTINGS.get.include.map((module) =>
 		path.normalize(`${nodeModulesPath}/${module}`)
 	);
 
-	D.log(`Retrived in included packages: "${color.yellow(JSON.stringify(includes))}"`);
+	D.log(`Retrieved in included packages: "${color.yellow(JSON.stringify(includes))}"`);
 
 	const packages = [...inScope, ...includes] // merging both sets
 		// .filter((module) => !SETTINGS.get.exclude.includes(module.replace(nodeModulesPath, ''))) // filtered out all excludes
