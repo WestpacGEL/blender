@@ -7,6 +7,7 @@
 const path = require('path');
 
 const { parseComponent } = require('./parseCss.js');
+const { version } = require('../package.json');
 const { testLabels } = require('./tester.js');
 const { SETTINGS } = require('./settings.js');
 const { color } = require('./color.js');
@@ -51,7 +52,9 @@ function generateCssHtml({ pkg, coreCSS = '', componentName = 'AllStyles' }) {
 
 	parsedPkg.css = parsedPkg.css.replace(coreCSS, ''); // remove core css
 
-	const { css, html } = convertClasses(parsedPkg, pkg.version);
+	let { css, html } = convertClasses(parsedPkg, pkg.version);
+
+	css = `/*! ${pkg.name} v${pkg.version} blended with blender v${version} */\n${css}`;
 
 	return {
 		...result,

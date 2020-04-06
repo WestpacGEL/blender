@@ -140,7 +140,13 @@ function saveFiles() {
 					resolve(result);
 				}
 			}
-		} else if (SETTINGS.get.output) {
+		} else if (
+			SETTINGS.get.output ||
+			SETTINGS.get.outputCss ||
+			SETTINGS.get.outputJs ||
+			SETTINGS.get.outputToken ||
+			SETTINGS.get.outputHtml
+		) {
 			D.log(`Saving files individually`);
 
 			const allFiles = [];

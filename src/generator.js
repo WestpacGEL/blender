@@ -9,6 +9,7 @@ const path = require('path');
 const { generateTokenFile } = require('./generate-tokens.js');
 const { generateCssHtml } = require('./generate-css-html.js');
 const { generateJSFile } = require('./generate-js.js');
+const { version } = require('../package.json');
 const { SETTINGS } = require('./settings.js');
 const { LOADING } = require('./loading.js');
 const { FILES } = require('./files.js');
@@ -34,6 +35,8 @@ function generator(packages) {
 	let coreCSS = ''; // we need to keep a record of the core css so we can remove it from each component later
 	const docs = []; // keeping track of all docs we add for building the index
 
+	LOADING.start = { total: packages.length };
+
 	// Building core
 	packages
 		.filter((pkg) => pkg.pkg.isCore)
@@ -51,7 +54,7 @@ function generator(packages) {
 					result.messages = [...result.messages, ...parsedPkg.messages];
 				}
 
-				coreCSS = oldCss; // store css for later
+				coreCSS += oldCss; // store css for later
 
 				// save each file into its own module
 				if (SETTINGS.get.modules) {
@@ -60,7 +63,7 @@ function generator(packages) {
 						filePath = 'blender/';
 					}
 					filePath = path.normalize(`${filePath}/css/`);
-					const name = `core.css`;
+					const name = `${stripScope(core.name)}.css`;
 
 					D.log(`Adding core css to store at path ${color.yellow(filePath + name)}`);
 					FILES.add = {
@@ -71,7 +74,7 @@ function generator(packages) {
 				}
 				// we collect all css in the cssFile variable to be added to store at the end
 				else {
-					cssFile += css;
+					cssFile += `${css}\n`;
 				}
 			}
 
@@ -92,7 +95,7 @@ function generator(packages) {
 					filePath = 'blender/';
 				}
 				filePath = path.normalize(`${filePath}/docs/packages/`);
-				const name = `core.html`;
+				const name = `${stripScope(core.name)}.html`;
 
 				docs.push({
 					name: core.name,
@@ -113,10 +116,11 @@ function generator(packages) {
 				// TODO: get jquery via generateJSFile()
 				//*********************************************************************
 			}
+
+			LOADING.tick();
 		});
 
 	// Building rest of packages (drawing the rest of the f** owl)
-	LOADING.start = { total: packages.length };
 	packages
 		.filter((pkg) => !pkg.pkg.isCore)
 		.map((thisPackage) => {
@@ -170,7 +174,7 @@ function generator(packages) {
 				}
 				// we collect all css in the cssFile variable to be added to store at the end
 				else {
-					cssFile += css;
+					cssFile += `${css}\n`;
 				}
 			}
 
@@ -223,7 +227,7 @@ function generator(packages) {
 			filePath = 'blender/';
 		}
 		filePath = path.normalize(`${filePath}/css/`);
-		const name = `styles.css`;
+		const name = `styles.min.css`; // TODO minify on/off
 
 		D.log(`Adding css to store at path ${color.yellow(filePath + name)}`);
 		FILES.add = {
