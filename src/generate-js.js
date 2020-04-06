@@ -8,7 +8,7 @@ const path = require('path');
 const fs = require('fs');
 
 const { color } = require('./color.js');
-const { D, log } = require('./log.js');
+const { D } = require('./log.js');
 
 function generateJSFile(pkg) {
 	const pkgPath = path.normalize(`${pkg.path}/${pkg.pkg.js}`);
