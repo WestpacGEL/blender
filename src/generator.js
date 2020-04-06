@@ -39,11 +39,28 @@ function generator(packages) {
 
 	LOADING.start = { total: packages.length };
 
+	let cssMinFilePath = SETTINGS.get.outputCss || SETTINGS.get.output;
+	if (SETTINGS.get.outputZip) {
+		cssMinFilePath = 'blender/';
+	}
+	cssMinFilePath = path.normalize(`${cssMinFilePath}/css/`);
+	const cssMinName = `styles.min.css`; // TODO minify on/off
+
 	// Building core
 	packages
 		.filter((pkg) => pkg.pkg.isCore)
 		.map((core) => {
 			D.log(`Blending package ${color.yellow(core.name)}`);
+
+			// keeping track of the css path
+			let filePath = SETTINGS.get.outputCss || SETTINGS.get.output;
+			if (SETTINGS.get.outputZip) {
+				filePath = 'blender/';
+			}
+			filePath = path.normalize(`${filePath}/css/`);
+			const name = `${stripScope(core.name)}.css`;
+			const cssFilePath = SETTINGS.get.modules ? filePath : cssMinFilePath;
+			const cssName = SETTINGS.get.modules ? name : cssMinName;
 
 			// Building CSS
 			if (SETTINGS.get.outputCss && core.pkg.recipe) {
@@ -60,17 +77,10 @@ function generator(packages) {
 
 				// save each file into its own module
 				if (SETTINGS.get.modules) {
-					let filePath = SETTINGS.get.outputCss || SETTINGS.get.output;
-					if (SETTINGS.get.outputZip) {
-						filePath = 'blender/';
-					}
-					filePath = path.normalize(`${filePath}/css/`);
-					const name = `${stripScope(core.name)}.css`;
-
-					D.log(`Adding core css to store at path ${color.yellow(filePath + name)}`);
+					D.log(`Adding core css to store at path ${color.yellow(cssFilePath + cssName)}`);
 					FILES.add = {
-						name,
-						path: filePath,
+						name: cssName,
+						path: cssFilePath,
 						content: css,
 					};
 				}
@@ -108,7 +118,7 @@ function generator(packages) {
 				FILES.add = {
 					name,
 					path: filePath,
-					content: generateDocsFile(html),
+					content: generateDocsFile(html, cssFilePath, cssName),
 				};
 			}
 
@@ -127,6 +137,16 @@ function generator(packages) {
 		.filter((pkg) => !pkg.pkg.isCore)
 		.map((thisPackage) => {
 			D.log(`Blending package ${color.yellow(thisPackage.name)}`);
+
+			// keeping track of the css path
+			let filePath = SETTINGS.get.outputCss || SETTINGS.get.output;
+			if (SETTINGS.get.outputZip) {
+				filePath = 'blender/';
+			}
+			filePath = path.normalize(`${filePath}/css/`);
+			const name = `${stripScope(thisPackage.name)}.css`;
+			const cssFilePath = SETTINGS.get.modules ? filePath : cssMinFilePath;
+			const cssName = SETTINGS.get.modules ? name : cssMinName;
 
 			// Building tokens
 			if (SETTINGS.get.outputTokens && thisPackage.pkg.tokens) {
@@ -160,17 +180,10 @@ function generator(packages) {
 
 				// save each file into its own module
 				if (SETTINGS.get.modules) {
-					let filePath = SETTINGS.get.outputCss || SETTINGS.get.output;
-					if (SETTINGS.get.outputZip) {
-						filePath = 'blender/';
-					}
-					filePath = path.normalize(`${filePath}/css/`);
-					const name = `${stripScope(thisPackage.name)}.css`;
-
-					D.log(`Adding package css to store at path ${color.yellow(filePath + name)}`);
+					D.log(`Adding package css to store at path ${color.yellow(cssFilePath + cssName)}`);
 					FILES.add = {
-						name,
-						path: filePath,
+						name: cssName,
+						path: cssFilePath,
 						content: css,
 					};
 				}
@@ -208,7 +221,7 @@ function generator(packages) {
 				FILES.add = {
 					name,
 					path: filePath,
-					content: generateDocsFile(html),
+					content: generateDocsFile(html, cssFilePath, cssName),
 				};
 			}
 
@@ -224,17 +237,10 @@ function generator(packages) {
 
 	// Add the css we collected from all packages
 	if (!SETTINGS.get.modules) {
-		let filePath = SETTINGS.get.outputCss || SETTINGS.get.output;
-		if (SETTINGS.get.outputZip) {
-			filePath = 'blender/';
-		}
-		filePath = path.normalize(`${filePath}/css/`);
-		const name = `styles.min.css`; // TODO minify on/off
-
-		D.log(`Adding css to store at path ${color.yellow(filePath + name)}`);
+		D.log(`Adding css to store at path ${color.yellow(cssMinFilePath + cssMinName)}`);
 		FILES.add = {
-			name,
-			path: filePath,
+			cssMinName,
+			path: cssMinFilePath,
 			content: cssFile,
 		};
 	}
