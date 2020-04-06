@@ -119,7 +119,7 @@ function generator(packages) {
 				FILES.add = {
 					name,
 					path: filePath,
-					content: generateDocsFile(html, cssFilePath, cssName),
+					content: generateDocsFile(html, filePath, cssFilePath, cssName),
 				};
 			}
 
@@ -249,7 +249,7 @@ function generator(packages) {
 				FILES.add = {
 					name,
 					path: filePath,
-					content: generateDocsFile(html, cssFilePath, cssName),
+					content: generateDocsFile(html, filePath, cssFilePath, cssName),
 				};
 			}
 

@@ -39,7 +39,9 @@ export function Docs({ brand }) {
 		<Core brand={brand}>
 			<h2>Component ${num}</h2>
 
-			<Component${num} look='red'/>
+			<Component${num}>
+				Fill me with content
+			</Component${num}>
 		</Core>
 	);
 }
