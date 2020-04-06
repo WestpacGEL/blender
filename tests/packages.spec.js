@@ -25,8 +25,8 @@ describe('getPackages', () => {
 		expect(result.length).toBe(3);
 		expect(result[0].path.endsWith('mock-project1/node_modules/@westpac/component1')).toBe(true);
 		expect(result[0].pkg).toStrictEqual({
-			jquery: 'blender/jquery.js',
 			recipe: 'blender/recipe.js',
+			js: 'blender/script.js',
 		});
 		expect(result[1].path.endsWith('mock-project1/node_modules/@westpac/component2')).toBe(true);
 		expect(result[1].pkg).toStrictEqual({ recipe: 'blender/recipe.js' });
@@ -46,8 +46,8 @@ describe('getPackages', () => {
 		expect(result.length).toBe(4);
 		expect(result[0].path.endsWith('mock-project1/node_modules/@westpac/component1')).toBe(true);
 		expect(result[0].pkg).toStrictEqual({
-			jquery: 'blender/jquery.js',
 			recipe: 'blender/recipe.js',
+			js: 'blender/script.js',
 		});
 		expect(result[1].path.endsWith('mock-project1/node_modules/@westpac/component2')).toBe(true);
 		expect(result[1].pkg).toStrictEqual({ recipe: 'blender/recipe.js' });
@@ -55,8 +55,8 @@ describe('getPackages', () => {
 		expect(result[2].pkg).toStrictEqual({ tokens: true });
 		expect(result[3].path.endsWith('mock-project1/node_modules/component4')).toBe(true);
 		expect(result[3].pkg).toStrictEqual({
-			jquery: 'blender/jquery.js',
 			recipe: 'blender/recipe.js',
+			js: 'blender/script.js',
 		});
 	});
 
@@ -74,8 +74,8 @@ describe('getPackages', () => {
 		expect(result.length).toBe(4);
 		expect(result[0].path.endsWith('mock-project1/node_modules/@westpac/component1')).toBe(true);
 		expect(result[0].pkg).toStrictEqual({
-			jquery: 'blender/jquery.js',
 			recipe: 'blender/recipe.js',
+			js: 'blender/script.js',
 		});
 		expect(result[1].path.endsWith('mock-project1/node_modules/@westpac/component2')).toBe(true);
 		expect(result[1].pkg).toStrictEqual({ recipe: 'blender/recipe.js' });
@@ -83,8 +83,8 @@ describe('getPackages', () => {
 		expect(result[2].pkg).toStrictEqual({ tokens: true });
 		expect(result[3].path.endsWith('mock-project1/node_modules/component4')).toBe(true);
 		expect(result[3].pkg).toStrictEqual({
-			jquery: 'blender/jquery.js',
 			recipe: 'blender/recipe.js',
+			js: 'blender/script.js',
 		});
 		expect(console.warn.mock.calls.length).toBe(1);
 		expect(console.warn.mock.calls[0][0].includes('foo')).toBeTruthy();
@@ -103,13 +103,13 @@ describe('getPackages', () => {
 		expect(result.length).toBe(4);
 		expect(result[0].path.endsWith('mock-project1/node_modules/@westpac/component1')).toBe(true);
 		expect(result[0].pkg).toStrictEqual({
-			jquery: 'blender/jquery.js',
 			recipe: 'blender/recipe.js',
+			js: 'blender/script.js',
 		});
 		expect(result[1].path.endsWith('mock-project1/node_modules/@westpac/core')).toBe(true);
 		expect(result[1].pkg).toStrictEqual({
 			recipe: 'blender/recipe.js',
-			jquery: 'blender/jquery.js',
+			js: 'blender/jquery.js',
 			isCore: true,
 		});
 		expect(result[2].path.endsWith('mock-project1/node_modules/@westpac/wbc')).toBe(true);
@@ -118,7 +118,7 @@ describe('getPackages', () => {
 		});
 		expect(result[3].path.endsWith('mock-project1/node_modules/component4')).toBe(true);
 		expect(result[3].pkg).toStrictEqual({
-			jquery: 'blender/jquery.js',
+			js: 'blender/script.js',
 			recipe: 'blender/recipe.js',
 		});
 	});
