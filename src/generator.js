@@ -292,7 +292,7 @@ function generator(packages) {
 	if (!SETTINGS.get.modules) {
 		D.log(`Adding css to store at path ${color.yellow(cssMinFilePath + cssMinName)}`);
 		FILES.add = {
-			cssMinName,
+			name: cssMinName,
 			path: cssMinFilePath,
 			content: cssFile,
 		};
