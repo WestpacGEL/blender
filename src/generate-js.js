@@ -11,7 +11,7 @@ const { color } = require('./color.js');
 const { D, log } = require('./log.js');
 
 function generateJSFile(pkg) {
-	const pkgPath = path.normalize(`${pkg.path}/${pkg.pkg.script}`);
+	const pkgPath = path.normalize(`${pkg.path}/${pkg.pkg.js}`);
 
 	let js = null;
 
@@ -19,7 +19,7 @@ function generateJSFile(pkg) {
 		js = fs.readFileSync(pkgPath);
 		D.log(`Found file at "${color.yellow(pkgPath)}"`);
 	} catch (error) {
-		D.error(`Unable to find script.js at "${color.yellow(pkgPath)}"`);
+		D.error(`Unable to find ${pkg.pkg.js} at "${color.yellow(pkg.path)}"`);
 	}
 
 	return { js };
