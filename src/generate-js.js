@@ -4,8 +4,8 @@
  * generateJSFile - TODO
  **/
 
-function generateJSFile(pathToJS) {
-	return pathToJS;
+function generateJSFile(pkg) {
+	return pkg;
 }
 
 module.exports = exports = {

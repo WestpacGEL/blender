@@ -8,6 +8,7 @@ const path = require('path');
 
 const { generateTokenFile } = require('./generate-tokens.js');
 const { generateCssHtml } = require('./generate-css-html.js');
+const { generateDocsFile } = require('./generate-docs.js');
 const { generateJSFile } = require('./generate-js.js');
 const { version } = require('../package.json');
 const { SETTINGS } = require('./settings.js');
@@ -32,6 +33,7 @@ function generator(packages) {
 	};
 
 	let cssFile = ''; // this is where we collect all our css
+	let jsFile = ''; // this is where we collect all our js
 	let coreCSS = ''; // we need to keep a record of the core css so we can remove it from each component later
 	const docs = []; // keeping track of all docs we add for building the index
 
@@ -106,14 +108,14 @@ function generator(packages) {
 				FILES.add = {
 					name,
 					path: filePath,
-					content: html,
+					content: generateDocsFile(html),
 				};
 			}
 
 			// Building JS
 			if (SETTINGS.get.outputJs && core.pkg.jquery && SETTINGS.get.includeJquery) {
 				//*********************************************************************
-				// TODO: get jquery via generateJSFile()
+				// TODO: get jquery via generateJSFile() add to jsFile or if SETTINGS.get.modules then add to FILES store
 				//*********************************************************************
 			}
 
@@ -206,12 +208,12 @@ function generator(packages) {
 				FILES.add = {
 					name,
 					path: filePath,
-					content: html,
+					content: generateDocsFile(html),
 				};
 			}
 
 			// Building JS
-			if (SETTINGS.get.outputJs && thisPackage.pkg.jquery && SETTINGS.get.includeJquery) {
+			if (SETTINGS.get.outputJs && thisPackage.pkg.jquery) {
 				//*********************************************************************
 				// TODO: get jquery via generateJSFile()
 				//*********************************************************************
@@ -240,6 +242,8 @@ function generator(packages) {
 	//*********************************************************************
 	// TODO: build docs/index.html from `docs` array
 	//*********************************************************************
+	// const index = generateIndexFile(docs);
+	// write index to file
 
 	LOADING.abort();
 
