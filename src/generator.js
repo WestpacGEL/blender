@@ -117,7 +117,7 @@ function generator(packages) {
 			if (SETTINGS.get.outputJs && core.pkg.js && !SETTINGS.get.excludeJquery) {
 				D.log(`Creating js file for ${color.yellow(core.name)}`);
 
-				const { js, ...rest } = generateJSFile(thisPackage);
+				const { js, ...rest } = generateJSFile(core);
 
 				if (rest.code > 0) {
 					result.code = 1;
