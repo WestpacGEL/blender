@@ -117,12 +117,11 @@ function generator(packages) {
 			if (SETTINGS.get.outputJs && core.pkg.js && !SETTINGS.get.excludeJquery) {
 				D.log(`Creating js file for ${color.yellow(core.name)}`);
 
-				const { js, ...parsedJS } = generateJSFile(core);
+				const { js, ...rest } = generateJSFile(thisPackage);
 
-				if (parsedJS.code > 0) {
+				if (rest.code > 0) {
 					result.code = 1;
-					result.errors = [...result.errors, ...parsedJS.errors];
-					result.messages = [...result.messages, ...parsedJS.messages];
+					result.messages = [...result.messages, ...rest.message];
 				}
 
 				// save each file into its own module
