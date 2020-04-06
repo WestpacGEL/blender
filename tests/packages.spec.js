@@ -150,7 +150,7 @@ describe('getPackages', () => {
 		expect(result.length).toBe(1);
 		expect(result[0].path.endsWith('mock-project4/node_modules/@bank/component1')).toBe(true);
 		expect(result[0].pkg).toStrictEqual({
-			jquery: 'blender/jquery.js',
+			js: 'blender/script.js',
 			recipe: 'blender/recipe.js',
 		});
 	});
