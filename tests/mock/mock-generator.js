@@ -11,12 +11,12 @@ const { color } = require('../../lib/color.js');
 const templateStd = {
 	blender1: ({ num, dir }) => {
 		const content = `$(function() {
-	console.log('JQuery entry file for Component${num}');
+	console.log('JS entry file for Component${num}');
 });
 `;
 		const filePath = path.normalize(`${dir}/component${num}/blender/`);
 		createDir(filePath);
-		fs.writeFileSync(`${filePath}jquery.js`, content, { encoding: 'utf8' });
+		fs.writeFileSync(`${filePath}script.js`, content, { encoding: 'utf8' });
 	},
 	blender2: ({ num, dir, scope = '@westpac/', core = '@westpac/' }) => {
 		const content = `import React, { Fragment } from 'react';
@@ -202,7 +202,7 @@ export function Component${num}({ look = 'look1', children }) {
 	"version": "1.${num}.0",
 	"description": "A standard component ${scope === '' ? 'out of scope ' : ''}${
 			jquery ? '' : 'not '
-		}supporting jquery",
+		}supporting js",
 	"blender": {
 		"recipe": "blender/recipe.js"${
 			jquery
@@ -325,7 +325,7 @@ export function Component${num}({ children }) {
 		createDir(filePath);
 		fs.writeFileSync(`${filePath}Component${num}.js`, content, { encoding: 'utf8' });
 	},
-	src2: templateStd.dist2,
+	src2: templateStd.src2,
 	pkg: ({ num, dir, scope = '@westpac/' }) => {
 		const content = `{
 	"name": "${scope}component${num}",
@@ -485,7 +485,7 @@ export function Component${num}({ look = 'look1', children }) {
 		createDir(filePath);
 		fs.writeFileSync(`${filePath}Component${num}.js`, content, { encoding: 'utf8' });
 	},
-	src2: templateStd.dist2,
+	src2: templateStd.src2,
 	pkg: ({ num, dir, scope = '@westpac/', core = '@westpac/' }) => {
 		const content = `{
 	"name": "${scope}component${num}",
@@ -735,7 +735,7 @@ export function Core({ brand, children }) {
 		const content = `{
 	"name": "${scope}core",
 	"version": "3.17.0",
-	"description": "A core component ${scope === '' ? 'out of scope ' : ''}supporting jquery",
+	"description": "A core component ${scope === '' ? 'out of scope ' : ''}supporting js",
 	"blender": {
 		"recipe": "blender/recipe.js",
 		"js": "blender/jquery.js",
@@ -1834,6 +1834,7 @@ if (process.argv.includes('project1')) {
 // A project with lot's of packages
 else if (process.argv.includes('project2')) {
 	dir = path.normalize(`${__dirname}/mock-project2/node_modules/@westpac/`);
+	const dir2 = path.normalize(`${__dirname}/mock-project2/node_modules/`);
 
 	for (i = 1; i < 56; i++) {
 		Object.entries(templateStd).map(([_, func]) => func({ num: i, dir }));
@@ -1841,7 +1842,10 @@ else if (process.argv.includes('project2')) {
 	i--;
 	Object.entries(templateCore).map(([_, func]) => func({ dir }));
 	Object.entries(templateBrand).map(([_, func]) => func({ dir }));
-	i += 2;
+	Object.entries(templateNonBlender).map(([_, func]) => func({ num: 3, dir: dir2, scope: '' }));
+	Object.entries(templateStd).map(([_, func]) => func({ num: 4, dir: dir2, scope: '' }));
+	Object.entries(templateStd).map(([_, func]) => func({ num: 5, dir: dir2, scope: '' }));
+	i += 4;
 }
 // A project with invalid packages
 else if (process.argv.includes('project3')) {
