@@ -86,6 +86,7 @@ function generator(packages) {
 				}
 				// we collect all css in the cssFile variable to be added to store at the end
 				else {
+					D.log(`Adding core css to variable for store`);
 					cssFile += `${css}\n`;
 				}
 			}
@@ -123,10 +124,37 @@ function generator(packages) {
 			}
 
 			// Building JS
-			if (SETTINGS.get.outputJs && core.pkg.jquery && SETTINGS.get.includeJquery) {
-				//*********************************************************************
-				// TODO: get jquery via generateJSFile() add to jsFile or if SETTINGS.get.modules then add to FILES store
-				//*********************************************************************
+			if (SETTINGS.get.outputJs && core.pkg.js && !SETTINGS.get.excludeJquery) {
+				D.log(`Creating js file for ${color.yellow(core.name)}`);
+
+				const { js, ...rest } = generateJSFile(core);
+
+				if (rest.code > 0) {
+					result.code = 1;
+					result.messages = [...result.messages, ...rest.message];
+				}
+
+				// save each file into its own module
+				if (SETTINGS.get.modules) {
+					let filePath = SETTINGS.get.outputJs || SETTINGS.get.output;
+					if (SETTINGS.get.outputZip) {
+						filePath = 'blender/';
+					}
+					filePath = path.normalize(`${filePath}/js/`);
+					const name = `${stripScope(core.name)}.js`;
+
+					D.log(`Adding core js to store at path ${color.yellow(filePath + name)}`);
+					FILES.add = {
+						name,
+						path: filePath,
+						content: js,
+					};
+				}
+				// we collect all js in the cssFile variable to be added to store at the end
+				else {
+					D.log(`Adding core js to variable for store`);
+					jsFile += `${js}\n`;
+				}
 			}
 
 			LOADING.tick();
@@ -226,10 +254,35 @@ function generator(packages) {
 			}
 
 			// Building JS
-			if (SETTINGS.get.outputJs && thisPackage.pkg.jquery) {
-				//*********************************************************************
-				// TODO: get jquery via generateJSFile()
-				//*********************************************************************
+			if (SETTINGS.get.outputJs && thisPackage.pkg.js) {
+				D.log(`Creating js for ${color.yellow(thisPackage.name)}`);
+				const { js, ...rest } = generateJSFile(thisPackage);
+
+				if (rest.code > 0) {
+					result.code = 1;
+					result.messages = [...result.messages, ...rest.message];
+				}
+
+				// save each file into its own module
+				if (SETTINGS.get.modules) {
+					let filePath = SETTINGS.get.outputJs || SETTINGS.get.output;
+					if (SETTINGS.get.outputZip) {
+						filePath = 'blender/';
+					}
+					filePath = path.normalize(`${filePath}/js/`);
+					const name = `${stripScope(thisPackage.name)}.js`;
+
+					D.log(`Adding package js to store at path ${color.yellow(filePath + name)}`);
+					FILES.add = {
+						name,
+						path: filePath,
+						content: js,
+					};
+				}
+				// we collect all js in the jsFile variable to be added to store at the end
+				else {
+					jsFile += `${js}\n`;
+				}
 			}
 
 			LOADING.tick();
@@ -242,6 +295,23 @@ function generator(packages) {
 			cssMinName,
 			path: cssMinFilePath,
 			content: cssFile,
+		};
+	}
+
+	// Add the js we collected from all packages
+	if (!SETTINGS.get.modules) {
+		let filePath = SETTINGS.get.outputJs || SETTINGS.get.output;
+		if (SETTINGS.get.outputZip) {
+			filePath = 'blender/';
+		}
+		filePath = path.normalize(`${filePath}/js/`);
+		const name = `script.min.js`; // TODO minify on/off
+
+		D.log(`Adding js to store at path ${color.yellow(filePath + name)}`);
+		FILES.add = {
+			name,
+			path: filePath,
+			content: jsFile,
 		};
 	}
 
