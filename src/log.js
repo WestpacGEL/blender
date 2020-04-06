@@ -16,7 +16,7 @@ const { color } = require('./color.js');
 const DEBUGdefaults = {
 	mode: 'cli',
 	enabled: false,
-	errors: 0,
+	errorCount: 0,
 	messages: [],
 	set: false,
 	buffer: [],
@@ -46,10 +46,10 @@ const DEBUG = {
 	},
 
 	addError() {
-		this.store.errors++;
+		this.store.errorCount++;
 	},
-	get errors() {
-		return this.store.errors;
+	get errorCount() {
+		return this.store.errorCount;
 	},
 
 	set messages(value) {
@@ -86,7 +86,6 @@ const DEBUG = {
  */
 const D = {
 	output(text, debug) {
-		// TODO add messages so error logs contain debug infos
 		if (debug.set && debug.buffer.length && debug.enabled) {
 			console.log(debug.buffer.join('\n'));
 			debug.buffer = false;
@@ -107,8 +106,8 @@ const D = {
 	 * @param  {boolean} debug - Global debug mode on/off switch
 	 */
 	header(name, args, debug = DEBUG) {
-		DEBUG.messages =
-			`${DEBUG.messages.length > 0 ? '\n\n' : ''}   ===== RUNNING "${name}" =====\n` +
+		debug.messages =
+			`${debug.messages.length > 0 ? '\n\n' : ''}   ===== RUNNING "${name}" =====\n` +
 			`${args ? JSON.stringify(args) : ''}`;
 		this.output(
 			`\n===== RUNNING "${color.bold(name)}" =====${
@@ -125,7 +124,7 @@ const D = {
 	 * @param  {boolean} debug      - Global debug mode on/off switch
 	 */
 	log(text, debug = DEBUG) {
-		DEBUG.messages = text;
+		debug.messages = `🔎  ${text}`;
 		this.output(`🔎  ${text}`, debug);
 	},
 
@@ -136,8 +135,8 @@ const D = {
 	 * @param  {boolean} debug      - Global debug mode on/off switch
 	 */
 	error(text, debug = DEBUG) {
-		DEBUG.messages = `ERROR: ${text}`;
-		DEBUG.addError();
+		debug.messages = `🛑  ${text}`;
+		debug.addError();
 		this.output(`🛑  ${color.red(text)}`, debug);
 	},
 };
@@ -166,7 +165,7 @@ const log = {
 	 */
 	info: (text) => {
 		if (DEBUG.mode === 'cli') {
-			console.info(`💡  ${color.gray(text)}`);
+			console.info(color.gray(`☏  ${text}`));
 		}
 	},
 
@@ -177,7 +176,7 @@ const log = {
 	 */
 	success: (text) => {
 		if (DEBUG.mode === 'cli') {
-			console.log(`🚀  ${color.green(text)}`);
+			console.log(color.green(`☀  ${text}`));
 		}
 	},
 
@@ -188,7 +187,7 @@ const log = {
 	 */
 	warn: (text) => {
 		if (DEBUG.mode === 'cli') {
-			console.warn(`⚠️  ${color.yellow(text)}`);
+			console.warn(color.yellow(`⚠  ${text}`));
 		}
 	},
 
@@ -199,7 +198,7 @@ const log = {
 	 */
 	error: (text) => {
 		if (DEBUG.mode === 'cli') {
-			console.error(`🛑  ${color.red(text)}`);
+			console.error(color.red(`☁  ${text}`));
 		}
 	},
 };

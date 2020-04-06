@@ -15,7 +15,7 @@ const { DEBUG } = require('./log.js');
  */
 const LOADING = {
 	const: {
-		minTotal: 50,
+		minTotal: 30,
 		done: '▓',
 		todo: '░',
 		left: '',
@@ -38,14 +38,15 @@ const LOADING = {
 		if (
 			this.store.total > this.store.minTotal &&
 			DEBUG.mode === 'cli' &&
-			this.store.current <= this.store.total
+			this.store.current <= this.store.total &&
+			!DEBUG.enabled
 		) {
 			if (!firstRun) {
 				this.clear();
 			}
 
-			const bufferLeft = '  ';
-			const bufferRight = 7;
+			const bufferLeft = '   ';
+			const bufferRight = 8;
 			const percentage = String(Math.floor((this.store.current / this.store.total) * 100));
 			const width =
 				winSize.width -

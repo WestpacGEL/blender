@@ -7,6 +7,8 @@ const path = require('path');
 
 const { SETTINGS, getSettings, checkInput } = require('./settings.js');
 const { PACKAGES, getPackages } = require('./packages.js');
+const { generator } = require('./generator.js');
+const { setBrand } = require('./brand.js');
 const { tester } = require('./tester.js');
 const { clean } = require('./clean.js');
 const { DEBUG } = require('./log.js');
@@ -38,6 +40,12 @@ function blender(options = {}) {
 		// get all packages
 		PACKAGES.set = getPackages(options.cwd);
 
+		// set brand
+		const brandSetting = setBrand(SETTINGS.get.brand, SETTINGS.get.cwd);
+		if (brandSetting.code > 0) {
+			reject(brandSetting);
+		}
+
 		// run tester
 		if (SETTINGS.get.test) {
 			const result = tester(PACKAGES.get);
@@ -52,13 +60,16 @@ function blender(options = {}) {
 			}
 		}
 
-		// run blender file generator
-
-		// const thing = await parseComponent({
-		// 	componentPath: path.normalize(`${__dirname}/../tests/mock/recipe1.js`),
-		// 	brand: {},
-		// });
-		// console.log(thing);
+		const result = generator(PACKAGES.get);
+		if (result.code > 0) {
+			reject(result);
+		} else {
+			resolve({
+				packages: PACKAGES.get,
+				options: { ...SETTINGS.get },
+				result,
+			});
+		}
 
 		resolve({
 			packages: PACKAGES.get,
@@ -68,8 +79,8 @@ function blender(options = {}) {
 }
 
 blender({
-	cwd: path.normalize(`${__dirname}/../tests/mock/mock-project3/`),
-	test: true,
+	cwd: path.normalize(`${__dirname}/../tests/mock/mock-project1/`),
+	// test: true,
 })
 	.then((data) => console.log(JSON.stringify(data, null, 2)))
 	.catch((error) => console.log(JSON.stringify(error, null, 2)));
