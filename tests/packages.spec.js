@@ -171,7 +171,7 @@ describe('getPackages', () => {
 		});
 		expect(result[1].path.endsWith('mock-project4/node_modules/@westpac/component1')).toBe(true);
 		expect(result[1].pkg).toStrictEqual({
-			jquery: 'blender/jquery.js',
+			js: 'blender/script.js',
 			recipe: 'blender/recipe.js',
 		});
 	});
