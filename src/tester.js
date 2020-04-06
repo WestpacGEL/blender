@@ -2,7 +2,8 @@
  * All functions for the blender tester
  *
  * tester      - The tester function
- * getValidIds - Filter out all ids whcih have not been used in the css output
+ * testLabels  - Test the parsed output for unlabeled hashes
+ * getValidIds - Filter out all ids which have not been used in the css output
  * checkIds    - Check ids for duplication
  **/
 const path = require('path');
@@ -29,49 +30,61 @@ function tester(packages) {
 	};
 
 	LOADING.start = { total: packages.length };
-	packages.map((thisPackage) => {
-		D.log(`Testing ${color.yellow(thisPackage.name)}`);
+	packages
+		.filter((thisPackage) => thisPackage.pkg.recipe)
+		.map((thisPackage) => {
+			D.log(`Testing ${color.yellow(thisPackage.name)}`);
 
-		const parsedPkg = parseComponent({
-			componentPath: path.normalize(`${thisPackage.path}/${thisPackage.pkg.recipe}`),
-			componentName: 'AllStyles',
-			brand: SETTINGS.get.brand,
+			const parsedPkg = parseComponent({
+				componentPath: path.normalize(`${thisPackage.path}/${thisPackage.pkg.recipe}`),
+				componentName: 'AllStyles',
+			});
+
+			if (parsedPkg.status === 'error') {
+				result.errors.push({
+					package: thisPackage.name,
+					error: parsedPkg.message,
+				});
+				result.messages.push(parsedPkg.message);
+				result.code = 1;
+			} else {
+				const idResult = testLabels(parsedPkg);
+
+				if (idResult.code === 1) {
+					result.code = 1;
+					result.errors.push({
+						package: thisPackage.name,
+						error: idResult.ids,
+					});
+					result.messages.push(
+						`The package ${color.yellow(
+							thisPackage.name
+						)} included labels that can't be made human readable:\n    ${color.yellow(
+							idResult.ids.join('\n    ')
+						)}`
+					);
+				}
+			}
+
+			LOADING.tick();
 		});
-
-		if (parsedPkg.status === 'error') {
-			result.errors.push({
-				package: thisPackage.name,
-				error: parsedPkg.message,
-			});
-			result.messages.push(parsedPkg.message);
-			result.code = 1;
-		}
-
-		const ids = getValidIds(parsedPkg.ids, parsedPkg.css);
-		const idResult = checkIds(ids);
-
-		if (idResult.code === 1) {
-			result.code = 1;
-			result.errors.push({
-				package: thisPackage.name,
-				error: idResult.ids,
-			});
-			result.messages.push(
-				`The package ${color.yellow(
-					thisPackage.name
-				)} included labels that can't be made human readable:\n    ${color.yellow(
-					idResult.ids.join('\n    ')
-				)}`
-			);
-		}
-
-		LOADING.tick();
-	});
 	LOADING.abort();
 
 	D.log(`tester return: "${color.yellow(JSON.stringify(result))}"`);
 
 	return result;
+}
+
+/**
+ * Test the parsed output for unlabeled hashes
+ *
+ * @param  {object} parsedPkg - The parse output of parseComponent
+ *
+ * @return {object}           - An object with all failing ids
+ */
+function testLabels(parsedPkg) {
+	const ids = getValidIds(parsedPkg.ids, parsedPkg.css);
+	return checkIds(ids);
 }
 
 /**
@@ -121,4 +134,7 @@ function checkIds(ids) {
 
 module.exports = exports = {
 	tester,
+	testLabels,
+	getValidIds,
+	checkIds,
 };

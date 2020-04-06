@@ -7,6 +7,8 @@ const { PACKAGES } = require('./packages.js');
 const { SETTINGS } = require('./settings.js');
 const { LOADING } = require('./loading.js');
 const { DEBUG, D } = require('./log.js');
+const { BRAND } = require('./brand.js');
+const { FILES } = require('./files.js');
 const { TIME } = require('./time.js');
 
 /**
@@ -18,6 +20,8 @@ function clean() {
 	LOADING.clean();
 	PACKAGES.clean();
 	SETTINGS.clean();
+	BRAND.clean();
+	FILES.clean();
 	DEBUG.clean();
 	TIME.clean();
 
