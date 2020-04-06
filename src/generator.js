@@ -117,12 +117,12 @@ function generator(packages) {
 			if (SETTINGS.get.outputJs && core.pkg.js && !SETTINGS.get.excludeJquery) {
 				D.log(`Creating js file for ${color.yellow(core.name)}`);
 
-				const { js, ...parsedPkg } = generateJSFile(core);
+				const { js, ...parsedJS } = generateJSFile(core);
 
-				if (parsedPkg.code > 0) {
+				if (parsedJS.code > 0) {
 					result.code = 1;
-					result.errors = [...result.errors, ...parsedPkg.errors];
-					result.messages = [...result.messages, ...parsedPkg.messages];
+					result.errors = [...result.errors, ...parsedJS.errors];
+					result.messages = [...result.messages, ...parsedJS.messages];
 				}
 
 				// save each file into its own module
@@ -244,12 +244,11 @@ function generator(packages) {
 			// Building JS
 			if (SETTINGS.get.outputJs && thisPackage.pkg.js) {
 				D.log(`Creating js for ${color.yellow(thisPackage.name)}`);
-				const { js, ...parsedPkg } = generateJSFile(thisPackage);
+				const { js, ...rest } = generateJSFile(thisPackage);
 
-				if (parsedPkg.code > 0) {
+				if (rest.code > 0) {
 					result.code = 1;
-					result.errors = [...result.errors, ...parsedPkg.errors];
-					result.messages = [...result.messages, ...parsedPkg.messages];
+					result.messages = [...result.messages, ...rest.message];
 				}
 
 				// save each file into its own module

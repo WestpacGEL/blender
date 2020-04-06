@@ -14,16 +14,21 @@ function generateJSFile(pkg) {
 	D.header('generateJSFile', { pkg });
 	const pkgPath = path.normalize(`${pkg.path}/${pkg.pkg.js}`);
 
-	let js = null;
+	const result = {
+		code: 0,
+		message: '',
+	}
 
 	try {
-		js = fs.readFileSync(pkgPath);
+		result.js = fs.readFileSync(pkgPath);
 		D.log(`Found file at "${color.yellow(pkgPath)}"`);
 	} catch (error) {
+		result.code = 1;
+		result.message = `An error occured when trying to open ${color.yellow(pkgPath)}`;
 		D.error(`Unable to find ${pkg.pkg.js} at "${color.yellow(pkg.path)}"`);
 	}
 
-	return { js };
+	return result;
 }
 
 module.exports = exports = {
