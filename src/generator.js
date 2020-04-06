@@ -114,7 +114,7 @@ function generator(packages) {
 			}
 
 			// Building JS
-			if (SETTINGS.get.outputJs && core.pkg.jquery && !SETTINGS.get.excludeJquery) {
+			if (SETTINGS.get.outputJs && core.pkg.js && !SETTINGS.get.excludeJquery) {
 				D.log(`Creating js file for ${color.yellow(core.name)}`);
 
 				const { js, ...parsedPkg } = generateJSFile(core);
@@ -242,7 +242,7 @@ function generator(packages) {
 			}
 
 			// Building JS
-			if (SETTINGS.get.outputJs && thisPackage.pkg.jquery) {
+			if (SETTINGS.get.outputJs && thisPackage.pkg.js) {
 				D.log(`Creating js for ${color.yellow(thisPackage.name)}`);
 				const { js, ...parsedPkg } = generateJSFile(thisPackage);
 
