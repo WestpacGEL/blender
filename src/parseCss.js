@@ -11,6 +11,7 @@ const { CacheProvider } = require('@emotion/core');
 const fs = require('fs');
 
 const { color } = require('./color.js');
+const { BRAND } = require('./brand.js');
 const { D } = require('./log.js');
 
 /**
@@ -40,8 +41,8 @@ const { D } = require('./log.js');
  *
  * @return {returnObject}                            -
  */
-function parseComponent({ componentPath, componentName = 'default', brand }) {
-	D.header('parseComponent', { componentPath, brand });
+function parseComponent({ componentPath, componentName = 'default', brand = BRAND.get }) {
+	D.header('parseComponent', { componentPath, componentName, brand });
 
 	const cache = createCache();
 	const { extractCritical } = createEmotionServer(cache);

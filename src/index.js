@@ -8,6 +8,7 @@ const path = require('path');
 const { SETTINGS, getSettings, checkInput } = require('./settings.js');
 const { PACKAGES, getPackages } = require('./packages.js');
 const { generator } = require('./generator.js');
+const { setBrand } = require('./brand.js');
 const { tester } = require('./tester.js');
 const { clean } = require('./clean.js');
 const { DEBUG } = require('./log.js');
@@ -38,6 +39,12 @@ function blender(options = {}) {
 
 		// get all packages
 		PACKAGES.set = getPackages(options.cwd);
+
+		// set brand
+		const brandSetting = setBrand(SETTINGS.get.brand, SETTINGS.get.cwd);
+		if (brandSetting.code > 0) {
+			reject(brandSetting);
+		}
 
 		// run tester
 		if (SETTINGS.get.test) {

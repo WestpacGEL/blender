@@ -15,7 +15,7 @@ const { DEBUG } = require('./log.js');
  */
 const LOADING = {
 	const: {
-		minTotal: 50,
+		minTotal: 30,
 		done: '▓',
 		todo: '░',
 		left: '',

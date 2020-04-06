@@ -57,6 +57,28 @@ function getSettings(cliArgs, cwd = process.cwd(), options = CLIOPTIONS) {
 			? path.resolve(process.cwd(), settings.cwd)
 			: process.cwd();
 
+	// $ blender -b WBC -o path/to/out -j path/to/js -z
+	if (settings.output && settings.outputZip) {
+		settings.outputCss = undefined;
+		settings.outputJs = undefined;
+		settings.outputHtml = undefined;
+		settings.outputTokens = undefined;
+	}
+
+	// $ blender -o path/to/dir
+	if (
+		settings.output &&
+		!settings.outputCss &&
+		!settings.outputJs &&
+		!settings.outputHtml &&
+		!settings.outputTokens
+	) {
+		settings.outputCss = settings.output;
+		settings.outputJs = settings.output;
+		settings.outputHtml = settings.output;
+		settings.outputTokens = settings.output;
+	}
+
 	D.log(`getSettings return: "${color.yellow(JSON.stringify(settings))}"`);
 
 	return settings;

@@ -22,7 +22,7 @@ describe('getPackages', () => {
 
 		const result = getPackages(path.normalize(`${__dirname}/../tests/mock/mock-project1/`));
 
-		expect(result.length).toBe(2);
+		expect(result.length).toBe(3);
 		expect(result[0].path.endsWith('mock-project1/node_modules/@westpac/component1')).toBe(true);
 		expect(result[0].pkg).toStrictEqual({
 			jquery: 'blender/jquery.js',
@@ -30,6 +30,8 @@ describe('getPackages', () => {
 		});
 		expect(result[1].path.endsWith('mock-project1/node_modules/@westpac/component2')).toBe(true);
 		expect(result[1].pkg).toStrictEqual({ recipe: 'blender/recipe.js' });
+		expect(result[2].path.endsWith('mock-project1/node_modules/@westpac/wbc')).toBe(true);
+		expect(result[2].pkg).toStrictEqual({ tokens: true });
 	});
 
 	test('Include additional packages via the include option', () => {
@@ -41,7 +43,7 @@ describe('getPackages', () => {
 
 		const result = getPackages(path.normalize(`${__dirname}/../tests/mock/mock-project1/`));
 
-		expect(result.length).toBe(3);
+		expect(result.length).toBe(4);
 		expect(result[0].path.endsWith('mock-project1/node_modules/@westpac/component1')).toBe(true);
 		expect(result[0].pkg).toStrictEqual({
 			jquery: 'blender/jquery.js',
@@ -49,8 +51,10 @@ describe('getPackages', () => {
 		});
 		expect(result[1].path.endsWith('mock-project1/node_modules/@westpac/component2')).toBe(true);
 		expect(result[1].pkg).toStrictEqual({ recipe: 'blender/recipe.js' });
-		expect(result[2].path.endsWith('mock-project1/node_modules/component4')).toBe(true);
-		expect(result[2].pkg).toStrictEqual({
+		expect(result[2].path.endsWith('mock-project1/node_modules/@westpac/wbc')).toBe(true);
+		expect(result[2].pkg).toStrictEqual({ tokens: true });
+		expect(result[3].path.endsWith('mock-project1/node_modules/component4')).toBe(true);
+		expect(result[3].pkg).toStrictEqual({
 			jquery: 'blender/jquery.js',
 			recipe: 'blender/recipe.js',
 		});
@@ -67,7 +71,7 @@ describe('getPackages', () => {
 
 		const result = getPackages(path.normalize(`${__dirname}/../tests/mock/mock-project1/`));
 
-		expect(result.length).toBe(3);
+		expect(result.length).toBe(4);
 		expect(result[0].path.endsWith('mock-project1/node_modules/@westpac/component1')).toBe(true);
 		expect(result[0].pkg).toStrictEqual({
 			jquery: 'blender/jquery.js',
@@ -75,8 +79,10 @@ describe('getPackages', () => {
 		});
 		expect(result[1].path.endsWith('mock-project1/node_modules/@westpac/component2')).toBe(true);
 		expect(result[1].pkg).toStrictEqual({ recipe: 'blender/recipe.js' });
-		expect(result[2].path.endsWith('mock-project1/node_modules/component4')).toBe(true);
-		expect(result[2].pkg).toStrictEqual({
+		expect(result[2].path.endsWith('mock-project1/node_modules/@westpac/wbc')).toBe(true);
+		expect(result[2].pkg).toStrictEqual({ tokens: true });
+		expect(result[3].path.endsWith('mock-project1/node_modules/component4')).toBe(true);
+		expect(result[3].pkg).toStrictEqual({
 			jquery: 'blender/jquery.js',
 			recipe: 'blender/recipe.js',
 		});
@@ -85,7 +91,7 @@ describe('getPackages', () => {
 		expect(console.warn.mock.calls[0][0].includes('could not be found')).toBeTruthy();
 	});
 
-	test('Exclude packages from scope and included once', () => {
+	test.only('Exclude packages from scope and included once', () => {
 		SETTINGS.set = {
 			scope: '@westpac',
 			include: ['component4'],
@@ -94,14 +100,24 @@ describe('getPackages', () => {
 
 		const result = getPackages(path.normalize(`${__dirname}/../tests/mock/mock-project1/`));
 
-		expect(result.length).toBe(2);
+		expect(result.length).toBe(4);
 		expect(result[0].path.endsWith('mock-project1/node_modules/@westpac/component1')).toBe(true);
 		expect(result[0].pkg).toStrictEqual({
 			jquery: 'blender/jquery.js',
 			recipe: 'blender/recipe.js',
 		});
-		expect(result[1].path.endsWith('mock-project1/node_modules/component4')).toBe(true);
+		expect(result[1].path.endsWith('mock-project1/node_modules/@westpac/core')).toBe(true);
 		expect(result[1].pkg).toStrictEqual({
+			recipe: 'blender/recipe.js',
+			jquery: 'blender/jquery.js',
+			isCore: true,
+		});
+		expect(result[2].path.endsWith('mock-project1/node_modules/@westpac/wbc')).toBe(true);
+		expect(result[2].pkg).toStrictEqual({
+			tokens: true,
+		});
+		expect(result[3].path.endsWith('mock-project1/node_modules/component4')).toBe(true);
+		expect(result[3].pkg).toStrictEqual({
 			jquery: 'blender/jquery.js',
 			recipe: 'blender/recipe.js',
 		});
