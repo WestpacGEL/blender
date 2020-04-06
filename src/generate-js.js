@@ -17,7 +17,7 @@ function generateJSFile(pkg) {
 	const result = {
 		code: 0,
 		message: '',
-	}
+	};
 
 	try {
 		result.js = fs.readFileSync(pkgPath);
