@@ -207,7 +207,7 @@ export function Component${num}({ look = 'look1', children }) {
 		"recipe": "blender/recipe.js"${
 			jquery
 				? `,
-		"jquery": "blender/jquery.js"`
+		"js": "blender/script.js"`
 				: ''
 		}
 	},
@@ -493,7 +493,7 @@ export function Component${num}({ look = 'look1', children }) {
 	"description": "A standard component with failing label",
 	"blender": {
 		"recipe": "blender/recipe.js",
-		"jquery": "blender/jquery.js"
+		"js": "blender/script.js"
 	},
 	"dependencies": {
 		"@emotion/core": "^10.0.28",
@@ -738,7 +738,7 @@ export function Core({ brand, children }) {
 	"description": "A core component ${scope === '' ? 'out of scope ' : ''}supporting jquery",
 	"blender": {
 		"recipe": "blender/recipe.js",
-		"jquery": "blender/jquery.js",
+		"js": "blender/jquery.js",
 		"isCore": true
 	},
 	"dependencies": {
