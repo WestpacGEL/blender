@@ -136,7 +136,6 @@ const D = {
 	 */
 	error(text, debug = DEBUG) {
 		debug.messages = `🛑  ${text}`;
-		debug.addError();
 		this.output(`🛑  ${color.red(text)}`, debug);
 	},
 };
@@ -198,6 +197,7 @@ const log = {
 	 */
 	error: (text) => {
 		if (DEBUG.mode === 'cli') {
+			debug.addError();
 			console.error(color.red(`☁  ${text}`));
 		}
 	},

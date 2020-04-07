@@ -107,16 +107,21 @@ async function cli() {
 	}
 
 	const result = generator(PACKAGES.get);
-	if (result.messages) {
+	if (result.code > 0) {
 		result.messages.map((error) => {
 			log.error(error);
+		});
+	}
+	if (result.code === 0 && result.messages.length) {
+		result.messages.map((warnings) => {
+			log.warn(warnings);
 		});
 	}
 
 	try {
 		await saveFiles();
 	} catch (error) {
-		console.log(error);
+		log.error(error);
 	}
 }
 

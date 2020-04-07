@@ -6,9 +6,9 @@
  **/
 const path = require('path');
 
+const { generateIndexFile, generateDocsFile } = require('./generate-docs.js');
 const { generateTokenFile } = require('./generate-tokens.js');
 const { generateCssHtml } = require('./generate-css-html.js');
-const { generateIndexFile, generateDocsFile } = require('./generate-docs.js');
 const { generateJSFile } = require('./generate-js.js');
 const { version } = require('../package.json');
 const { SETTINGS } = require('./settings.js');
@@ -76,8 +76,8 @@ function generator(packages) {
 				if (parsedPkg.code > 0) {
 					result.code = 1;
 					result.errors = [...result.errors, ...parsedPkg.errors];
-					result.messages = [...result.messages, ...parsedPkg.messages];
 				}
+				result.messages = [...result.messages, ...parsedPkg.messages];
 
 				coreCSS += oldCss; // store css for later
 
@@ -106,8 +106,8 @@ function generator(packages) {
 				if (parsedPkg.code > 0) {
 					result.code = 1;
 					result.errors = [...result.errors, ...parsedPkg.errors];
-					result.messages = [...result.messages, ...parsedPkg.messages];
 				}
+				result.messages = [...result.messages, ...parsedPkg.messages];
 
 				let filePath = SETTINGS.get.outputHtml || SETTINGS.get.output;
 				if (SETTINGS.get.outputZip) {
@@ -210,8 +210,8 @@ function generator(packages) {
 				if (parsedPkg.code > 0) {
 					result.code = 1;
 					result.errors = [...result.errors, ...parsedPkg.errors];
-					result.messages = [...result.messages, ...parsedPkg.messages];
 				}
+				result.messages = [...result.messages, ...parsedPkg.messages];
 
 				// save each file into its own module
 				if (SETTINGS.get.modules) {
@@ -241,8 +241,8 @@ function generator(packages) {
 				if (parsedPkg.code > 0) {
 					result.code = 1;
 					result.errors = [...result.errors, ...parsedPkg.errors];
-					result.messages = [...result.messages, ...parsedPkg.messages];
 				}
+				result.messages = [...result.messages, ...parsedPkg.messages];
 
 				let filePath = SETTINGS.get.outputHtml || SETTINGS.get.output;
 				if (SETTINGS.get.outputZip) {

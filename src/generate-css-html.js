@@ -43,12 +43,8 @@ function generateCssHtml({
 	});
 
 	if (parsedPkg.status === 'error') {
-		result.errors.push({
-			package: pkg.name,
-			error: parsedPkg.message,
-		});
 		result.messages.push(parsedPkg.message);
-		result.code = 1;
+		result.code = 0;
 
 		return result;
 	}
