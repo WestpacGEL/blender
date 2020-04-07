@@ -38,7 +38,9 @@ function generateIndexFile(docs) {
 	<h1>GEL BLEND</h1>
 
 	<ul>
-		${docs.map((doc) => `<li><a href="${doc.path.replace('/docs/', '')}">${doc.name}</a></li>`).join('\n')}
+		${docs
+			.map((doc) => `<li><a href="${doc.path.replace('/docs/', '')}">${doc.name}</a></li>`)
+			.join('\n')}
 	</ul>
 </body>
 </html>
