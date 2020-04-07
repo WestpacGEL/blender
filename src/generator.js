@@ -66,7 +66,10 @@ function generator(packages) {
 			// Building CSS
 			if (SETTINGS.get.outputCss && core.pkg.recipe) {
 				D.log(`Creating css for ${color.yellow(core.name)}`);
-				const { css, oldCss, oldHtml, ...parsedPkg } = generateCssHtml({ pkg: core });
+				const { css, oldCss, oldHtml, ...parsedPkg } = generateCssHtml({
+					pkg: core,
+					children: 'CORE',
+				});
 
 				coreHTML = oldHtml;
 

@@ -23,7 +23,13 @@ const { D } = require('./log.js');
  *
  * @return {object}                       - A result object with css and html keys
  */
-function generateCssHtml({ pkg, coreCSS = '', coreHTML = '', componentName = 'AllStyles' }) {
+function generateCssHtml({
+	pkg,
+	coreCSS = '',
+	coreHTML = '',
+	componentName = 'AllStyles',
+	children,
+}) {
 	const result = {
 		code: 0,
 		errors: [],
@@ -33,6 +39,7 @@ function generateCssHtml({ pkg, coreCSS = '', coreHTML = '', componentName = 'Al
 	const parsedPkg = parseComponent({
 		componentPath: path.normalize(`${pkg.path}/${pkg.pkg.recipe}`),
 		componentName,
+		children,
 	});
 
 	const testResults = testLabels(parsedPkg);
@@ -55,7 +62,7 @@ function generateCssHtml({ pkg, coreCSS = '', coreHTML = '', componentName = 'Al
 	parsedPkg.css = parsedPkg.css.replace(coreCSS, '');
 
 	// remove core html
-	const coreBits = coreHTML.split('Core');
+	const coreBits = coreHTML.split('CORE');
 	const coreStart = new RegExp('^' + coreBits[0]);
 	const coreEnd = new RegExp(coreBits[1] + '$');
 	parsedPkg.html = parsedPkg.html.replace(coreStart, '').replace(coreEnd, '');

@@ -535,9 +535,11 @@ const templateCore = {
 
 import { Core } from '../src/index.js';
 
-export function AllStyles({ brand }) {
+export function AllStyles({ brand, children }) {
 	return (
-		<Core brand={brand}>Core</Core>
+		<Core brand={brand}>
+			{children}
+		</Core>
 	);
 }
 
