@@ -537,7 +537,7 @@ import { Core } from '../src/index.js';
 
 export function AllStyles({ brand }) {
 	return (
-		<Core brand={brand}/>
+		<Core brand={brand}>Core</Core>
 	);
 }
 
