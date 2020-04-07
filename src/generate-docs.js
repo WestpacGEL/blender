@@ -29,7 +29,20 @@ function generateDocsFile(html, htmlPath, cssPath, cssName) {
 }
 
 function generateIndexFile(docs) {
-	return docs;
+	return `<!DOCTYPE html>
+<html>
+<head>
+	<title>GEL blend</title>
+</head>
+<body>
+	<h1>GEL BLEND</h1>
+
+	<ul>
+		${docs.map((doc) => `<li><a href="${doc.path}">${doc.name}</a></li>\n`)}
+	</ul>
+</body>
+</html>
+`;
 }
 
 module.exports = exports = {

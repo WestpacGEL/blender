@@ -318,7 +318,7 @@ function generator(packages) {
 	//*********************************************************************
 	// TODO: build docs/index.html from `docs` array
 	//*********************************************************************
-	// const index = generateIndexFile(docs);
+	const index = generateIndexFile(docs);
 	// write index to file
 
 	LOADING.abort();
