@@ -8,14 +8,14 @@ const path = require('path');
 
 const { generateTokenFile } = require('./generate-tokens.js');
 const { generateCssHtml } = require('./generate-css-html.js');
-const { generateDocsFile } = require('./generate-docs.js');
+const { generateIndexFile, generateDocsFile } = require('./generate-docs.js');
 const { generateJSFile } = require('./generate-js.js');
 const { version } = require('../package.json');
 const { SETTINGS } = require('./settings.js');
 const { LOADING } = require('./loading.js');
 const { FILES } = require('./files.js');
 const { color } = require('./color.js');
-const { D } = require('./log.js');
+const { D, log } = require('./log.js');
 
 /**
  * Generate files from our blender packages
@@ -112,7 +112,7 @@ function generator(packages) {
 
 				docs.push({
 					name: core.name,
-					path: filePath + name,
+					path: `./packages/${name}`,
 				});
 
 				D.log(`Adding core html to store at path ${color.yellow(filePath + name)}`);
@@ -242,7 +242,7 @@ function generator(packages) {
 
 				docs.push({
 					name: thisPackage.name,
-					path: filePath + name,
+					path: `./packages/${name}`,
 				});
 
 				D.log(`Adding package html to store at path ${color.yellow(filePath + name)}`);
@@ -319,7 +319,12 @@ function generator(packages) {
 	// TODO: build docs/index.html from `docs` array
 	//*********************************************************************
 	const index = generateIndexFile(docs);
-	// write index to file
+
+	FILES.add = {
+		name: 'index.html',
+		path: path.normalize(`${SETTINGS.get.output}/docs/`),
+		content: index,
+	};
 
 	LOADING.abort();
 
