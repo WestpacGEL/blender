@@ -15,7 +15,7 @@ const { SETTINGS } = require('./settings.js');
 const { LOADING } = require('./loading.js');
 const { FILES } = require('./files.js');
 const { color } = require('./color.js');
-const { D, log } = require('./log.js');
+const { D } = require('./log.js');
 
 /**
  * Generate files from our blender packages
