@@ -107,12 +107,13 @@ function generator(packages) {
 				if (SETTINGS.get.outputZip) {
 					filePath = 'blender/';
 				}
-				filePath = path.normalize(`${filePath}/docs/packages/`);
+				const docsPath = `/docs/packages/`;
+				filePath = path.normalize(filePath + docsPath);
 				const name = `${stripScope(core.name)}.html`;
 
 				docs.push({
 					name: core.name,
-					path: `./packages/${name}`,
+					path: docsPath + name,
 				});
 
 				D.log(`Adding core html to store at path ${color.yellow(filePath + name)}`);
@@ -237,12 +238,13 @@ function generator(packages) {
 				if (SETTINGS.get.outputZip) {
 					filePath = 'blender/';
 				}
-				filePath = path.normalize(`${filePath}/docs/packages/`);
+				const docsPath = `/docs/packages/`;
+				filePath = path.normalize(filePath + docsPath);
 				const name = `${stripScope(thisPackage.name)}.html`;
 
 				docs.push({
 					name: thisPackage.name,
-					path: `./packages/${name}`,
+					path: docsPath + name,
 				});
 
 				D.log(`Adding package html to store at path ${color.yellow(filePath + name)}`);
