@@ -8,7 +8,7 @@ const path = require('path');
 
 const { generateTokenFile } = require('./generate-tokens.js');
 const { generateCssHtml } = require('./generate-css-html.js');
-const { generateDocsFile } = require('./generate-docs.js');
+const { generateIndexFile, generateDocsFile } = require('./generate-docs.js');
 const { generateJSFile } = require('./generate-js.js');
 const { version } = require('../package.json');
 const { SETTINGS } = require('./settings.js');
@@ -113,12 +113,13 @@ function generator(packages) {
 				if (SETTINGS.get.outputZip) {
 					filePath = 'blender/';
 				}
-				filePath = path.normalize(`${filePath}/docs/packages/`);
+				const docsPath = `/docs/packages/`;
+				filePath = path.normalize(filePath + docsPath);
 				const name = `${stripScope(core.name)}.html`;
 
 				docs.push({
 					name: core.name,
-					path: filePath + name,
+					path: docsPath + name,
 				});
 
 				D.log(`Adding core html to store at path ${color.yellow(filePath + name)}`);
@@ -247,12 +248,13 @@ function generator(packages) {
 				if (SETTINGS.get.outputZip) {
 					filePath = 'blender/';
 				}
-				filePath = path.normalize(`${filePath}/docs/packages/`);
+				const docsPath = `/docs/packages/`;
+				filePath = path.normalize(filePath + docsPath);
 				const name = `${stripScope(thisPackage.name)}.html`;
 
 				docs.push({
 					name: thisPackage.name,
-					path: filePath + name,
+					path: docsPath + name,
 				});
 
 				D.log(`Adding package html to store at path ${color.yellow(filePath + name)}`);
@@ -325,11 +327,23 @@ function generator(packages) {
 		};
 	}
 
-	//*********************************************************************
-	// TODO: build docs/index.html from `docs` array
-	//*********************************************************************
-	// const index = generateIndexFile(docs);
-	// write index to file
+	// Add the index docs file
+	if (SETTINGS.get.outputHtml && docs.length) {
+		const index = generateIndexFile(docs);
+
+		let filePath = SETTINGS.get.outputHtml || SETTINGS.get.output;
+		if (SETTINGS.get.outputZip) {
+			filePath = 'blender/';
+		}
+		filePath = path.normalize(`${filePath}/docs/`);
+		const name = `index.html`;
+
+		FILES.add = {
+			name: 'index.html',
+			path: filePath,
+			content: index,
+		};
+	}
 
 	LOADING.abort();
 
