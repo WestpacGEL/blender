@@ -35,6 +35,7 @@ function generator(packages) {
 	let cssFile = ''; // this is where we collect all our css
 	let jsFile = ''; // this is where we collect all our js
 	let coreCSS = ''; // we need to keep a record of the core css so we can remove it from each component later
+	let coreHTML = ''; // we need to keep a record of the core html so we can remove it from each component later
 	const docs = []; // keeping track of all docs we add for building the index
 
 	LOADING.start = { total: packages.length };
@@ -65,7 +66,9 @@ function generator(packages) {
 			// Building CSS
 			if (SETTINGS.get.outputCss && core.pkg.recipe) {
 				D.log(`Creating css for ${color.yellow(core.name)}`);
-				const { css, oldCss, ...parsedPkg } = generateCssHtml({ pkg: core });
+				const { css, oldCss, oldHtml, ...parsedPkg } = generateCssHtml({ pkg: core });
+
+				coreHTML = oldHtml;
 
 				if (parsedPkg.code > 0) {
 					result.code = 1;
@@ -225,7 +228,11 @@ function generator(packages) {
 			if (SETTINGS.get.outputHtml && thisPackage.pkg.recipe) {
 				D.log(`Creating html file for ${color.yellow(thisPackage.name)}`);
 
-				const { html, ...parsedPkg } = generateCssHtml({ pkg: thisPackage, componentName: 'Docs' });
+				const { html, ...parsedPkg } = generateCssHtml({
+					pkg: thisPackage,
+					componentName: 'Docs',
+					coreHTML,
+				});
 
 				if (parsedPkg.code > 0) {
 					result.code = 1;
@@ -318,7 +325,7 @@ function generator(packages) {
 	//*********************************************************************
 	// TODO: build docs/index.html from `docs` array
 	//*********************************************************************
-	const index = generateIndexFile(docs);
+	// const index = generateIndexFile(docs);
 	// write index to file
 
 	LOADING.abort();

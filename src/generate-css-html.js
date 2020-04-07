@@ -18,11 +18,12 @@ const { D } = require('./log.js');
  *
  * @param  {object} options.pkg           - The package object with blender key
  * @param  {string} options.coreCSS       - The core styles to be removed
+ * @param  {string} options.coreHTML      - The core html to be removed
  * @param  {string} options.componentName - The name of the recipe component
  *
  * @return {object}                       - A result object with css and html keys
  */
-function generateCssHtml({ pkg, coreCSS = '', componentName = 'AllStyles' }) {
+function generateCssHtml({ pkg, coreCSS = '', coreHTML = '', componentName = 'AllStyles' }) {
 	const result = {
 		code: 0,
 		errors: [],
@@ -50,7 +51,14 @@ function generateCssHtml({ pkg, coreCSS = '', componentName = 'AllStyles' }) {
 		);
 	}
 
-	parsedPkg.css = parsedPkg.css.replace(coreCSS, ''); // remove core css
+	// remove core css
+	parsedPkg.css = parsedPkg.css.replace(coreCSS, '');
+
+	// remove core html
+	const coreBits = coreHTML.split('Core');
+	const coreStart = new RegExp('^' + coreBits[0]);
+	const coreEnd = new RegExp(coreBits[1] + '$');
+	parsedPkg.html = parsedPkg.html.replace(coreStart, '').replace(coreEnd, '');
 
 	let { css, html } = convertClasses(parsedPkg, pkg.version);
 
@@ -61,6 +69,7 @@ function generateCssHtml({ pkg, coreCSS = '', componentName = 'AllStyles' }) {
 		css,
 		html,
 		oldCss: parsedPkg.css,
+		oldHtml: parsedPkg.html,
 	};
 }
 
