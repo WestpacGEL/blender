@@ -42,6 +42,17 @@ function generateCssHtml({
 		children,
 	});
 
+	if (parsedPkg.status === 'error') {
+		result.errors.push({
+			package: pkg.name,
+			error: parsedPkg.message,
+		});
+		result.messages.push(parsedPkg.message);
+		result.code = 1;
+
+		return result;
+	}
+
 	const testResults = testLabels(parsedPkg);
 	if (testResults.code > 0) {
 		result.code = testResults.code;
