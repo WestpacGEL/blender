@@ -41,7 +41,7 @@ const { D } = require('./log.js');
  *
  * @return {returnObject}                            -
  */
-function parseComponent({ componentPath, componentName = 'default', brand = BRAND.get }) {
+function parseComponent({ componentPath, componentName = 'default', brand = BRAND.get, children }) {
 	D.header('parseComponent', { componentPath, componentName, brand });
 
 	const cache = createCache();
@@ -65,7 +65,13 @@ function parseComponent({ componentPath, componentName = 'default', brand = BRAN
 
 	try {
 		staticMarkup = extractCritical(
-			renderToStaticMarkup(createElement(CacheProvider, { value: cache }, Component({ brand })))
+			renderToStaticMarkup(
+				createElement(
+					CacheProvider,
+					{ value: cache },
+					Component({ brand, ...(children ? { children } : {}) })
+				)
+			)
 		);
 	} catch (error) {
 		D.error(`Component failed to be rendered at "${color.yellow(componentPath)}"`);
