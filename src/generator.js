@@ -317,16 +317,23 @@ function generator(packages) {
 		};
 	}
 
-	//*********************************************************************
-	// TODO: build docs/index.html from `docs` array
-	//*********************************************************************
-	const index = generateIndexFile(docs);
+	// Add the index docs file
+	if (SETTINGS.get.outputHtml && docs.length) {
+		const index = generateIndexFile(docs);
 
-	FILES.add = {
-		name: 'index.html',
-		path: path.normalize(`${SETTINGS.get.output}/docs/`),
-		content: index,
-	};
+		let filePath = SETTINGS.get.outputHtml || SETTINGS.get.output;
+		if (SETTINGS.get.outputZip) {
+			filePath = 'blender/';
+		}
+		filePath = path.normalize(`${filePath}/docs/`);
+		const name = `index.html`;
+
+		FILES.add = {
+			name: 'index.html',
+			path: filePath,
+			content: index,
+		};
+	}
 
 	LOADING.abort();
 

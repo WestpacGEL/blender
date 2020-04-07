@@ -40,7 +40,7 @@ function generateIndexFile(docs) {
 	<ul>
 		${docs
 			.map((doc) => `<li><a href="${doc.path.replace('/docs/', '')}">${doc.name}</a></li>`)
-			.join('\n')}
+			.join('\n\t\t')}
 	</ul>
 </body>
 </html>
