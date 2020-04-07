@@ -88,7 +88,7 @@ async function cli() {
 	}
 
 	// report on cwd
-	log.info(`Running in ${color.yellow(cwd)}`);
+	log.info(`Running in ${color.bold(cwd)}`);
 	D.log(`Running in ${color.yellow(cwd)}`);
 
 	// get all packages

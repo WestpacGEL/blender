@@ -52,8 +52,8 @@ function generateCssHtml({
 		result.messages.push(
 			`The package ${color.yellow(
 				pkg.name
-			)} could not be blended. Run the blender in test mode to find out more:\n   ${color.cyan(
-				'blender -T'
+			)} could not be blended. Run the blender in test mode to find out more:\n   Example: ${color.cyan(
+				'$ blender -T'
 			)}`
 		);
 	}
