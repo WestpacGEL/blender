@@ -52,7 +52,10 @@ function getPackages(cwd = process.cwd()) {
 					withFileTypes: true,
 				}) // read all items in that folder
 				.filter(
-					(item) => !item.name.startsWith('.') && !item.name.startsWith('@') && item.isDirectory()
+					(item) =>
+						!item.name.startsWith('.') &&
+						!item.name.startsWith('@') &&
+						(item.isDirectory() || item.isSymbolicLink())
 				) // filter out dot files and non-folder
 				.map((folder) => path.normalize(`${nodeModulesPath}/${SETTINGS.get.scope}/${folder.name}`)); // add absolute path
 		} catch (error) {
@@ -89,6 +92,7 @@ function getPackages(cwd = process.cwd()) {
 					`The package "${color.yellow(module.replace(nodeModulesPath, ''))}" could not be found.`
 				);
 			}
+
 			return {
 				name: pkg.name,
 				version: pkg.version,
