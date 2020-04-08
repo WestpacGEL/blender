@@ -195,7 +195,7 @@ const log = {
 	 *
 	 * @param  {string}  text  - The sting you want to log
 	 */
-	error: (text) => {
+	error: (text, debug = DEBUG) => {
 		if (DEBUG.mode === 'cli') {
 			debug.addError();
 			console.error(color.red(`☁  ${text}`));
