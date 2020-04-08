@@ -6,7 +6,7 @@
  **/
 const path = require('path');
 
-const { generateIndexFile, generateDocsFile } = require('./generate-docs.js');
+const { generateIndexFile, generateDocsFile, generateDocsScaffold } = require('./generate-docs.js');
 const { generateTokenFile } = require('./generate-tokens.js');
 const { generateCssHtml } = require('./generate-css-html.js');
 const { generateJSFile } = require('./generate-js.js');
@@ -343,6 +343,14 @@ function generator(packages) {
 			path: filePath,
 			content: index,
 		};
+
+		generateDocsScaffold().map((file) => {
+			FILES.add = {
+				name: file.name,
+				path: path.normalize(`${filePath}/${file.path}`),
+				content: file.content,
+			};
+		});
 	}
 
 	LOADING.abort();
