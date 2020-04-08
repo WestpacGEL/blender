@@ -105,9 +105,9 @@ function convertClasses({ css, html, ids }, version) {
 		const oldClass = new RegExp(`css-${id}`, 'g');
 		const versionString = version.replace(/\./g, '_');
 		const newClass =
-			'GEL' +
-			(SETTINGS.get.noVersionInClass ? '-' : `-v${versionString}-`) +
-			id.split('-').slice(1).join('-');
+			'GEL-' +
+			id.split('-').slice(1).join('-') +
+			(SETTINGS.get.noVersionInClass ? '' : `-v${versionString}`);
 
 		humanReadableCSS = humanReadableCSS.replace(oldClass, newClass);
 		humanReadableHTML = humanReadableHTML.replace(oldClass, newClass);
