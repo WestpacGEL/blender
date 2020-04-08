@@ -136,7 +136,6 @@ const D = {
 	 */
 	error(text, debug = DEBUG) {
 		debug.messages = `🛑  ${text}`;
-		debug.addError();
 		this.output(`🛑  ${color.red(text)}`, debug);
 	},
 };
@@ -196,8 +195,9 @@ const log = {
 	 *
 	 * @param  {string}  text  - The sting you want to log
 	 */
-	error: (text) => {
+	error: (text, debug = DEBUG) => {
 		if (DEBUG.mode === 'cli') {
+			debug.addError();
 			console.error(color.red(`☁  ${text}`));
 		}
 	},

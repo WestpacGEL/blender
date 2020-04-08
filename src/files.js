@@ -49,7 +49,10 @@ function saveFiles() {
 	D.header('saveFiles');
 
 	return new Promise((resolve, reject) => {
-		LOADING.start = { total: FILES.get.size };
+		LOADING.start = {
+			total: FILES.get.size,
+			minTotal: 300,
+		};
 
 		const result = {
 			code: 0,

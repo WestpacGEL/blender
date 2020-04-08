@@ -35,13 +35,38 @@ export function AllStyles({ brand }) {
 }
 
 export function Docs({ brand }) {
-	return (
-		<Core brand={brand}>
-			<h2>Component ${num}</h2>
-
-			<Component${num} look='red'/>
-		</Core>
-	);
+	return [
+		{
+			heading: 'Variation 1 for Component ${num}',
+			component: () => (
+				<Core brand={brand}>
+					<Component${num}>
+						Here comes the content
+					</Component${num}>
+				</Core>
+			),
+		},
+		{
+			heading: 'Variation 2 for Component ${num}',
+			component: () => (
+				<Core brand={brand}>
+					<Component${num} look='look2'>
+						Here comes the content
+					</Component${num}>
+				</Core>
+			),
+		},
+		{
+			heading: 'Variation 3 for Component ${num}',
+			component: () => (
+				<Core brand={brand}>
+					<Component${num} look='look3'>
+						Here comes the content
+					</Component${num}>
+				</Core>
+			),
+		},
+	];
 }
 `;
 		const filePath = path.normalize(`${dir}/component${num}/blender/`);
@@ -533,22 +558,33 @@ const templateCore = {
 
 import { Core } from '../src/index.js';
 
-export function AllStyles({ brand }) {
+export function AllStyles({ brand, children }) {
 	return (
-		<Core brand={brand}/>
+		<Core brand={brand}>
+			{children}
+		</Core>
 	);
 }
 
 export function Docs({ brand }) {
-	return (
-		<Core brand={brand}>
-			<h2>Core</h2>
-
-			<Core brand={brand}>
-				Here goes your app
-			</Core>
-		</Core>
-	);
+	return [
+		{
+			heading: 'Variation 1 for Core Component',
+			component: () => (
+				<Core>
+					Here comes the content
+				</Core>
+			),
+		},
+		{
+			heading: 'Variation 2 for Core Component',
+			component: () => (
+				<Core look='look2'>
+					Here comes the content
+				</Core>
+			),
+		},
+	];
 }
 `;
 		const filePath = path.normalize(`${dir}/core/blender/`);

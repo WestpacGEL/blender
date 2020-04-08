@@ -10,7 +10,7 @@ const { getPackages, PACKAGES } = require('../src/packages.js');
 const { SETTINGS } = require('../src/settings.js');
 
 /**
- * parseComponent
+ * getPackages
  */
 describe('getPackages', () => {
 	test('Get all packages that support the blender from a scope', () => {

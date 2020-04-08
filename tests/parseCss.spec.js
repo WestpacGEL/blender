@@ -17,7 +17,7 @@ describe('parseComponent', () => {
 			brand: {},
 		});
 
-		expect(result.status).toBe('ok');
+		expect(result.code).toBe(0);
 		expect(result.ids.length).toBe(6);
 		expect(result.html).not.toBe('');
 		expect(result.css).not.toBe('');
@@ -29,7 +29,7 @@ describe('parseComponent', () => {
 			brand: {},
 		});
 
-		expect(result.status).toBe('error');
+		expect(result.code).toBe(1);
 		expect(typeof result.error).not.toBe(undefined);
 		expect(typeof result.message).not.toBe(undefined);
 		expect(result.message.includes('tests/mock/void')).toBe(true);
@@ -42,7 +42,7 @@ describe('parseComponent', () => {
 			brand: {},
 		});
 
-		expect(result.status).toBe('error');
+		expect(result.code).toBe(1);
 		expect(typeof result.error).not.toBe(undefined);
 		expect(typeof result.message).not.toBe(undefined);
 		expect(result.message.includes('tests/mock/recipe-invalid.js')).toBe(true);
@@ -54,7 +54,7 @@ describe('parseComponent', () => {
 			componentPath: path.normalize(`${__dirname}/../tests/mock/recipe1.js`),
 		});
 
-		expect(result.status).toBe('ok');
+		expect(result.code).toBe(0);
 		expect(result.ids.length).toBe(6);
 		expect(result.html).not.toBe('');
 		expect(result.css).not.toBe('');
