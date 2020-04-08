@@ -11,12 +11,12 @@ const { color } = require('../../lib/color.js');
 const templateStd = {
 	blender1: ({ num, dir }) => {
 		const content = `$(function() {
-	console.log('JQuery entry file for Component${num}');
+	console.log('JS entry file for Component${num}');
 });
 `;
 		const filePath = path.normalize(`${dir}/component${num}/blender/`);
 		createDir(filePath);
-		fs.writeFileSync(`${filePath}jquery.js`, content, { encoding: 'utf8' });
+		fs.writeFileSync(`${filePath}script.js`, content, { encoding: 'utf8' });
 	},
 	blender2: ({ num, dir, scope = '@westpac/', core = '@westpac/' }) => {
 		const content = `import React, { Fragment } from 'react';
@@ -35,13 +35,38 @@ export function AllStyles({ brand }) {
 }
 
 export function Docs({ brand }) {
-	return (
-		<Core brand={brand}>
-			<h2>Component ${num}</h2>
-
-			<Component${num} look='red'/>
-		</Core>
-	);
+	return [
+		{
+			heading: 'Variation 1 for Component ${num}',
+			component: () => (
+				<Core brand={brand}>
+					<Component${num}>
+						Here comes the content
+					</Component${num}>
+				</Core>
+			),
+		},
+		{
+			heading: 'Variation 2 for Component ${num}',
+			component: () => (
+				<Core brand={brand}>
+					<Component${num} look='look2'>
+						Here comes the content
+					</Component${num}>
+				</Core>
+			),
+		},
+		{
+			heading: 'Variation 3 for Component ${num}',
+			component: () => (
+				<Core brand={brand}>
+					<Component${num} look='look3'>
+						Here comes the content
+					</Component${num}>
+				</Core>
+			),
+		},
+	];
 }
 `;
 		const filePath = path.normalize(`${dir}/component${num}/blender/`);
@@ -202,12 +227,12 @@ export function Component${num}({ look = 'look1', children }) {
 	"version": "1.${num}.0",
 	"description": "A standard component ${scope === '' ? 'out of scope ' : ''}${
 			jquery ? '' : 'not '
-		}supporting jquery",
+		}supporting js",
 	"blender": {
 		"recipe": "blender/recipe.js"${
 			jquery
 				? `,
-		"jquery": "blender/jquery.js"`
+		"js": "blender/script.js"`
 				: ''
 		}
 	},
@@ -325,7 +350,7 @@ export function Component${num}({ children }) {
 		createDir(filePath);
 		fs.writeFileSync(`${filePath}Component${num}.js`, content, { encoding: 'utf8' });
 	},
-	src2: templateStd.dist2,
+	src2: templateStd.src2,
 	pkg: ({ num, dir, scope = '@westpac/' }) => {
 		const content = `{
 	"name": "${scope}component${num}",
@@ -485,7 +510,7 @@ export function Component${num}({ look = 'look1', children }) {
 		createDir(filePath);
 		fs.writeFileSync(`${filePath}Component${num}.js`, content, { encoding: 'utf8' });
 	},
-	src2: templateStd.dist2,
+	src2: templateStd.src2,
 	pkg: ({ num, dir, scope = '@westpac/', core = '@westpac/' }) => {
 		const content = `{
 	"name": "${scope}component${num}",
@@ -493,7 +518,7 @@ export function Component${num}({ look = 'look1', children }) {
 	"description": "A standard component with failing label",
 	"blender": {
 		"recipe": "blender/recipe.js",
-		"jquery": "blender/jquery.js"
+		"js": "blender/script.js"
 	},
 	"dependencies": {
 		"@emotion/core": "^10.0.28",
@@ -533,22 +558,33 @@ const templateCore = {
 
 import { Core } from '../src/index.js';
 
-export function AllStyles({ brand }) {
+export function AllStyles({ brand, children }) {
 	return (
-		<Core brand={brand}/>
+		<Core brand={brand}>
+			{children}
+		</Core>
 	);
 }
 
 export function Docs({ brand }) {
-	return (
-		<Core brand={brand}>
-			<h2>Core</h2>
-
-			<Core brand={brand}>
-				Here goes your app
-			</Core>
-		</Core>
-	);
+	return [
+		{
+			heading: 'Variation 1 for Core Component',
+			component: () => (
+				<Core>
+					Here comes the content
+				</Core>
+			),
+		},
+		{
+			heading: 'Variation 2 for Core Component',
+			component: () => (
+				<Core look='look2'>
+					Here comes the content
+				</Core>
+			),
+		},
+	];
 }
 `;
 		const filePath = path.normalize(`${dir}/core/blender/`);
@@ -735,10 +771,10 @@ export function Core({ brand, children }) {
 		const content = `{
 	"name": "${scope}core",
 	"version": "3.17.0",
-	"description": "A core component ${scope === '' ? 'out of scope ' : ''}supporting jquery",
+	"description": "A core component ${scope === '' ? 'out of scope ' : ''}supporting js",
 	"blender": {
 		"recipe": "blender/recipe.js",
-		"jquery": "blender/jquery.js",
+		"js": "blender/jquery.js",
 		"isCore": true
 	},
 	"dependencies": {
@@ -1834,6 +1870,7 @@ if (process.argv.includes('project1')) {
 // A project with lot's of packages
 else if (process.argv.includes('project2')) {
 	dir = path.normalize(`${__dirname}/mock-project2/node_modules/@westpac/`);
+	const dir2 = path.normalize(`${__dirname}/mock-project2/node_modules/`);
 
 	for (i = 1; i < 56; i++) {
 		Object.entries(templateStd).map(([_, func]) => func({ num: i, dir }));
@@ -1841,7 +1878,10 @@ else if (process.argv.includes('project2')) {
 	i--;
 	Object.entries(templateCore).map(([_, func]) => func({ dir }));
 	Object.entries(templateBrand).map(([_, func]) => func({ dir }));
-	i += 2;
+	Object.entries(templateNonBlender).map(([_, func]) => func({ num: 3, dir: dir2, scope: '' }));
+	Object.entries(templateStd).map(([_, func]) => func({ num: 4, dir: dir2, scope: '' }));
+	Object.entries(templateStd).map(([_, func]) => func({ num: 5, dir: dir2, scope: '' }));
+	i += 4;
 }
 // A project with invalid packages
 else if (process.argv.includes('project3')) {

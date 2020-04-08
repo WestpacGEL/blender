@@ -88,7 +88,7 @@ async function cli() {
 	}
 
 	// report on cwd
-	log.info(`Running in ${color.yellow(cwd)}`);
+	log.info(`Running in ${color.bold(cwd)}`);
 	D.log(`Running in ${color.yellow(cwd)}`);
 
 	// get all packages
@@ -107,16 +107,21 @@ async function cli() {
 	}
 
 	const result = generator(PACKAGES.get);
-	if (result.messages) {
+	if (result.code > 0) {
 		result.messages.map((error) => {
 			log.error(error);
+		});
+	}
+	if (result.code === 0 && result.messages.length) {
+		result.messages.map((warnings) => {
+			log.warn(warnings);
 		});
 	}
 
 	try {
 		await saveFiles();
 	} catch (error) {
-		console.log(error);
+		log.error(error);
 	}
 }
 
