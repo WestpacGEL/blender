@@ -6,9 +6,9 @@
  **/
 const path = require('path');
 
-const { generateIndexFile, generateDocsFile, generateDocsScaffold } = require('./generate-docs.js');
+const { generateIndexFile, generateDocsAssets } = require('./generate-docs.js');
+const { generateCss, generateHtml } = require('./generate-css-html.js');
 const { generateTokenFile } = require('./generate-tokens.js');
-const { generateCssHtml } = require('./generate-css-html.js');
 const { generateJSFile } = require('./generate-js.js');
 const { version } = require('../package.json');
 const { SETTINGS } = require('./settings.js');
@@ -66,7 +66,7 @@ function generator(packages) {
 			// Building CSS
 			if (SETTINGS.get.outputCss && core.pkg.recipe) {
 				D.log(`Creating css for ${color.yellow(core.name)}`);
-				const { css, oldCss, oldHtml, ...parsedPkg } = generateCssHtml({
+				const { css, oldCss, oldHtml, ...parsedPkg } = generateCss({
 					pkg: core,
 					children: 'CORE',
 				});
@@ -91,23 +91,13 @@ function generator(packages) {
 					};
 				}
 				// we collect all css in the cssFile variable to be added to store at the end
-				else {
-					D.log(`Adding core css to variable for store`);
-					cssFile += `${css}\n`;
-				}
+				D.log(`Adding core css to variable for store`);
+				cssFile += `${css}\n`;
 			}
 
 			// Building HTML
 			if (SETTINGS.get.outputHtml && core.pkg.recipe) {
 				D.log(`Creating html file for ${color.yellow(core.name)}`);
-
-				const { html, ...parsedPkg } = generateCssHtml({ pkg: core, componentName: 'Docs' });
-
-				if (parsedPkg.code > 0) {
-					result.code = 1;
-					result.errors = [...result.errors, ...parsedPkg.errors];
-				}
-				result.messages = [...result.messages, ...parsedPkg.messages];
 
 				let filePath = SETTINGS.get.outputHtml || SETTINGS.get.output;
 				if (SETTINGS.get.outputZip) {
@@ -116,6 +106,16 @@ function generator(packages) {
 				const docsPath = `/docs/packages/`;
 				filePath = path.normalize(filePath + docsPath);
 				const name = `${stripScope(core.name)}.html`;
+
+				const { html, ...parsedPkg } = generateHtml({
+					pkg: core,
+				});
+
+				if (parsedPkg.code > 0) {
+					result.code = 1;
+					result.errors = [...result.errors, ...parsedPkg.errors];
+				}
+				result.messages = [...result.messages, ...parsedPkg.messages];
 
 				docs.push({
 					name: core.name,
@@ -126,7 +126,7 @@ function generator(packages) {
 				FILES.add = {
 					name,
 					path: filePath,
-					content: generateDocsFile(html, filePath, cssFilePath, cssName),
+					content: html,
 				};
 			}
 
@@ -157,7 +157,7 @@ function generator(packages) {
 						content: js,
 					};
 				}
-				// we collect all js in the cssFile variable to be added to store at the end
+				// we collect all js in the jsFile variable to be added to store at the end
 				else {
 					D.log(`Adding core js to variable for store`);
 					jsFile += `${js}\n`;
@@ -205,7 +205,7 @@ function generator(packages) {
 			// Building CSS
 			if (SETTINGS.get.outputCss && thisPackage.pkg.recipe) {
 				D.log(`Creating css for ${color.yellow(thisPackage.name)}`);
-				const { css, ...parsedPkg } = generateCssHtml({ pkg: thisPackage, coreCSS });
+				const { css, ...parsedPkg } = generateCss({ pkg: thisPackage, coreCSS });
 
 				if (parsedPkg.code > 0) {
 					result.code = 1;
@@ -223,26 +223,12 @@ function generator(packages) {
 					};
 				}
 				// we collect all css in the cssFile variable to be added to store at the end
-				else {
-					cssFile += `${css}\n`;
-				}
+				cssFile += `${css}\n`;
 			}
 
 			// Building HTML
 			if (SETTINGS.get.outputHtml && thisPackage.pkg.recipe) {
 				D.log(`Creating html file for ${color.yellow(thisPackage.name)}`);
-
-				const { html, ...parsedPkg } = generateCssHtml({
-					pkg: thisPackage,
-					componentName: 'Docs',
-					coreHTML,
-				});
-
-				if (parsedPkg.code > 0) {
-					result.code = 1;
-					result.errors = [...result.errors, ...parsedPkg.errors];
-				}
-				result.messages = [...result.messages, ...parsedPkg.messages];
 
 				let filePath = SETTINGS.get.outputHtml || SETTINGS.get.output;
 				if (SETTINGS.get.outputZip) {
@@ -251,6 +237,17 @@ function generator(packages) {
 				const docsPath = `/docs/packages/`;
 				filePath = path.normalize(filePath + docsPath);
 				const name = `${stripScope(thisPackage.name)}.html`;
+
+				const { html, ...parsedPkg } = generateHtml({
+					pkg: thisPackage,
+					coreHTML,
+				});
+
+				if (parsedPkg.code > 0) {
+					result.code = 1;
+					result.errors = [...result.errors, ...parsedPkg.errors];
+				}
+				result.messages = [...result.messages, ...parsedPkg.messages];
 
 				docs.push({
 					name: thisPackage.name,
@@ -261,7 +258,7 @@ function generator(packages) {
 				FILES.add = {
 					name,
 					path: filePath,
-					content: generateDocsFile(html, filePath, cssFilePath, cssName),
+					content: html,
 				};
 			}
 
@@ -300,18 +297,16 @@ function generator(packages) {
 			LOADING.tick();
 		});
 
-	// Add the css we collected from all packages
 	if (!SETTINGS.get.modules) {
+		// Add the css we collected from all packages
 		D.log(`Adding css to store at path ${color.yellow(cssMinFilePath + cssMinName)}`);
 		FILES.add = {
 			name: cssMinName,
 			path: cssMinFilePath,
 			content: cssFile,
 		};
-	}
 
-	// Add the js we collected from all packages
-	if (!SETTINGS.get.modules) {
+		// Add the js we collected from all packages
 		let filePath = SETTINGS.get.outputJs || SETTINGS.get.output;
 		if (SETTINGS.get.outputZip) {
 			filePath = 'blender/';
@@ -338,13 +333,22 @@ function generator(packages) {
 		filePath = path.normalize(`${filePath}/docs/`);
 		const name = `index.html`;
 
+		// adding index file
 		FILES.add = {
 			name: 'index.html',
 			path: filePath,
 			content: index,
 		};
 
-		generateDocsScaffold().map((file) => {
+		// adding css file to docs
+		FILES.add = {
+			name: 'styles.min.css',
+			path: path.normalize(`${filePath}/assets/`),
+			content: cssFile,
+		};
+
+		// adding each docs assets file
+		generateDocsAssets().map((file) => {
 			FILES.add = {
 				name: file.name,
 				path: path.normalize(`${filePath}/${file.path}`),

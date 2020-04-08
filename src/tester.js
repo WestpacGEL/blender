@@ -40,7 +40,9 @@ function tester(packages) {
 				componentName: 'AllStyles',
 			});
 
-			if (parsedPkg.status === 'error') {
+			// TODO also test the Docs component to see if there are errors
+
+			if (parsedPkg.code > 0) {
 				result.errors.push({
 					package: thisPackage.name,
 					error: parsedPkg.message,
