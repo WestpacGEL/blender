@@ -1,7 +1,7 @@
 /**
  * All functions to generate the tokens file
  *
- * generateTokenFile - TODO
+ * generateTokenFile - Generate the tokens file
  * flattenTokens     - Flatten a nested object recursively into a single dimensional object
  * compileTokens     - Compile flat tokens into supported languages
  **/
