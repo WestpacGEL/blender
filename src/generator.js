@@ -3,6 +3,7 @@
  *
  * generator  - Generate files from our blender packages
  * stripScope - Strip the scope from a package name
+ * formatCode - Prettifying js or css
  **/
 const beautify = require('js-beautify');
 const path = require('path');
@@ -41,7 +42,7 @@ function generator(packages) {
 
 	LOADING.start = { total: packages.length };
 
-	let cssMinFilePath = SETTINGS.get.outputCss || SETTINGS.get.output;
+	let cssMinFilePath = SETTINGS.get.outputCss || '';
 	if (SETTINGS.get.outputZip) {
 		cssMinFilePath = 'blender/';
 	}
@@ -55,7 +56,7 @@ function generator(packages) {
 			D.log(`Blending package ${color.yellow(core.name)}`);
 
 			// keeping track of the css path
-			let filePath = SETTINGS.get.outputCss || SETTINGS.get.output;
+			let filePath = SETTINGS.get.outputCss || '';
 			if (SETTINGS.get.outputZip) {
 				filePath = 'blender/';
 			}
@@ -87,7 +88,7 @@ function generator(packages) {
 					D.log(`Adding core css to store at path ${color.yellow(cssFilePath + cssName)}`);
 					FILES.add = {
 						name: cssName,
-						path: cssFilePath,
+						filePath: cssFilePath,
 						content: formatCode(css, 'css'),
 					};
 				}
@@ -100,7 +101,7 @@ function generator(packages) {
 			if (SETTINGS.get.outputHtml && core.pkg.recipe) {
 				D.log(`Creating html file for ${color.yellow(core.name)}`);
 
-				let filePath = SETTINGS.get.outputHtml || SETTINGS.get.output;
+				let filePath = SETTINGS.get.outputHtml || '';
 				if (SETTINGS.get.outputZip) {
 					filePath = 'blender/';
 				}
@@ -126,7 +127,7 @@ function generator(packages) {
 				D.log(`Adding core html to store at path ${color.yellow(filePath + name)}`);
 				FILES.add = {
 					name,
-					path: filePath,
+					filePath: filePath,
 					content: html,
 				};
 			}
@@ -144,7 +145,7 @@ function generator(packages) {
 
 				// save each file into its own module
 				if (SETTINGS.get.modules) {
-					let filePath = SETTINGS.get.outputJs || SETTINGS.get.output;
+					let filePath = SETTINGS.get.outputJs || '';
 					if (SETTINGS.get.outputZip) {
 						filePath = 'blender/';
 					}
@@ -154,7 +155,7 @@ function generator(packages) {
 					D.log(`Adding core js to store at path ${color.yellow(filePath + name)}`);
 					FILES.add = {
 						name,
-						path: filePath,
+						filePath: filePath,
 						content: formatCode(js, 'js'),
 					};
 				}
@@ -175,7 +176,7 @@ function generator(packages) {
 			D.log(`Blending package ${color.yellow(thisPackage.name)}`);
 
 			// keeping track of the css path
-			let filePath = SETTINGS.get.outputCss || SETTINGS.get.output;
+			let filePath = SETTINGS.get.outputCss || '';
 			if (SETTINGS.get.outputZip) {
 				filePath = 'blender/';
 			}
@@ -188,7 +189,7 @@ function generator(packages) {
 			if (SETTINGS.get.outputTokens && thisPackage.pkg.tokens) {
 				const compiledTokens = generateTokenFile(thisPackage.path, SETTINGS.get.tokensFormat);
 
-				let filePath = SETTINGS.get.outputTokens || SETTINGS.get.output;
+				let filePath = SETTINGS.get.outputTokens || '';
 				if (SETTINGS.get.outputZip) {
 					filePath = 'blender/';
 				}
@@ -198,7 +199,7 @@ function generator(packages) {
 				D.log(`Adding tokens to store at path ${color.yellow(filePath + name)}`);
 				FILES.add = {
 					name,
-					path: filePath,
+					filePath: filePath,
 					content: compiledTokens,
 				};
 			}
@@ -219,7 +220,7 @@ function generator(packages) {
 					D.log(`Adding package css to store at path ${color.yellow(cssFilePath + cssName)}`);
 					FILES.add = {
 						name: cssName,
-						path: cssFilePath,
+						filePath: cssFilePath,
 						content: formatCode(css, 'css'),
 					};
 				}
@@ -231,7 +232,7 @@ function generator(packages) {
 			if (SETTINGS.get.outputHtml && thisPackage.pkg.recipe) {
 				D.log(`Creating html file for ${color.yellow(thisPackage.name)}`);
 
-				let filePath = SETTINGS.get.outputHtml || SETTINGS.get.output;
+				let filePath = SETTINGS.get.outputHtml || '';
 				if (SETTINGS.get.outputZip) {
 					filePath = 'blender/';
 				}
@@ -258,7 +259,7 @@ function generator(packages) {
 				D.log(`Adding package html to store at path ${color.yellow(filePath + name)}`);
 				FILES.add = {
 					name,
-					path: filePath,
+					filePath: filePath,
 					content: html,
 				};
 			}
@@ -275,7 +276,7 @@ function generator(packages) {
 
 				// save each file into its own module
 				if (SETTINGS.get.modules) {
-					let filePath = SETTINGS.get.outputJs || SETTINGS.get.output;
+					let filePath = SETTINGS.get.outputJs || '';
 					if (SETTINGS.get.outputZip) {
 						filePath = 'blender/';
 					}
@@ -285,7 +286,7 @@ function generator(packages) {
 					D.log(`Adding package js to store at path ${color.yellow(filePath + name)}`);
 					FILES.add = {
 						name,
-						path: filePath,
+						filePath: filePath,
 						content: formatCode(js, 'js'),
 					};
 				}
@@ -303,12 +304,12 @@ function generator(packages) {
 		D.log(`Adding css to store at path ${color.yellow(cssMinFilePath + cssMinName)}`);
 		FILES.add = {
 			name: cssMinName,
-			path: cssMinFilePath,
+			filePath: cssMinFilePath,
 			content: formatCode(cssFile, 'css'),
 		};
 
 		// Add the js we collected from all packages
-		let filePath = SETTINGS.get.outputJs || SETTINGS.get.output;
+		let filePath = SETTINGS.get.outputJs || '';
 		if (SETTINGS.get.outputZip) {
 			filePath = 'blender/';
 		}
@@ -318,7 +319,7 @@ function generator(packages) {
 		D.log(`Adding js to store at path ${color.yellow(filePath + name)}`);
 		FILES.add = {
 			name,
-			path: filePath,
+			filePath: filePath,
 			content: formatCode(jsFile, 'js'),
 		};
 	}
@@ -327,7 +328,7 @@ function generator(packages) {
 	if (SETTINGS.get.outputHtml && docs.length) {
 		const index = generateIndexFile(docs);
 
-		let filePath = SETTINGS.get.outputHtml || SETTINGS.get.output;
+		let filePath = SETTINGS.get.outputHtml || '';
 		if (SETTINGS.get.outputZip) {
 			filePath = 'blender/';
 		}
@@ -337,14 +338,14 @@ function generator(packages) {
 		// adding index file
 		FILES.add = {
 			name: 'index.html',
-			path: filePath,
+			filePath: filePath,
 			content: index,
 		};
 
 		// adding css file to docs
 		FILES.add = {
 			name: 'styles.min.css',
-			path: path.normalize(`${filePath}/assets/`),
+			filePath: path.normalize(`${filePath}/assets/`),
 			content: cssFile,
 		};
 
@@ -352,7 +353,7 @@ function generator(packages) {
 		generateDocsAssets().map((file) => {
 			FILES.add = {
 				name: file.name,
-				path: path.normalize(`${filePath}/${file.path}`),
+				filePath: path.normalize(`${filePath}/${file.path}`),
 				content: file.content,
 			};
 		});
@@ -362,7 +363,10 @@ function generator(packages) {
 
 	D.log(`generator return: "${color.yellow(JSON.stringify(result))}"`);
 
-	return result;
+	return {
+		...result,
+		files: [...FILES.get],
+	};
 }
 
 /**
@@ -382,6 +386,15 @@ function stripScope(name) {
 	}
 }
 
+/**
+ * Prettifying js or css
+ *
+ * @param  {string}  code     - The code to be prettified
+ * @param  {string}  lang     - The language
+ * @param  {boolean} prettify - The switch to prettify or not
+ *
+ * @return {string}           - The code either prettified or not
+ */
 function formatCode(code, lang, prettify = SETTINGS.get.prettify) {
 	if (!prettify || (lang !== 'css' && lang !== 'js')) {
 		return code;
@@ -397,4 +410,5 @@ function formatCode(code, lang, prettify = SETTINGS.get.prettify) {
 module.exports = exports = {
 	generator,
 	stripScope,
+	formatCode,
 };
