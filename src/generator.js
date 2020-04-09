@@ -4,6 +4,7 @@
  * generator  - Generate files from our blender packages
  * stripScope - Strip the scope from a package name
  **/
+const beautify = require('js-beautify');
 const path = require('path');
 
 const { generateIndexFile, generateDocsAssets } = require('./generate-docs.js');
@@ -45,7 +46,7 @@ function generator(packages) {
 		cssMinFilePath = 'blender/';
 	}
 	cssMinFilePath = path.normalize(`${cssMinFilePath}/css/`);
-	const cssMinName = `styles.min.css`; // TODO minify on/off
+	const cssMinName = `styles${SETTINGS.get.prettify ? '' : '.min'}.css`;
 
 	// Building core
 	packages
@@ -87,7 +88,7 @@ function generator(packages) {
 					FILES.add = {
 						name: cssName,
 						path: cssFilePath,
-						content: css,
+						content: formatCode(css, 'css'),
 					};
 				}
 				// we collect all css in the cssFile variable to be added to store at the end
@@ -154,7 +155,7 @@ function generator(packages) {
 					FILES.add = {
 						name,
 						path: filePath,
-						content: js,
+						content: formatCode(js, 'js'),
 					};
 				}
 				// we collect all js in the jsFile variable to be added to store at the end
@@ -219,7 +220,7 @@ function generator(packages) {
 					FILES.add = {
 						name: cssName,
 						path: cssFilePath,
-						content: css,
+						content: formatCode(css, 'css'),
 					};
 				}
 				// we collect all css in the cssFile variable to be added to store at the end
@@ -285,7 +286,7 @@ function generator(packages) {
 					FILES.add = {
 						name,
 						path: filePath,
-						content: js,
+						content: formatCode(js, 'js'),
 					};
 				}
 				// we collect all js in the jsFile variable to be added to store at the end
@@ -303,7 +304,7 @@ function generator(packages) {
 		FILES.add = {
 			name: cssMinName,
 			path: cssMinFilePath,
-			content: cssFile,
+			content: formatCode(cssFile, 'css'),
 		};
 
 		// Add the js we collected from all packages
@@ -312,13 +313,13 @@ function generator(packages) {
 			filePath = 'blender/';
 		}
 		filePath = path.normalize(`${filePath}/js/`);
-		const name = `script.min.js`; // TODO minify on/off
+		const name = `script${SETTINGS.get.prettify ? '' : '.min'}.js`;
 
 		D.log(`Adding js to store at path ${color.yellow(filePath + name)}`);
 		FILES.add = {
 			name,
 			path: filePath,
-			content: jsFile,
+			content: formatCode(jsFile, 'js'),
 		};
 	}
 
@@ -379,6 +380,18 @@ function stripScope(name) {
 	} else {
 		return name;
 	}
+}
+
+function formatCode(code, lang, prettify = SETTINGS.get.prettify) {
+	if (!prettify || (lang !== 'css' && lang !== 'js')) {
+		return code;
+	}
+
+	return beautify[lang](code, {
+		indent_with_tabs: true,
+		end_with_newline: false,
+		jslint_happy: true,
+	});
 }
 
 module.exports = exports = {
