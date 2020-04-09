@@ -269,7 +269,7 @@ function checkInput(cliArgs, options = CLIOPTIONS) {
 			if (
 				argDict[key].arguments &&
 				Array.isArray(argDict[key].arguments) &&
-				!argDict[key].arguments.includes(value)
+				!argDict[key].arguments.includes(value.toUpperCase())
 			) {
 				D.error(
 					`Invalid argument for ${color.yellow(key)} Expected ${color.yellow(
