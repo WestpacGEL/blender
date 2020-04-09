@@ -162,10 +162,13 @@ function convertClasses({ css, html, ids }, version) {
 	ids.map((id) => {
 		const oldClass = new RegExp(`css-${id}`, 'g');
 		const versionString = version.replace(/\./g, '_');
+		const idBits = id.split('-').slice(1);
 		const newClass =
 			'GEL-' +
-			id.split('-').slice(1).join('-') +
-			(SETTINGS.get.noVersionInClass ? '' : `-v${versionString}`);
+			idBits[0] +
+			(SETTINGS.get.noVersionInClass ? '' : `-v${versionString}`) +
+			(idBits.length > 1 ? '-' : '') +
+			idBits.slice(1).join('-');
 
 		humanReadableCSS = humanReadableCSS.replace(oldClass, newClass);
 		humanReadableHTML = humanReadableHTML.replace(oldClass, newClass);
