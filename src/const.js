@@ -23,7 +23,6 @@ const CLIOPTIONS = {
 		example: 'blender -b WBC',
 		flag: 'b',
 		type: 'string',
-		arguments: ['WBC', 'WBG', 'BOM', 'BSA', 'STG', 'BTFG'],
 	},
 	output: {
 		description: 'Specify where the blender should save all your files to',
