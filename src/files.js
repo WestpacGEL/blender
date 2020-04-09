@@ -27,10 +27,10 @@ const FILES = {
 		return this.store;
 	},
 
-	set add({ name, path, ...rest }) {
-		this.store.set(`${path}/${name}`, {
+	set add({ name, filePath, ...rest }) {
+		this.store.set(path.normalize(`${filePath}/${name}`), {
 			name,
-			path,
+			path: filePath,
 			...rest,
 		});
 	},
