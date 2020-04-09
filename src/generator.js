@@ -313,7 +313,7 @@ function generator(packages) {
 			filePath = 'blender/';
 		}
 		filePath = path.normalize(`${filePath}/js/`);
-		const name = `script${SETTINGS.get.prettify ? '' : '.min'}.js`; // TODO minify on/off
+		const name = `script${SETTINGS.get.prettify ? '' : '.min'}.js`;
 
 		D.log(`Adding js to store at path ${color.yellow(filePath + name)}`);
 		FILES.add = {
