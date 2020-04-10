@@ -54,11 +54,17 @@ function generator(packages) {
 	packages
 		.filter((pkg) => pkg.pkg.isCore)
 		.map((core) => {
-			const { oldCss, oldHtml, js, css, html } = blendPkg({
+			const { oldCss, oldHtml, js, css, html, ...rest } = blendPkg({
 				thisPkg: core,
 				includeJs: !!SETTINGS.get.outputJs && !SETTINGS.get.excludeJquery,
 				children: 'CORE',
 			});
+
+			if (rest.code > 0) {
+				result.code = 1;
+				result.errors = [...result.errors, ...rest.errors];
+			}
+			result.messages = [...result.messages, ...rest.messages];
 
 			// we keep track of the core css and html so we can remove it from other packages
 			coreCss += oldCss;
@@ -78,11 +84,17 @@ function generator(packages) {
 	packages
 		.filter((pkg) => !pkg.pkg.isCore)
 		.map((thisPkg) => {
-			const { css, js, html } = blendPkg({
+			const { css, js, html, ...rest } = blendPkg({
 				thisPkg,
 				coreCss,
 				coreHtml,
 			});
+
+			if (rest.code > 0) {
+				result.code = 1;
+				result.errors = [...result.errors, ...rest.errors];
+			}
+			result.messages = [...result.messages, ...rest.messages];
 
 			// we collect all css and js for a possible concatenated css/js file
 			cssFile += css;
