@@ -14,7 +14,8 @@ server
 	.use(express.static('.')) // TODO this will go in production
 	// TODO add 301 for non post requests
 	.use(bodyParser.urlencoded({ extended: true }))
-	.post('/blender', async (request, response) => { // TODO check blender endpoint path
+	.post('/blender', async (request, response) => {
+		// TODO check blender endpoint path
 		// TODO check and sanitize request data
 
 		const brand = request.body.brand || 'wbc';
