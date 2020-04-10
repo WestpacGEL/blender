@@ -41,8 +41,6 @@ function generateCss({ pkg, coreCss = '', children }) {
 
 	if (parsedPkg.code > 0) {
 		result.messages.push(parsedPkg.message);
-		result.code = 0;
-
 		return result;
 	}
 
@@ -101,8 +99,6 @@ function generateHtml({ pkg, coreHtml = '' }) {
 
 	if (parsedPkg.code > 0) {
 		result.messages.push(parsedPkg.message);
-		result.code = 0;
-
 		return result;
 	}
 
