@@ -76,6 +76,8 @@ function generateDocsFile(name, html) {
 function generateIndexFile(docs) {
 	D.header('generateIndexFile', { docs });
 
+	const brand = SETTINGS.get.brand.startsWith('@') ? 'Westpac' : SETTINGS.get.brand.toUpperCase();
+
 	return `<!DOCTYPE html>
 <html>
 <head>
@@ -94,9 +96,9 @@ function generateIndexFile(docs) {
 
 				<main>
 					<section>
-						<h1>Your ${SETTINGS.get.brand.toUpperCase()} Design System blend</h1>
+						<h1>Your ${brand} Design System blend</h1>
 						<p class="lead">
-							This page contains the documentation of each package you blended with the ${SETTINGS.get.brand.toUpperCase()} blender.
+							This page contains the documentation of each package you blended with the ${brand} blender.
 						</p>
 					</section>
 
