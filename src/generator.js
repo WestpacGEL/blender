@@ -2,6 +2,7 @@
  * All functions for the generator
  *
  * generator  - Generate files from our blender packages
+ * blendPkg   - Generate CSS, Js, tokens and HTML from a package
  * stripScope - Strip the scope from a package name
  * formatCode - Prettifying js or css
  **/
@@ -36,8 +37,8 @@ function generator(packages) {
 
 	let cssFile = ''; // this is where we collect all our css
 	let jsFile = ''; // this is where we collect all our js
-	let coreCSS = ''; // we need to keep a record of the core css so we can remove it from each component later
-	let coreHTML = ''; // we need to keep a record of the core html so we can remove it from each component later
+	let coreCss = ''; // we need to keep a record of the core css so we can remove it from each component later
+	let coreHtml = ''; // we need to keep a record of the core html so we can remove it from each component later
 	const docs = []; // keeping track of all docs we add for building the index
 
 	LOADING.start = { total: packages.length };
@@ -49,121 +50,25 @@ function generator(packages) {
 	cssMinFilePath = path.normalize(`${cssMinFilePath}/css/`);
 	const cssMinName = `styles${SETTINGS.get.prettify ? '' : '.min'}.css`;
 
-	// Building core
+	// Building core first so we can remove it from other packages
 	packages
 		.filter((pkg) => pkg.pkg.isCore)
 		.map((core) => {
-			D.log(`Blending package ${color.yellow(core.name)}`);
+			const { oldCss, oldHtml, js, css, html } = blendPkg({
+				thisPkg: core,
+				includeJs: !!SETTINGS.get.outputJs && !SETTINGS.get.excludeJquery,
+				children: 'CORE',
+			});
 
-			// keeping track of the css path
-			let filePath = SETTINGS.get.outputCss || '';
-			if (SETTINGS.get.outputZip) {
-				filePath = 'blender/';
-			}
-			filePath = path.normalize(`${filePath}/css/`);
-			const name = `${stripScope(core.name)}.css`;
-			const cssFilePath = SETTINGS.get.modules ? filePath : cssMinFilePath;
-			const cssName = SETTINGS.get.modules ? name : cssMinName;
+			// we keep track of the core css and html so we can remove it from other packages
+			coreCss += oldCss;
+			coreHtml += oldHtml;
 
-			// Building CSS
-			if (SETTINGS.get.outputCss && core.pkg.recipe) {
-				D.log(`Creating css for ${color.yellow(core.name)}`);
-				const { css, oldCss, oldHtml, ...parsedPkg } = generateCss({
-					pkg: core,
-					children: 'CORE',
-				});
-
-				coreHTML = oldHtml;
-
-				if (parsedPkg.code > 0) {
-					result.code = 1;
-					result.errors = [...result.errors, ...parsedPkg.errors];
-				}
-				result.messages = [...result.messages, ...parsedPkg.messages];
-
-				coreCSS += oldCss; // store css for later
-
-				// save each file into its own module
-				if (SETTINGS.get.modules) {
-					D.log(`Adding core css to store at path ${color.yellow(cssFilePath + cssName)}`);
-					FILES.add = {
-						name: cssName,
-						filePath: cssFilePath,
-						content: formatCode(css, 'css'),
-					};
-				}
-				// we collect all css in the cssFile variable to be added to store at the end
-				D.log(`Adding core css to variable for store`);
-				cssFile += `${css}\n`;
-			}
-
-			// Building HTML
-			if (SETTINGS.get.outputHtml && core.pkg.recipe) {
-				D.log(`Creating html file for ${color.yellow(core.name)}`);
-
-				let filePath = SETTINGS.get.outputHtml || '';
-				if (SETTINGS.get.outputZip) {
-					filePath = 'blender/';
-				}
-				const docsPath = `/docs/packages/`;
-				filePath = path.normalize(filePath + docsPath);
-				const name = `${stripScope(core.name)}.html`;
-
-				const { html, ...parsedPkg } = generateHtml({
-					pkg: core,
-				});
-
-				if (parsedPkg.code > 0) {
-					result.code = 1;
-					result.errors = [...result.errors, ...parsedPkg.errors];
-				}
-				result.messages = [...result.messages, ...parsedPkg.messages];
-
-				docs.push({
-					name: core.name,
-					path: docsPath + name,
-				});
-
-				D.log(`Adding core html to store at path ${color.yellow(filePath + name)}`);
-				FILES.add = {
-					name,
-					filePath: filePath,
-					content: html,
-				};
-			}
-
-			// Building JS
-			if (SETTINGS.get.outputJs && core.pkg.js && !SETTINGS.get.excludeJquery) {
-				D.log(`Creating js file for ${color.yellow(core.name)}`);
-
-				const { js, ...rest } = generateJSFile(core);
-
-				if (rest.code > 0) {
-					result.code = 1;
-					result.messages = [...result.messages, ...rest.message];
-				}
-
-				// save each file into its own module
-				if (SETTINGS.get.modules) {
-					let filePath = SETTINGS.get.outputJs || '';
-					if (SETTINGS.get.outputZip) {
-						filePath = 'blender/';
-					}
-					filePath = path.normalize(`${filePath}/js/`);
-					const name = `${stripScope(core.name)}.js`;
-
-					D.log(`Adding core js to store at path ${color.yellow(filePath + name)}`);
-					FILES.add = {
-						name,
-						filePath: filePath,
-						content: formatCode(js, 'js'),
-					};
-				}
-				// we collect all js in the jsFile variable to be added to store at the end
-				else {
-					D.log(`Adding core js to variable for store`);
-					jsFile += `${js}\n`;
-				}
+			// we collect all css and js for a possible concatenated css/js file
+			cssFile += css;
+			jsFile += js;
+			if (html) {
+				docs.push(html);
 			}
 
 			LOADING.tick();
@@ -172,128 +77,18 @@ function generator(packages) {
 	// Building rest of packages (drawing the rest of the f** owl)
 	packages
 		.filter((pkg) => !pkg.pkg.isCore)
-		.map((thisPackage) => {
-			D.log(`Blending package ${color.yellow(thisPackage.name)}`);
+		.map((thisPkg) => {
+			const { css, js, html } = blendPkg({
+				thisPkg,
+				coreCss,
+				coreHtml,
+			});
 
-			// keeping track of the css path
-			let filePath = SETTINGS.get.outputCss || '';
-			if (SETTINGS.get.outputZip) {
-				filePath = 'blender/';
-			}
-			filePath = path.normalize(`${filePath}/css/`);
-			const name = `${stripScope(thisPackage.name)}.css`;
-			const cssFilePath = SETTINGS.get.modules ? filePath : cssMinFilePath;
-			const cssName = SETTINGS.get.modules ? name : cssMinName;
-
-			// Building tokens
-			if (SETTINGS.get.outputTokens && thisPackage.pkg.tokens) {
-				const compiledTokens = generateTokenFile(thisPackage.path, SETTINGS.get.tokensFormat);
-
-				let filePath = SETTINGS.get.outputTokens || '';
-				if (SETTINGS.get.outputZip) {
-					filePath = 'blender/';
-				}
-				filePath = path.normalize(`${filePath}/tokens/`);
-				const name = `tokens.${SETTINGS.get.tokensFormat}`;
-
-				D.log(`Adding tokens to store at path ${color.yellow(filePath + name)}`);
-				FILES.add = {
-					name,
-					filePath: filePath,
-					content: compiledTokens,
-				};
-			}
-
-			// Building CSS
-			if (SETTINGS.get.outputCss && thisPackage.pkg.recipe) {
-				D.log(`Creating css for ${color.yellow(thisPackage.name)}`);
-				const { css, ...parsedPkg } = generateCss({ pkg: thisPackage, coreCSS });
-
-				if (parsedPkg.code > 0) {
-					result.code = 1;
-					result.errors = [...result.errors, ...parsedPkg.errors];
-				}
-				result.messages = [...result.messages, ...parsedPkg.messages];
-
-				// save each file into its own module
-				if (SETTINGS.get.modules) {
-					D.log(`Adding package css to store at path ${color.yellow(cssFilePath + cssName)}`);
-					FILES.add = {
-						name: cssName,
-						filePath: cssFilePath,
-						content: formatCode(css, 'css'),
-					};
-				}
-				// we collect all css in the cssFile variable to be added to store at the end
-				cssFile += `${css}\n`;
-			}
-
-			// Building HTML
-			if (SETTINGS.get.outputHtml && thisPackage.pkg.recipe) {
-				D.log(`Creating html file for ${color.yellow(thisPackage.name)}`);
-
-				let filePath = SETTINGS.get.outputHtml || '';
-				if (SETTINGS.get.outputZip) {
-					filePath = 'blender/';
-				}
-				const docsPath = `/docs/packages/`;
-				filePath = path.normalize(filePath + docsPath);
-				const name = `${stripScope(thisPackage.name)}.html`;
-
-				const { html, ...parsedPkg } = generateHtml({
-					pkg: thisPackage,
-					coreHTML,
-				});
-
-				if (parsedPkg.code > 0) {
-					result.code = 1;
-					result.errors = [...result.errors, ...parsedPkg.errors];
-				}
-				result.messages = [...result.messages, ...parsedPkg.messages];
-
-				docs.push({
-					name: thisPackage.name,
-					path: docsPath + name,
-				});
-
-				D.log(`Adding package html to store at path ${color.yellow(filePath + name)}`);
-				FILES.add = {
-					name,
-					filePath: filePath,
-					content: html,
-				};
-			}
-
-			// Building JS
-			if (SETTINGS.get.outputJs && thisPackage.pkg.js) {
-				D.log(`Creating js for ${color.yellow(thisPackage.name)}`);
-				const { js, ...rest } = generateJSFile(thisPackage);
-
-				if (rest.code > 0) {
-					result.code = 1;
-					result.messages = [...result.messages, ...rest.message];
-				}
-
-				// save each file into its own module
-				if (SETTINGS.get.modules) {
-					let filePath = SETTINGS.get.outputJs || '';
-					if (SETTINGS.get.outputZip) {
-						filePath = 'blender/';
-					}
-					filePath = path.normalize(`${filePath}/js/`);
-					const name = `${stripScope(thisPackage.name)}.js`;
-
-					D.log(`Adding package js to store at path ${color.yellow(filePath + name)}`);
-					FILES.add = {
-						name,
-						filePath: filePath,
-						content: formatCode(js, 'js'),
-					};
-				}
-				// we collect all js in the jsFile variable to be added to store at the end
-				else {
-					jsFile += `${js}\n`;
-				}
+			// we collect all css and js for a possible concatenated css/js file
+			cssFile += css;
+			jsFile += js;
+			if (html) {
+				docs.push(html);
 			}
 
 			LOADING.tick();
@@ -370,6 +165,173 @@ function generator(packages) {
 }
 
 /**
+ * Generate CSS, Js, tokens and HTML from a package
+ *
+ * @param  {object}  options.thisPkg       - The package object
+ * @param  {string}  options.coreCss       - The core css string for removal
+ * @param  {string}  options.coreHtml      - The core html string for removal
+ * @param  {boolean} options.includeTokens - Switch to include tokens
+ * @param  {boolean} options.includeCss    - Switch to include CSS
+ * @param  {boolean} options.includeJs     - Switch to include Js
+ * @param  {boolean} options.includeHtml   - Switch to include HTML
+ *
+ * @return {object}                        - A return object with css key
+ */
+function blendPkg({
+	thisPkg,
+	coreCss = '',
+	coreHtml = '',
+	includeTokens = !!SETTINGS.get.outputTokens,
+	includeCss = !!SETTINGS.get.outputCss,
+	includeJs = !!SETTINGS.get.outputJs,
+	includeHtml = !!SETTINGS.get.outputHtml,
+	children,
+}) {
+	D.log(`Blending package ${color.yellow(thisPkg.name)}`);
+
+	const result = {
+		code: 0,
+		errors: [],
+		messages: [],
+		oldCss: '',
+		oldHtml: '',
+		css: '',
+		js: '',
+		html: false,
+	};
+
+	// Building tokens
+	if (includeTokens && thisPkg.pkg.tokens) {
+		D.log(`Creating tokens for ${color.yellow(thisPkg.name)}`);
+
+		const compiledTokens = generateTokenFile(thisPkg.path, SETTINGS.get.tokensFormat);
+
+		let filePath = SETTINGS.get.outputTokens || '';
+		if (SETTINGS.get.outputZip) {
+			filePath = 'blender/';
+		}
+		filePath = path.normalize(`${filePath}/tokens/`);
+		const name = `tokens.${SETTINGS.get.tokensFormat}`;
+
+		D.log(`Adding tokens to store at path ${color.yellow(filePath + name)}`);
+		FILES.add = {
+			name,
+			filePath: filePath,
+			content: compiledTokens,
+		};
+	}
+
+	// Building CSS
+	if (includeCss && thisPkg.pkg.recipe) {
+		D.log(`Creating css for ${color.yellow(thisPkg.name)}`);
+		const { css, oldCss, oldHtml, ...parsedPkg } = generateCss({ pkg: thisPkg, coreCss, children });
+
+		if (parsedPkg.code > 0) {
+			result.code = 1;
+			result.errors = [...result.errors, ...parsedPkg.errors];
+		}
+		result.messages = [...result.messages, ...parsedPkg.messages];
+
+		// keeping track of unmodified css and html so we can remove it from the output later
+		result.oldCss = oldCss;
+		result.oldHtml = oldHtml;
+		result.css = `${css}\n`;
+
+		// keeping track of the css path
+		let filePath = SETTINGS.get.outputCss || '';
+		if (SETTINGS.get.outputZip) {
+			filePath = 'blender/';
+		}
+		filePath = path.normalize(`${filePath}/css/`);
+		const name = `${stripScope(thisPkg.name)}${SETTINGS.get.prettify ? '' : '.min'}.css`;
+
+		// save each file into its own module
+		if (SETTINGS.get.modules) {
+			D.log(
+				`Adding ${color.yellow(thisPkg.name)} css to store at path ${color.yellow(filePath + name)}`
+			);
+			FILES.add = {
+				name: name,
+				filePath: filePath,
+				content: formatCode(css, 'css'),
+			};
+		}
+	}
+
+	// Building HTML
+	if (includeHtml && thisPkg.pkg.recipe) {
+		D.log(`Creating html file for ${color.yellow(thisPkg.name)}`);
+
+		let filePath = SETTINGS.get.outputHtml || '';
+		if (SETTINGS.get.outputZip) {
+			filePath = 'blender/';
+		}
+		const docsPath = `/docs/packages/`;
+		filePath = path.normalize(filePath + docsPath);
+		const name = `${stripScope(thisPkg.name)}.html`;
+
+		const { html, ...parsedPkg } = generateHtml({
+			pkg: thisPkg,
+			coreHtml,
+		});
+
+		if (parsedPkg.code > 0) {
+			result.code = 1;
+			result.errors = [...result.errors, ...parsedPkg.errors];
+		}
+		result.messages = [...result.messages, ...parsedPkg.messages];
+
+		result.html = {
+			name: thisPkg.name,
+			path: docsPath + name,
+		};
+
+		D.log(
+			`Adding ${color.yellow(thisPkg.name)} html to store at path ${color.yellow(filePath + name)}`
+		);
+		FILES.add = {
+			name,
+			filePath: filePath,
+			content: html,
+		};
+	}
+
+	// Building JS
+	if (includeJs && thisPkg.pkg.js) {
+		D.log(`Creating js for ${color.yellow(thisPkg.name)}`);
+		const { js, ...rest } = generateJSFile(thisPkg);
+
+		if (rest.code > 0) {
+			result.code = 1;
+			result.messages = [...result.messages, ...rest.message];
+		}
+
+		result.js = `${js}\n`;
+
+		// save each file into its own module
+		if (SETTINGS.get.modules) {
+			let filePath = SETTINGS.get.outputJs || '';
+			if (SETTINGS.get.outputZip) {
+				filePath = 'blender/';
+			}
+			filePath = path.normalize(`${filePath}/js/`);
+			const name = `${stripScope(thisPkg.name)}${SETTINGS.get.prettify ? '' : '.min'}.js`;
+
+			D.log(
+				`Adding ${color.yellow(thisPkg.name)} js to store at path ${color.yellow(filePath + name)}`
+			);
+			FILES.add = {
+				name,
+				filePath: filePath,
+				content: formatCode(js, 'js'),
+			};
+		}
+	}
+
+	return result;
+}
+
+/**
  * Strip the scope from a package name
  *
  * @param  {string} name - The name of the package
@@ -409,6 +371,7 @@ function formatCode(code, lang, prettify = SETTINGS.get.prettify) {
 
 module.exports = exports = {
 	generator,
+	blendPkg,
 	stripScope,
 	formatCode,
 };

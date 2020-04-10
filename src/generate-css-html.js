@@ -19,13 +19,13 @@ const { D } = require('./log.js');
  * Generate the css from a recipe
  *
  * @param  {object} options.pkg      - The package object with blender key
- * @param  {string} options.coreCSS  - The core styles to be removed
+ * @param  {string} options.coreCss  - The core styles to be removed
  * @param  {string} options.children - Possible children to be rendered
  *
  * @return {object}                  - A result object with css key
  */
-function generateCss({ pkg, coreCSS = '', children }) {
-	D.header('generateCss', { pkg, coreCSS, children });
+function generateCss({ pkg, coreCss = '', children }) {
+	D.header('generateCss', { pkg, coreCss, children });
 
 	const result = {
 		code: 0,
@@ -63,7 +63,7 @@ function generateCss({ pkg, coreCSS = '', children }) {
 	}
 
 	// remove core css
-	parsedPkg.css = parsedPkg.css.replace(coreCSS, '');
+	parsedPkg.css = parsedPkg.css.replace(coreCss, '');
 
 	let { css } = convertClasses(parsedPkg, pkg.version);
 
@@ -81,12 +81,12 @@ function generateCss({ pkg, coreCSS = '', children }) {
  * Generate the html from a recipe
  *
  * @param  {object} options.pkg      - The package object with blender key
- * @param  {string} options.coreHTML - The core html to be removed
+ * @param  {string} options.coreHtml - The core html to be removed
  *
  * @return {object}                  - A result object with html key
  */
-function generateHtml({ pkg, coreHTML = '' }) {
-	D.header('generateHtml', { pkg, coreHTML });
+function generateHtml({ pkg, coreHtml = '' }) {
+	D.header('generateHtml', { pkg, coreHtml });
 
 	const result = {
 		code: 0,
@@ -124,7 +124,7 @@ function generateHtml({ pkg, coreHTML = '' }) {
 		}
 
 		// remove core html
-		const coreBits = coreHTML.split('CORE');
+		const coreBits = coreHtml.split('CORE');
 		const coreStart = new RegExp('^' + coreBits[0]);
 		const coreEnd = new RegExp(coreBits[1] + '$');
 		recipe.static.html = recipe.static.html.replace(coreStart, '').replace(coreEnd, '');
