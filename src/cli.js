@@ -96,9 +96,10 @@ async function cli() {
 			log.error(error);
 		});
 		log.info(
-			`You can specify a brand with the ${color.yellow('--brand')} and the arguments ${color.yellow(
-				CLIOPTIONS.brand.arguments.join(', ')
-			)}\n   Example: ${color.cyan('$ blender --brand WBC')}`
+			`You can specify a brand with the ${color.yellow('--brand')}\n   ` +
+				`Example: ${color.cyan('$ blender --brand WBC')} or ${color.cyan(
+					'$ blender --brand "@westpac/stg"'
+				)}`
 		);
 		process.exit(1);
 	}
