@@ -114,7 +114,11 @@ function getPackages(cwd = process.cwd()) {
 	D.log(`getPackages return: "${color.yellow(JSON.stringify(packages))}"`);
 
 	// we need to flag all packages with babel to include them
-	require('@babel/register')({ only: packages.map((pkg) => `${pkg.path}`) });
+	require('@babel/register')({
+		presets: ['@babel/preset-env', '@babel/preset-react'],
+		plugins: ['@babel/transform-runtime'],
+		only: packages.map((pkg) => `${pkg.path}`),
+	});
 
 	return packages;
 }
