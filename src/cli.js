@@ -75,14 +75,14 @@ async function cli() {
 	if (
 		!SETTINGS.get.outputCss &&
 		!SETTINGS.get.outputJs &&
-		!SETTINGS.get.outputHtml &&
-		!SETTINGS.get.outputtokens
+		!SETTINGS.get.outputDocs &&
+		!SETTINGS.get.outputTokens
 	) {
 		log.error(`You need to specify an output path`);
 		log.info(
 			`You can specify an output path for all assets with ${color.cyan(
 				'-o path/'
-			)}.\n   To learn more have a look into our help ${color.cyan('$ blender -H')}.`
+			)}.\n   To learn more have a look into our help ${color.cyan('$ blender -h')}.`
 		);
 		process.exit(1);
 	}

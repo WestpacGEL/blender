@@ -28,10 +28,11 @@ const FILES = {
 		return this.store;
 	},
 
-	set add({ name, filePath, ...rest }) {
-		this.store.set(path.normalize(`${filePath}/${name}`), {
+	set add({ name, filePath = '', dir, ...rest }) {
+		this.store.set(path.normalize(`${dir}/${name}`), {
 			name,
-			path: filePath,
+			filePath,
+			dir,
 			...rest,
 		});
 	},
@@ -60,145 +61,48 @@ function saveFiles() {
 			errors: [],
 		};
 
-		// handle zip files
-		if (SETTINGS.get.outputZip) {
-			D.log(`Generating zip file`);
+		const allFiles = [];
 
-			// create an archiver instance
-			const archive = archiver('zip');
-
-			// catch warnings
-			archive.on('warning', (error) => {
-				result.code = 1;
-				if (err.code === 'ENOENT') {
-					result.errors.push(`Could not find file or directory: ${error}`);
-				} else {
-					result.errors.push(`Error archiving files: ${error}`);
-				}
-			});
-
-			// catch errors
-			archive.on('error', (error) => {
-				result.code = 1;
-				result.errors.push(`Error archiving files: ${error}`);
-			});
-
-			let zipOutput = null;
-
-			// write to disk if output is provided
-			if (SETTINGS.get.output) {
-				D.log(`Writing zip to disk`);
-
-				// construct the path we'll be outputting the zip file to
-				const outputPath = path.resolve(process.cwd(), SETTINGS.get.output);
-
-				// create directory if it doesn't already exist
-				const dirCreation = createDir(outputPath);
-				if (dirCreation !== 'success') {
-					result.code = 1;
-					result.errors.push(dirCreation);
-					reject(result);
-				}
-
-				const zipPath = `${outputPath}/blender.zip`;
-				zipOutput = fs.createWriteStream(zipPath);
-
-				zipOutput.on('close', (error) => {
-					if (error) {
-						result.code = 1;
-						result.errors.push(`Error archiving files: ${error}`);
-					}
-					D.log(`Zip file written to path: ${color.yellow(zipPath)}`);
-					if (result.code === 1) {
-						reject(result);
-					} else {
-						resolve(result);
-					}
-				});
+		// save all files to a directory
+		FILES.get.forEach(async (pack) => {
+			D.log(`Saving file ${color.yellow(pack.name)} to ${color.yellow(pack.dir)}`);
+			try {
+				allFiles.push(await writeFile(pack));
+			} catch (error) {
+				reject(error);
 			}
 
-			// append each file to the zip
-			FILES.get.forEach(({ name, path, content }) => {
-				D.log(`Appending ${color.yellow(name)} to zip archive`);
-				archive.append(content, { name: `${path}/${name}` }, 'utf-8');
-				LOADING.tick();
-			});
+			LOADING.tick();
+		});
 
-			// write output to file if saving to disk
-			if (SETTINGS.get.output) {
-				archive.pipe(zipOutput);
-			}
-
-			// finish off zip process
-			archive.finalize();
-
-			// if we aren't outputting it anywhere, just return the zip directly
-			if (!SETTINGS.get.output) {
-				D.log(`Zip not saved but returned`);
-
+		Promise.all(allFiles)
+			.then(() => {
+				D.log(`All ${color.yellow(allFiles.length)} files saved`);
 				LOADING.abort();
-				result.files = [{ name: 'blender.zip', path: '', content: archive }];
-				if (result.code === 1) {
-					reject(result);
-				} else {
-					resolve(result);
-				}
-			}
-		} else if (
-			SETTINGS.get.output ||
-			SETTINGS.get.outputCss ||
-			SETTINGS.get.outputJs ||
-			SETTINGS.get.outputToken ||
-			SETTINGS.get.outputHtml
-		) {
-			D.log(`Saving files individually`);
-
-			const allFiles = [];
-
-			// save all files to a directory
-			FILES.get.forEach(async ({ name, path, content }) => {
-				D.log(`Saving file ${color.yellow(name)} to ${color.yellow(path)}`);
-				try {
-					allFiles.push(await writeFile(name, path, content));
-				} catch (error) {
-					reject(error);
-				}
-				LOADING.tick();
+				resolve(result);
+			})
+			.catch((error) => {
+				reject(error);
 			});
-
-			Promise.all(allFiles)
-				.then(() => {
-					D.log(`All ${color.yellow(allFiles.length)} files saved`);
-					LOADING.abort();
-					resolve(result);
-				})
-				.catch((error) => {
-					reject(error);
-				});
-		} else {
-			D.log(`Returning files directly`);
-			LOADING.abort();
-
-			result.files = FILES.get;
-			resolve(result);
-		}
 	});
 }
 
 /**
  * Write a file to a directory
  *
- * @param  {string} fileName    - Name of the file
- * @param  {string} outputPath  - Path of the file
- * @param  {string} fileContent - Contents of the file
+ * @param  {string} options.name     - Name of the file
+ * @param  {string} options.filePath - Path of the file
+ * @param  {string} options.dir      - Path of the file
+ * @param  {string} options.content  - Contents of the file
  *
- * @return {promise object}     - An object with code and an error array
+ * @return {promise object}          - An object with code and an error array
  */
-function writeFile(fileName, outputPath, fileContent) {
+function writeFile({ name, filePath, dir, content }) {
 	const result = {
 		code: 0,
 		errors: [],
 	};
+	const outputPath = path.normalize(`${dir}/${filePath}`);
 
 	return new Promise((resolve, reject) => {
 		// create directory if it doesn't already exist
@@ -209,8 +113,8 @@ function writeFile(fileName, outputPath, fileContent) {
 			reject(result);
 		}
 
-		// write file to specified outputPath with fileContent
-		fs.writeFile(`${outputPath}/${fileName}`, fileContent, (error) => {
+		// write file to specified outputPath with content
+		fs.writeFile(path.normalize(`${outputPath}/${name}`), content, (error) => {
 			if (error) {
 				result.code = 1;
 				result.errors.push(`Error outputting file: ${error}`);

@@ -43,13 +43,6 @@ function generator(packages) {
 
 	LOADING.start = { total: packages.length };
 
-	let cssMinFilePath = SETTINGS.get.outputCss || '';
-	if (SETTINGS.get.outputZip) {
-		cssMinFilePath = 'blender/';
-	}
-	cssMinFilePath = path.normalize(`${cssMinFilePath}/css/`);
-	const cssMinName = `styles${SETTINGS.get.prettify ? '' : '.min'}.css`;
-
 	// Building core first so we can remove it from other packages
 	packages
 		.filter((pkg) => pkg.pkg.isCore)
@@ -109,64 +102,50 @@ function generator(packages) {
 	if (!SETTINGS.get.modules) {
 		// Add the css we collected from all packages
 		if (SETTINGS.get.outputCss) {
-			D.log(`Adding css to store at path ${color.yellow(cssMinFilePath + cssMinName)}`);
+			D.log(`Adding main css to store`);
 			FILES.add = {
-				name: cssMinName,
-				filePath: cssMinFilePath,
+				name: `styles${SETTINGS.get.prettify ? '' : '.min'}.css`,
+				dir: SETTINGS.get.outputCss,
 				content: formatCode(cssFile, 'css'),
 			};
 		}
 
 		// Add the js we collected from all packages
 		if (SETTINGS.get.outputJs) {
-			let filePath = SETTINGS.get.outputJs || '';
-			if (SETTINGS.get.outputZip) {
-				filePath = 'blender/';
-			}
-			filePath = path.normalize(`${filePath}/js/`);
-			const name = `script${SETTINGS.get.prettify ? '' : '.min'}.js`;
-
-			D.log(`Adding js to store at path ${color.yellow(filePath + name)}`);
+			D.log(`Adding main js to store`);
 			FILES.add = {
-				name,
-				filePath: filePath,
+				name: `script${SETTINGS.get.prettify ? '' : '.min'}.js`,
+				dir: SETTINGS.get.outputJs,
 				content: formatCode(jsFile, 'js'),
 			};
 		}
 	}
 
 	// Add the index docs file
-	if (SETTINGS.get.outputHtml && docs.length) {
+	if (SETTINGS.get.outputDocs && docs.length) {
 		const index = generateIndexFile(docs);
 
-		let filePath = SETTINGS.get.outputHtml || '';
-		if (SETTINGS.get.outputZip) {
-			filePath = 'blender/';
-		}
-		filePath = path.normalize(`${filePath}/docs/`);
-		const name = `index.html`;
-
 		// adding index file
+		D.log(`Adding ${color.yellow('docs/index.html')} to store`);
 		FILES.add = {
 			name: 'index.html',
-			filePath: filePath,
+			dir: SETTINGS.get.outputDocs,
 			content: index,
 		};
 
 		// adding css file to docs
+		D.log(`Adding ${color.yellow('docs/styles.min.css')} to store`);
 		FILES.add = {
 			name: 'styles.min.css',
-			filePath: path.normalize(`${filePath}/assets/`),
+			filePath: 'assets/',
+			dir: SETTINGS.get.outputDocs,
 			content: cssFile,
 		};
 
 		// adding each docs assets file
 		generateDocsAssets().map((file) => {
-			FILES.add = {
-				name: file.name,
-				filePath: path.normalize(`${filePath}/${file.path}`),
-				content: file.content,
-			};
+			D.log(`Adding ${color.yellow(file.name)} to store`);
+			FILES.add = file;
 		});
 	}
 
@@ -200,7 +179,7 @@ function blendPkg({
 	includeTokens = !!SETTINGS.get.outputTokens,
 	includeCss = !!SETTINGS.get.outputCss,
 	includeJs = !!SETTINGS.get.outputJs,
-	includeHtml = !!SETTINGS.get.outputHtml,
+	includeHtml = !!SETTINGS.get.outputDocs,
 	children,
 }) {
 	D.log(`Blending package ${color.yellow(thisPkg.name)}`);
@@ -222,17 +201,10 @@ function blendPkg({
 
 		const compiledTokens = generateTokenFile(thisPkg.path, SETTINGS.get.tokensFormat);
 
-		let filePath = SETTINGS.get.outputTokens || '';
-		if (SETTINGS.get.outputZip) {
-			filePath = 'blender/';
-		}
-		filePath = path.normalize(`${filePath}/tokens/`);
-		const name = `tokens.${SETTINGS.get.tokensFormat}`;
-
-		D.log(`Adding tokens to store at path ${color.yellow(filePath + name)}`);
+		D.log(`Adding tokens to store`);
 		FILES.add = {
-			name,
-			filePath: filePath,
+			name: `tokens.${SETTINGS.get.tokensFormat}`,
+			dir: SETTINGS.get.outputTokens,
 			content: compiledTokens,
 		};
 	}
@@ -253,22 +225,12 @@ function blendPkg({
 		result.oldHtml = oldHtml;
 		result.css = `${css}\n`;
 
-		// keeping track of the css path
-		let filePath = SETTINGS.get.outputCss || '';
-		if (SETTINGS.get.outputZip) {
-			filePath = 'blender/';
-		}
-		filePath = path.normalize(`${filePath}/css/`);
-		const name = `${stripScope(thisPkg.name)}${SETTINGS.get.prettify ? '' : '.min'}.css`;
-
 		// save each file into its own module
 		if (SETTINGS.get.modules) {
-			D.log(
-				`Adding ${color.yellow(thisPkg.name)} css to store at path ${color.yellow(filePath + name)}`
-			);
+			D.log(`Adding ${color.yellow(thisPkg.name)} css to store`);
 			FILES.add = {
-				name: name,
-				filePath: filePath,
+				name: `${stripScope(thisPkg.name)}${SETTINGS.get.prettify ? '' : '.min'}.css`,
+				dir: SETTINGS.get.outputCss,
 				content: formatCode(css, 'css'),
 			};
 		}
@@ -277,14 +239,6 @@ function blendPkg({
 	// Building HTML
 	if (includeHtml && thisPkg.pkg.recipe) {
 		D.log(`Creating html file for ${color.yellow(thisPkg.name)}`);
-
-		let filePath = SETTINGS.get.outputHtml || '';
-		if (SETTINGS.get.outputZip) {
-			filePath = 'blender/';
-		}
-		const docsPath = `/docs/packages/`;
-		filePath = path.normalize(filePath + docsPath);
-		const name = `${stripScope(thisPkg.name)}.html`;
 
 		const { html, ...parsedPkg } = generateHtml({
 			pkg: thisPkg,
@@ -297,17 +251,18 @@ function blendPkg({
 		}
 		result.messages = [...result.messages, ...parsedPkg.messages];
 
+		const name = `${stripScope(thisPkg.name)}.html`;
+
 		result.html = {
 			name: thisPkg.name,
-			path: docsPath + name,
+			path: `packages/${name}`,
 		};
 
-		D.log(
-			`Adding ${color.yellow(thisPkg.name)} html to store at path ${color.yellow(filePath + name)}`
-		);
+		D.log(`Adding ${color.yellow(thisPkg.name)} html to store`);
 		FILES.add = {
 			name,
-			filePath: filePath,
+			filePath: `packages/`,
+			dir: SETTINGS.get.outputDocs,
 			content: html,
 		};
 	}
@@ -326,19 +281,10 @@ function blendPkg({
 
 		// save each file into its own module
 		if (SETTINGS.get.modules) {
-			let filePath = SETTINGS.get.outputJs || '';
-			if (SETTINGS.get.outputZip) {
-				filePath = 'blender/';
-			}
-			filePath = path.normalize(`${filePath}/js/`);
-			const name = `${stripScope(thisPkg.name)}${SETTINGS.get.prettify ? '' : '.min'}.js`;
-
-			D.log(
-				`Adding ${color.yellow(thisPkg.name)} js to store at path ${color.yellow(filePath + name)}`
-			);
+			D.log(`Adding ${color.yellow(thisPkg.name)} js to store`);
 			FILES.add = {
-				name,
-				filePath: filePath,
+				name: `${stripScope(thisPkg.name)}${SETTINGS.get.prettify ? '' : '.min'}.js`,
+				dir: SETTINGS.get.outputJs,
 				content: formatCode(js, 'js'),
 			};
 		}

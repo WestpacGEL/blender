@@ -37,15 +37,15 @@ const CLIOPTIONS = {
 		type: 'string',
 	},
 	'output-js': {
-		description: 'Specify where the blender should save the css files to',
+		description: 'Specify where the blender should save the js files to',
 		example: 'blender -j path/to/js',
 		flag: 'j',
 		type: 'string',
 	},
-	'output-html': {
-		description: 'Specify where the blender should save the css files to',
-		example: 'blender -h path/to/html',
-		flag: 'h',
+	'output-docs': {
+		description: 'Specify where the blender should save the docs files to',
+		example: 'blender -d path/to/html',
+		flag: 'd',
 		type: 'string',
 	},
 	'output-tokens': {
@@ -53,12 +53,6 @@ const CLIOPTIONS = {
 		example: 'blender -t path/to/tokens',
 		flag: 't',
 		type: 'string',
-	},
-	'output-zip': {
-		description: 'Tell blender to zip up all files into an archive',
-		example: 'blender --output path/to/folder -z',
-		flag: 'z',
-		type: 'boolean',
 	},
 	scope: {
 		description: 'Specify what npm scope the blender should look through',
@@ -125,8 +119,8 @@ const CLIOPTIONS = {
 	},
 	debug: {
 		description: 'Tell the blender to go into debug mode',
-		example: 'blender -d',
-		flag: 'd',
+		example: 'blender -g',
+		flag: 'g',
 		type: 'boolean',
 		default: false,
 	},
@@ -139,8 +133,8 @@ const CLIOPTIONS = {
 	},
 	help: {
 		description: 'Tell the blender to show the help',
-		example: 'blender -H',
-		flag: 'H',
+		example: 'blender -h',
+		flag: 'h',
 		type: 'boolean',
 		default: false,
 	},

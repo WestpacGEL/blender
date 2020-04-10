@@ -153,7 +153,7 @@ function convertClasses({ css, html, ids }, version) {
 	D.header('convertClasses', { css, html, ids, version });
 
 	let humanReadableCSS = css;
-	let humanReadableHTML = html;
+	let humanReadableHtml = html;
 
 	ids.map((id) => {
 		const oldClass = new RegExp(`css-${id}`, 'g');
@@ -167,12 +167,12 @@ function convertClasses({ css, html, ids }, version) {
 			idBits.slice(1).join('-');
 
 		humanReadableCSS = humanReadableCSS.replace(oldClass, newClass);
-		humanReadableHTML = humanReadableHTML.replace(oldClass, newClass);
+		humanReadableHtml = humanReadableHtml.replace(oldClass, newClass);
 	});
 
 	return {
 		css: humanReadableCSS,
-		html: humanReadableHTML,
+		html: humanReadableHtml,
 		ids,
 	};
 }
