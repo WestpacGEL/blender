@@ -59,7 +59,6 @@
 		"@babel/register": "^7.9.0",
 		"@emotion/core": "^10.0.28",
 		"@emotion/weak-memoize": "^0.2.5",
-		"archiver": "^3.1.1",
 		"cfonts": "^2.8.1",
 		"create-emotion-server": "^10.0.27",
 		"js-beautify": "^1.11.0",
@@ -70,12 +69,12 @@
 	"devDependencies": {
 		"@babel/cli": "^7.8.4",
 		"@babel/core": "^7.9.0",
-		"@babel/preset-env": "^7.9.0",
-		"@babel/preset-react": "^7.9.1",
-		"@types/node": "^13.9.3",
-		"jest-cli": "^25.1.0",
+		"@babel/preset-env": "^7.9.5",
+		"@babel/preset-react": "^7.9.4",
+		"@types/node": "^13.11.1",
+		"jest-cli": "^25.3.0",
 		"onchange": "^6.1.0",
-		"prettier": "^2.0.2",
+		"prettier": "^2.0.4",
 		"typescript": "^3.8.3"
 	}
 }

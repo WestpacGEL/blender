@@ -6,7 +6,6 @@
  * writeFile - Write a file to a directory
  * createDir - Create all directories within a given path
  **/
-const archiver = require('archiver');
 const path = require('path');
 const fs = require('fs');
 
