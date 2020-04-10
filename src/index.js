@@ -10,8 +10,8 @@ const { PACKAGES, getPackages } = require('./packages.js');
 const { generator } = require('./generator.js');
 const { setBrand } = require('./brand.js');
 const { tester } = require('./tester.js');
+const { DEBUG } = require('./debug.js');
 const { clean } = require('./clean.js');
-const { DEBUG } = require('./log.js');
 
 /**
  * The blender API

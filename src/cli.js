@@ -14,12 +14,13 @@ const { PACKAGES, getPackages } = require('./packages.js');
 const { stripColor, color } = require('./color.js');
 const { generator } = require('./generator.js');
 const { version } = require('../package.json');
-const { DEBUG, D, log } = require('./log.js');
 const { CLIOPTIONS } = require('./const.js');
 const { saveFiles } = require('./files.js');
 const { setBrand } = require('./brand.js');
 const { tester } = require('./tester.js');
+const { DEBUG } = require('./debug.js');
 const { clean } = require('./clean.js');
+const { D, log } = require('./log.js');
 const { TIME } = require('./time.js');
 
 /**

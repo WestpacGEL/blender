@@ -12,8 +12,9 @@ const fs = require('fs');
 
 const { SETTINGS } = require('./settings.js');
 const { LOADING } = require('./loading.js');
-const { DEBUG, D } = require('./log.js');
+const { DEBUG } = require('./debug.js');
 const { color } = require('./color.js');
+const { D } = require('./log.js');
 
 /**
  * The files store

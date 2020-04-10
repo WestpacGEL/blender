@@ -5,8 +5,8 @@
  **/
 const winSize = require('window-size');
 
+const { DEBUG } = require('./debug.js');
 const { color } = require('./color.js');
-const { DEBUG } = require('./log.js');
 
 /**
  * Display a loading indicator in cli
