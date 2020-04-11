@@ -45,7 +45,7 @@ server.post(BLENDERURL, async (request, response) => {
 	const time = new Date().toISOString();
 	const cleanReq = sanitizeRequest(request, propTypes);
 
-	log.incoming(`Request received at ${time} with:\n${JSON.stringify(cleanReq, null, 2)}`);
+	log.incoming(`Request received at ${time} with:\n${JSON.stringify(cleanReq)}`);
 
 	// manually add core and brand package as that's not something you get to chose in the form
 	cleanReq.packages = [...cleanReq.packages, 'core', `${cleanReq.brand}`];
