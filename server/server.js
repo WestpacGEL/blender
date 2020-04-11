@@ -28,7 +28,6 @@ server
 	.listen(PORT, async () => {
 		console.log();
 		cfonts.say('blender', {
-			gradient: ['red', 'cyan'],
 			font: 'tiny',
 			space: false,
 		});
@@ -143,8 +142,8 @@ async function createZip({ response, cleanReq, IP }) {
  */
 function sanitizeRequest(request, allPkgs) {
 	cleanReq = {};
-	const pkgDict = Object.keys(allPkgs);
-	const brandDict = ['bom', 'bsa', 'btfg', 'stg', 'wbc', 'wbg']; // TODO: get this out of the prop-types json
+	const pkgDict = Object.keys(allPkgs.components);
+	const brandDict = Object.keys(allPkgs.brands);
 
 	cleanReq.packages = request.body.packages.filter((pkg) => pkgDict.includes(pkg));
 	cleanReq.brand = brandDict.includes(request.body.brand) ? request.body.brand : 'wbc';
