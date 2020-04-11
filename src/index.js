@@ -8,6 +8,7 @@ const path = require('path');
 const { SETTINGS, getSettings, checkInput } = require('./settings.js');
 const { PACKAGES, getPackages } = require('./packages.js');
 const { generator } = require('./generator.js');
+const { version } = require('../package.json');
 const { setBrand } = require('./brand.js');
 const { tester } = require('./tester.js');
 const { DEBUG } = require('./debug.js');
@@ -34,7 +35,6 @@ function blender(options = {}) {
 		// return version
 		if (SETTINGS.get.version) {
 			resolve(`v${version}`);
-			process.exit();
 		}
 
 		// get all packages
