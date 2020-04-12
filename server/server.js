@@ -44,7 +44,7 @@ server.post(BLENDERURL, async (request, response) => {
 	const time = new Date().toISOString();
 	const cleanReq = sanitizeRequest(request, propTypes);
 
-	log.incoming(`Request received at ${time} with:\n${JSON.stringify(cleanReq)}`);
+	log.incoming(`Request received at ${time} with:\n            ${JSON.stringify(cleanReq)}`);
 
 	// manually add core and brand package as that's not something you get to chose in the form
 	cleanReq.packages = [...cleanReq.packages, 'core', `${cleanReq.brand}`];
@@ -88,6 +88,7 @@ async function createZip({ response, cleanReq, IP }) {
 			include: cleanReq.packages.map((pkg) => `@westpac/${pkg}`),
 		});
 	} catch (error) {
+		log.error(`The blender failed with: ${JSON.stringify(error)}`);
 		response
 			.status(500)
 			.send({ error: `The blender failed with an error: ${JSON.stringify(error, null, 2)}` });
@@ -100,8 +101,12 @@ async function createZip({ response, cleanReq, IP }) {
 		.on('warning', (error) => {
 			// catch warnings
 			if (err.code === 'ENOENT') {
-				log.error(`Could not find file or directory: ${error}`);
+				log.error(`Could not find file or directory: ${JSON.stringify(error)}`);
+				response
+					.status(500)
+					.send({ error: `The blender failed with an error: ${JSON.stringify(error, null, 2)}` });
 			} else {
+				log.error(`The zipping failed with: ${JSON.stringify(error)}`);
 				response
 					.status(500)
 					.send({ error: `The blender failed with an error: ${JSON.stringify(error, null, 2)}` });
@@ -109,6 +114,7 @@ async function createZip({ response, cleanReq, IP }) {
 		})
 		.on('error', (error) => {
 			// catch errors
+			log.error(`The zipping failed with an error: ${JSON.stringify(error)}`);
 			response
 				.status(500)
 				.send({ error: `The blender failed with an error: ${JSON.stringify(error, null, 2)}` });
