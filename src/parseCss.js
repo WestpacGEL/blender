@@ -2,6 +2,7 @@
  * All functions for parsing packages with emotion
  *
  * parseComponent - Parsing a component to get out css and html
+ * extractMarkup  - Extract the markup from a component
  **/
 const { renderToStaticMarkup } = require('react-dom/server');
 const createEmotionServer = require('create-emotion-server').default;
@@ -41,7 +42,7 @@ const { D } = require('./log.js');
  *
  * @return {returnObject}                      - The result of the parsing
  */
-function parseComponent({ componentPath, componentName = 'default', brand = BRAND.get, children }) {
+function parseComponent({ componentPath, componentName, brand = BRAND.get, children }) {
 	D.header('parseComponent', { componentPath, componentName, brand });
 
 	if (componentName === 'docs') {
@@ -134,6 +135,16 @@ function parseComponent({ componentPath, componentName = 'default', brand = BRAN
 	}
 }
 
+/**
+ * Extract the markup from a component
+ *
+ * @param  {function} options.Component     - The component to be parsed
+ * @param  {string}   options.componentPath - The path to this component for error message
+ * @param  {object}   options.brand         - The brand to be passed into the Core
+ * @param  {function} options.children      - Possible children to be passed to the component
+ *
+ * @return {object}                         - The static markup in an object
+ */
 function extractMarkup({ Component, componentPath, brand, children }) {
 	D.header('extractMarkup', { Component, componentPath, brand, children });
 
@@ -167,4 +178,5 @@ function extractMarkup({ Component, componentPath, brand, children }) {
 
 module.exports = exports = {
 	parseComponent,
+	extractMarkup,
 };
