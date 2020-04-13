@@ -77,5 +77,6 @@ const DEBUG = {
 };
 
 module.exports = exports = {
+	DEBUGdefaults,
 	DEBUG,
 };
