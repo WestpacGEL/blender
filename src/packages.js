@@ -57,7 +57,9 @@ function getPackages(cwd = process.cwd()) {
 						!item.name.startsWith('@') &&
 						(item.isDirectory() || item.isSymbolicLink())
 				) // filter out dot files and non-folder
-				.map((folder) => path.normalize(`${nodeModulesPath}/${SETTINGS.get.scope}/${folder.name}`)); // add absolute path
+				.map((folder) =>
+					fs.realpathSync(path.normalize(`${nodeModulesPath}/${SETTINGS.get.scope}/${folder.name}`))
+				); // add absolute path and resolve symlinks
 			D.log(`Retrieved in scope packages: "${color.yellow(JSON.stringify(inScope))}"`);
 		} catch (error) {
 			if (error.code === 'ENOENT') {
@@ -74,9 +76,13 @@ function getPackages(cwd = process.cwd()) {
 		}
 	}
 
-	const includes = SETTINGS.get.include.map((module) =>
-		path.normalize(`${nodeModulesPath}/${module}`)
-	);
+	const includes = SETTINGS.get.include.map((module) => {
+		try {
+			return fs.realpathSync(path.normalize(`${nodeModulesPath}/${module}`));
+		} catch (_) {
+			return path.normalize(`${nodeModulesPath}/${module}`);
+		}
+	});
 
 	D.log(`Retrieved in included packages: "${color.yellow(JSON.stringify(includes))}"`);
 

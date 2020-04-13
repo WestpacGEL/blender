@@ -76,7 +76,8 @@ async function cli() {
 		!SETTINGS.get.outputCss &&
 		!SETTINGS.get.outputJs &&
 		!SETTINGS.get.outputDocs &&
-		!SETTINGS.get.outputTokens
+		!SETTINGS.get.outputTokens &&
+		!SETTINGS.get.test
 	) {
 		log.error(`You need to specify an output path`);
 		log.info(
