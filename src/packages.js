@@ -58,6 +58,7 @@ function getPackages(cwd = process.cwd()) {
 						(item.isDirectory() || item.isSymbolicLink())
 				) // filter out dot files and non-folder
 				.map((folder) => path.normalize(`${nodeModulesPath}/${SETTINGS.get.scope}/${folder.name}`)); // add absolute path
+			D.log(`Retrieved in scope packages: "${color.yellow(JSON.stringify(inScope))}"`);
 		} catch (error) {
 			if (error.code === 'ENOENT') {
 				D.log('No scope found');
@@ -72,8 +73,6 @@ function getPackages(cwd = process.cwd()) {
 			}
 		}
 	}
-
-	D.log(`Retrieved in scope packages: "${color.yellow(JSON.stringify(inScope))}"`);
 
 	const includes = SETTINGS.get.include.map((module) =>
 		path.normalize(`${nodeModulesPath}/${module}`)
