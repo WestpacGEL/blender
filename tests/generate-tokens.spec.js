@@ -21,8 +21,8 @@ describe('generateTokenFile', () => {
 			name: '@westpac/wbc',
 			version: '1.0.0',
 			path: path.normalize(`${__dirname}/../tests/mock/mock-project1/node_modules/@westpac/wbc`),
-			pkg: { tokens: true }
-		}
+			pkg: { tokens: true },
+		};
 
 		const result = generateTokenFile(pkg.path, SETTINGS.get.tokensFormat);
 
@@ -43,8 +43,8 @@ describe('generateTokenFile', () => {
 			name: '@westpac/wbc',
 			version: '1.0.0',
 			path: path.normalize(`${__dirname}/../tests/mock/mock-project1/node_modules/@westpac/wbc`),
-			pkg: { tokens: true }
-		}
+			pkg: { tokens: true },
+		};
 
 		const result = generateTokenFile(pkg.path, SETTINGS.get.tokensFormat);
 
@@ -61,8 +61,8 @@ describe('generateTokenFile', () => {
 			name: '@westpac/wbc',
 			version: '1.0.0',
 			path: path.normalize(`${__dirname}/../tests/mock/mock-project1/node_modules/@westpac/wbc`),
-			pkg: { tokens: true }
-		}
+			pkg: { tokens: true },
+		};
 
 		const result = generateTokenFile(pkg.path, SETTINGS.get.tokensFormat);
 
@@ -79,8 +79,8 @@ describe('generateTokenFile', () => {
 			name: '@westpac/wbc',
 			version: '1.0.0',
 			path: path.normalize(`${__dirname}/../tests/mock/mock-project1/node_modules/@westpac/wbc`),
-			pkg: { tokens: true }
-		}
+			pkg: { tokens: true },
+		};
 
 		const result = generateTokenFile(pkg.path, SETTINGS.get.tokensFormat);
 
@@ -97,8 +97,8 @@ describe('generateTokenFile', () => {
 			name: '@westpac/wbc',
 			version: '1.0.0',
 			path: path.normalize(`${__dirname}/../tests/mock/mock-project1/node_modules/@westpac/wbc`),
-			pkg: { tokens: true }
-		}
+			pkg: { tokens: true },
+		};
 
 		const result = generateTokenFile(pkg.path, SETTINGS.get.tokensFormat);
 
@@ -124,5 +124,4 @@ describe('generateTokenFile', () => {
 	// 	console.log(result);
 	//
 	// });
-
 });

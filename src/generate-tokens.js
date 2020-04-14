@@ -102,7 +102,6 @@ function compileTokens(tokens, lang) {
 			} else {
 				result += `${langMap[lang]}${name}: ${value};\n`;
 			}
-
 		});
 
 		if (lang === 'CSS') {
