@@ -4,7 +4,6 @@
  * parseComponent - Parsing a component to get out css and html
  * extractMarkup  - Extract the markup from a component
  **/
-const { renderToStaticMarkup } = require('react-dom/server');
 const createEmotionServer = require('create-emotion-server').default;
 const createCache = require('@emotion/cache').default;
 const { CacheProvider } = require('@emotion/core');
@@ -153,12 +152,22 @@ function extractMarkup({ Component, componentPath, brand, children }) {
 	let staticMarkup;
 
 	// we will try to use the react version of the cwd before we use our own
+	let renderToStaticMarkup;
 	let createElement;
 	try {
 		const reactPath = require.resolve(`${SETTINGS.get.cwd}/node_modules/react`);
 		createElement = require(reactPath).createElement;
+		const reactDomPath = require.resolve(`${SETTINGS.get.cwd}/node_modules/react-dom/server`);
+		renderToStaticMarkup = require(reactDomPath).renderToStaticMarkup;
+		D.log(
+			`Used cwd react and reac-dom version at ${color.yellow(reactPath)} and ${color.yellow(
+				reactDomPath
+			)}`
+		);
 	} catch (_) {
 		createElement = require('react').createElement;
+		renderToStaticMarkup = require('react-dom/server').renderToStaticMarkup;
+		D.log(`Used local react and reac-dom version`);
 	}
 
 	try {
