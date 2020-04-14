@@ -145,6 +145,7 @@ function parseComponent({ componentPath, componentName, brand = BRAND.get, child
 function extractMarkup({ Component, componentPath, brand, children }) {
 	D.header('extractMarkup', { Component, componentPath, brand, children });
 
+	// we will try to use the emotion package of the cwd before we fallback to our own
 	let createCache;
 	let CacheProvider;
 	try {
@@ -155,21 +156,21 @@ function extractMarkup({ Component, componentPath, brand, children }) {
 		createCache = require(emotionCachePath).default;
 
 		D.log(
-			`Used cwd emotion/core and emotion/cache version at ${color.yellow(
+			`Used cwd emotion/core and emotion/cache package at ${color.yellow(
 				emotionCorePath
 			)} and ${color.yellow(emotionCachePath)}`
 		);
 	} catch (_) {
 		createCache = require('@emotion/cache').default;
 		CacheProvider = require('@emotion/core').CacheProvider;
-		D.log(`Used local emotion/core and emotion/cache version`);
+		D.log(`Used local emotion/core and emotion/cache package`);
 	}
 
 	const cache = createCache();
 	const { extractCritical } = createEmotionServer(cache);
 	let staticMarkup;
 
-	// we will try to use the react version of the cwd before we use our own
+	// we will try to use the react package of the cwd before we fallback to our own
 	let renderToStaticMarkup;
 	let createElement;
 	try {
@@ -178,14 +179,14 @@ function extractMarkup({ Component, componentPath, brand, children }) {
 		const reactDomPath = require.resolve(`${SETTINGS.get.cwd}/node_modules/react-dom/server`);
 		renderToStaticMarkup = require(reactDomPath).renderToStaticMarkup;
 		D.log(
-			`Used cwd react and reac-dom version at ${color.yellow(reactPath)} and ${color.yellow(
+			`Used cwd react and reac-dom package at ${color.yellow(reactPath)} and ${color.yellow(
 				reactDomPath
 			)}`
 		);
 	} catch (_) {
 		createElement = require('react').createElement;
 		renderToStaticMarkup = require('react-dom/server').renderToStaticMarkup;
-		D.log(`Used local react and reac-dom version`);
+		D.log(`Used local react and reac-dom package`);
 	}
 
 	try {
