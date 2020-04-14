@@ -6,9 +6,9 @@
  **/
 const { renderToStaticMarkup } = require('react-dom/server');
 const createEmotionServer = require('create-emotion-server').default;
-const createElement = require('react').createElement;
 const createCache = require('@emotion/cache').default;
 const { CacheProvider } = require('@emotion/core');
+const { SETTINGS } = require('./settings.js');
 const fs = require('fs');
 
 const { color } = require('./color.js');
@@ -151,6 +151,15 @@ function extractMarkup({ Component, componentPath, brand, children }) {
 	const cache = createCache();
 	const { extractCritical } = createEmotionServer(cache);
 	let staticMarkup;
+
+	// we will try to use the react version of the cwd before we use our own
+	let createElement;
+	try {
+		const reactPath = require.resolve(`${SETTINGS.get.cwd}/node_modules/react`);
+		createElement = require(reactPath).createElement;
+	} catch (_) {
+		createElement = require('react').createElement;
+	}
 
 	try {
 		staticMarkup = extractCritical(
