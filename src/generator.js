@@ -142,6 +142,15 @@ function generator(packages) {
 			content: cssFile,
 		};
 
+		// adding js file to docs
+		D.log(`Adding ${color.yellow('docs/script.min.js')} to store`);
+		FILES.add = {
+			name: 'script.min.js',
+			filePath: 'assets/',
+			dir: SETTINGS.get.outputDocs,
+			content: jsFile,
+		};
+
 		// adding each docs assets file
 		generateDocsAssets().map((file) => {
 			D.log(`Adding ${color.yellow(file.name)} to store`);

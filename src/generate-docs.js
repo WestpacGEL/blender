@@ -61,6 +61,7 @@ function generateDocsFile(name, html) {
 	</div>
 
 	<script src="../assets/docs.min.js"></script>
+	<script src="../assets/script.min.js"></script>
 </body>
 </html>
 `;
