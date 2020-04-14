@@ -15,7 +15,7 @@ const { color } = require('./color.js');
  */
 const LOADING = {
 	const: {
-		minTotal: 30,
+		minTotal: 10,
 		done: '▓',
 		todo: '░',
 		left: '',

@@ -35,12 +35,11 @@ function tester(packages) {
 		.map((thisPackage) => {
 			D.log(`Testing ${color.yellow(thisPackage.name)}`);
 
-			const parsedPkg = parseComponent({
+			// testing recipe
+			let parsedPkg = parseComponent({
 				componentPath: path.normalize(`${thisPackage.path}/${thisPackage.pkg.recipe}`),
 				componentName: 'AllStyles',
 			});
-
-			// TODO also test the Docs component to see if there are errors
 
 			if (parsedPkg.code > 0) {
 				result.errors.push({
@@ -66,6 +65,26 @@ function tester(packages) {
 						)}`
 					);
 				}
+			}
+
+			// testing docs
+			parsedPkg = parseComponent({
+				componentPath: path.normalize(`${thisPackage.path}/${thisPackage.pkg.recipe}`),
+				componentName: 'docs',
+			});
+
+			if (parsedPkg.code > 0) {
+				result.errors.push({
+					package: thisPackage.name,
+					error: parsedPkg.message,
+				});
+				result.messages.push(
+					`The package ${color.yellow(
+						thisPackage.name
+					)} contains errors in it's documentation file:`
+				);
+				result.messages.push(parsedPkg.error);
+				result.code = 1;
 			}
 
 			LOADING.tick();
