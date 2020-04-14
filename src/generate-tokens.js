@@ -20,7 +20,7 @@ function generateTokenFile(pathToTokens, tokensFormat) {
 	D.header('generateTokenFile', { pathToTokens });
 
 	let tokens = require(pathToTokens).default;
-	if (tokensFormat !== 'json') {
+	if (tokensFormat !== 'JSON') {
 		tokens = flattenTokens(tokens);
 	}
 
@@ -50,7 +50,6 @@ function flattenTokens(tokens, key = '', list = {}) {
 			} else {
 			}
 		});
-
 		return list;
 	} else if (Array.isArray(tokens)) {
 		tokens.map((token, i) => {
@@ -78,10 +77,10 @@ function compileTokens(tokens, lang) {
 	result += ``;
 
 	const langMap = {
-		less: '@',
-		scss: '$',
-		sass: '$',
-		css: '--',
+		LESS: '@',
+		SCSS: '$',
+		SASS: '$',
+		CSS: '--',
 	};
 
 	const comment = [
@@ -93,7 +92,7 @@ function compileTokens(tokens, lang) {
 		`**********************************************************/`,
 	];
 
-	if (lang === 'json') {
+	if (lang === 'JSON') {
 		const tokensWithComment = { ...{ _: comment }, ...tokens };
 		result += JSON.stringify(tokensWithComment, null, '\t');
 	} else {
@@ -103,9 +102,10 @@ function compileTokens(tokens, lang) {
 			} else {
 				result += `${langMap[lang]}${name}: ${value};\n`;
 			}
+
 		});
 
-		if (lang === 'css') {
+		if (lang === 'CSS') {
 			result = `root {\n${result}}`;
 		}
 
