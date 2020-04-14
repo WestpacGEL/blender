@@ -120,8 +120,17 @@ function getPackages(cwd = process.cwd()) {
 
 	// we need to flag all packages with babel to include them
 	require('@babel/register')({
-		presets: ['@babel/preset-env', '@babel/preset-react'],
-		plugins: ['@babel/transform-runtime'],
+		presets: [require.resolve('@babel/preset-env'), require.resolve('@babel/preset-react')],
+		plugins: [
+			require.resolve('@babel/plugin-transform-runtime'),
+			[
+				require.resolve('@babel/plugin-syntax-dynamic-import'),
+				{
+					root: SETTINGS.get.cwd,
+					suppressResolveWarning: true,
+				},
+			],
+		],
 		only: packages.map((pkg) => `${pkg.path}`),
 	});
 
