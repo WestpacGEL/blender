@@ -5,8 +5,6 @@
  * extractMarkup  - Extract the markup from a component
  **/
 const createEmotionServer = require('create-emotion-server').default;
-const createCache = require('@emotion/cache').default;
-const { CacheProvider } = require('@emotion/core');
 const { SETTINGS } = require('./settings.js');
 const fs = require('fs');
 
@@ -146,6 +144,26 @@ function parseComponent({ componentPath, componentName, brand = BRAND.get, child
  */
 function extractMarkup({ Component, componentPath, brand, children }) {
 	D.header('extractMarkup', { Component, componentPath, brand, children });
+
+	let createCache;
+	let CacheProvider;
+	try {
+		const emotionCorePath = require.resolve(`${SETTINGS.get.cwd}/node_modules/@emotion/core`);
+		CacheProvider = require(emotionCorePath).CacheProvider;
+
+		const emotionCachePath = require.resolve(`${SETTINGS.get.cwd}/node_modules/@emotion/cache`);
+		createCache = require(emotionCachePath).default;
+
+		D.log(
+			`Used cwd emotion/core and emotion/cache version at ${color.yellow(
+				emotionCorePath
+			)} and ${color.yellow(emotionCachePath)}`
+		);
+	} catch (_) {
+		createCache = require('@emotion/cache').default;
+		CacheProvider = require('@emotion/core').CacheProvider;
+		D.log(`Used local emotion/core and emotion/cache version`);
+	}
 
 	const cache = createCache();
 	const { extractCritical } = createEmotionServer(cache);
