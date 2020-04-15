@@ -1,0 +1,30 @@
+{
+	"name": "@westpac/core",
+	"version": "9.20.2",
+	"private": true,
+	"description": "An example mock package.json to test with",
+	"blender": {
+		"cwd": "path/to/cwd",
+		"test": true,
+		"scope": "@bank",
+		"output": "path/to/all",
+		"outputCss": "path/to/css",
+		"outputJs": "path/to/js",
+		"outputHtml": "path/to/html",
+		"outputToken": "path/to/token",
+		"outputZip": true,
+		"tokensFormat": "css",
+		"include": [
+			"@westpac/button",
+			"@westpac/core"
+		],
+		"exclude": [
+			"@westpac/tabcordion"
+		],
+		"prettify": true,
+		"modules": true,
+		"brand": "BOM",
+		"excludeJquery": false,
+		"versionInClass": false
+	}
+}

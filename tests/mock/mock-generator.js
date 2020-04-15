@@ -544,6 +544,103 @@ export function Component${num}({ look = 'look1', children }) {
 	},
 };
 
+// INVALID DOCS TEMPLATE
+const templateInvalidDocs = {
+	blender1: templateStd.blender1,
+	blender2: ({ num, dir, scope = '@westpac/', core = '@westpac/' }) => {
+		const content = `import React, { Fragment } from 'react';
+import { Core } from '${core}core';
+
+import { Component${num} } from '${scope}component${num}';
+
+export function AllStyles({ brand }) {
+	return (
+		<Core brand={brand}>
+			<Component${num} look='look1'/>
+			<Component${num} look='look2'/>
+			<Component${num} look='look3'/>
+		</Core>
+	);
+}
+
+export function Docs({ brand }) {
+	return [
+		{
+			heading: 'Variation 1 for Component ${num}',
+			component: () => (
+				<Core brand={brand}>
+					<Component${num}>
+						Here comes the content
+					</Component${num}>
+				</Core>
+			),
+		},
+		{
+			heading: 'Variation 2 for Component ${num}',
+			component: () => (
+				<Core brand={brand}>
+					<ComponentX${num} look='look2'>
+						This component is invalid as ComponentX is undefined
+					</ComponentX${num}>
+				</Core>
+			),
+		},
+		{
+			heading: 'Variation 3 for Component ${num}',
+			component: () => (
+				<Core brand={brand}>
+					<Component${num} look='look3'>
+						Here comes the content
+					</Component${num}>
+				</Core>
+			),
+		},
+	];
+}
+`;
+		const filePath = path.normalize(`${dir}/component${num}/blender/`);
+		createDir(filePath);
+		fs.writeFileSync(`${filePath}recipe.js`, content, { encoding: 'utf8' });
+	},
+	dist1: templateStd.dist1,
+	dist2: templateStd.dist2,
+	dist3: templateStd.dist3,
+	dist4: templateStd.dist4,
+	src1: templateStd.src1,
+	src2: templateStd.src2,
+	pkg: ({ num, dir, scope = '@westpac/', core = '@westpac/' }) => {
+		const content = `{
+	"name": "${scope}component${num}",
+	"version": "1.${num}.7",
+	"description": "A standard component with failing docs",
+	"blender": {
+		"recipe": "blender/recipe.js",
+		"js": "blender/script.js"
+	},
+	"dependencies": {
+		"@emotion/core": "^10.0.28",
+		"${core}core": "^1.0.0"
+	},
+	"peerDependencies": {
+		"react": "^16.11.0"
+	},
+	"main": "dist/component${num}.cjs.js",
+	"module": "dist/component${num}.esm.js",
+	"files": [
+		"blender/*.js",
+		"dist/"
+	],
+	"devDependencies": {
+		"react": "^16.13.0"
+	}
+}
+`;
+		const filePath = path.normalize(`${dir}/component${num}/`);
+		createDir(filePath);
+		fs.writeFileSync(`${filePath}package.json`, content, { encoding: 'utf8' });
+	},
+};
+
 // CORE TEMPLATE
 const templateCore = {
 	blender1: ({ dir }) => {
@@ -1893,6 +1990,7 @@ else if (process.argv.includes('project3')) {
 		.map(([_, func]) => func({ num: 2, dir, scope: '@westpac/', jquery: false }));
 	Object.entries(templateNonBlender).map(([_, func]) => func({ num: 3, dir }));
 	Object.entries(templateInvalid).map(([_, func]) => func({ num: 6, dir }));
+	Object.entries(templateInvalidDocs).map(([_, func]) => func({ num: 7, dir }));
 	Object.entries(templateCore).map(([_, func]) => func({ dir }));
 	Object.entries(templateBrand).map(([_, func]) => func({ dir }));
 	i = 6;

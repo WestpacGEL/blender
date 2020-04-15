@@ -52,9 +52,15 @@ function getPackages(cwd = process.cwd()) {
 					withFileTypes: true,
 				}) // read all items in that folder
 				.filter(
-					(item) => !item.name.startsWith('.') && !item.name.startsWith('@') && item.isDirectory()
+					(item) =>
+						!item.name.startsWith('.') &&
+						!item.name.startsWith('@') &&
+						(item.isDirectory() || item.isSymbolicLink())
 				) // filter out dot files and non-folder
-				.map((folder) => path.normalize(`${nodeModulesPath}/${SETTINGS.get.scope}/${folder.name}`)); // add absolute path
+				.map((folder) =>
+					fs.realpathSync(path.normalize(`${nodeModulesPath}/${SETTINGS.get.scope}/${folder.name}`))
+				); // add absolute path and resolve symlinks
+			D.log(`Retrieved in scope packages: "${color.yellow(JSON.stringify(inScope))}"`);
 		} catch (error) {
 			if (error.code === 'ENOENT') {
 				D.log('No scope found');
@@ -70,16 +76,17 @@ function getPackages(cwd = process.cwd()) {
 		}
 	}
 
-	D.log(`Retrieved in scope packages: "${color.yellow(JSON.stringify(inScope))}"`);
-
-	const includes = SETTINGS.get.include.map((module) =>
-		path.normalize(`${nodeModulesPath}/${module}`)
-	);
+	const includes = SETTINGS.get.include.map((module) => {
+		try {
+			return fs.realpathSync(path.normalize(`${nodeModulesPath}/${module}`));
+		} catch (_) {
+			return path.normalize(`${nodeModulesPath}/${module}`);
+		}
+	});
 
 	D.log(`Retrieved in included packages: "${color.yellow(JSON.stringify(includes))}"`);
 
 	const packages = [...inScope, ...includes] // merging both sets
-		// .filter((module) => !SETTINGS.get.exclude.includes(module.replace(nodeModulesPath, ''))) // filtered out all excludes
 		.map((module) => {
 			let pkg = { blender: false };
 			try {
@@ -89,6 +96,7 @@ function getPackages(cwd = process.cwd()) {
 					`The package "${color.yellow(module.replace(nodeModulesPath, ''))}" could not be found.`
 				);
 			}
+
 			return {
 				name: pkg.name,
 				version: pkg.version,
@@ -111,7 +119,20 @@ function getPackages(cwd = process.cwd()) {
 	D.log(`getPackages return: "${color.yellow(JSON.stringify(packages))}"`);
 
 	// we need to flag all packages with babel to include them
-	require('@babel/register')({ only: packages.map((pkg) => `${pkg.path}`) });
+	require('@babel/register')({
+		presets: [require.resolve('@babel/preset-env'), require.resolve('@babel/preset-react')],
+		plugins: [
+			require.resolve('@babel/plugin-transform-runtime'),
+			[
+				require.resolve('@babel/plugin-syntax-dynamic-import'),
+				{
+					root: SETTINGS.get.cwd,
+					suppressResolveWarning: true,
+				},
+			],
+		],
+		only: packages.map((pkg) => `${pkg.path}`),
+	});
 
 	return packages;
 }
