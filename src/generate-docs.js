@@ -122,9 +122,7 @@ function generateIndexFile(docs) {
 							link to the web font package for each blend within our internal network. Please click the link below to download the webfont.
 						</p>
 						<p>
-							<a href="https://sites.thewestpacgroup.com.au/sites/TS1206/Shared%20Documents/webfonts/" target="_blank" rel="noopener">
-								Download the web fonts for this blend
-							</a>
+							<a href="https://sites.thewestpacgroup.com.au/sites/TS1206/Shared%20Documents/webfonts/" target="_blank" rel="noopener">Download the web fonts for this blend</a>
 						</p>
 					</section>
 
