@@ -6,10 +6,11 @@
 const { PACKAGES } = require('./packages.js');
 const { SETTINGS } = require('./settings.js');
 const { LOADING } = require('./loading.js');
-const { DEBUG, D } = require('./log.js');
 const { BRAND } = require('./brand.js');
 const { FILES } = require('./files.js');
+const { DEBUG } = require('./debug.js');
 const { TIME } = require('./time.js');
+const { D } = require('./log.js');
 
 /**
  * The cleaning function

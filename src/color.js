@@ -4,6 +4,7 @@
  * stripColor - Remove ansi colors from a string
  * color      - Returning ansi escape color codes
  **/
+const { DEBUG } = require('./debug.js');
 
 /**
  * Remove ansi colors from a string
@@ -43,7 +44,9 @@ const color = {
 	 * @return {string}       - The escaped text
 	 */
 	parse: (text, start, end = `39m`) => {
-		if (text !== undefined) {
+		if (DEBUG.mode === 'api') {
+			return text;
+		} else if (text !== undefined) {
 			const replace = new RegExp(`\\u001b\\[${end}`, 'g'); // find any resets so we can nest styles
 
 			return `\u001B[${start}${text.toString().replace(replace, `\u001B[${start}`)}\u001b[${end}`;

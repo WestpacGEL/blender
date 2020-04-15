@@ -2,12 +2,10 @@
  * All functions for parsing packages with emotion
  *
  * parseComponent - Parsing a component to get out css and html
+ * extractMarkup  - Extract the markup from a component
  **/
-const { renderToStaticMarkup } = require('react-dom/server');
 const createEmotionServer = require('create-emotion-server').default;
-const createElement = require('react').createElement;
-const createCache = require('@emotion/cache').default;
-const { CacheProvider } = require('@emotion/core');
+const { SETTINGS } = require('./settings.js');
 const fs = require('fs');
 
 const { color } = require('./color.js');
@@ -41,7 +39,7 @@ const { D } = require('./log.js');
  *
  * @return {returnObject}                      - The result of the parsing
  */
-function parseComponent({ componentPath, componentName = 'default', brand = BRAND.get, children }) {
+function parseComponent({ componentPath, componentName, brand = BRAND.get, children }) {
 	D.header('parseComponent', { componentPath, componentName, brand });
 
 	if (componentName === 'docs') {
@@ -134,12 +132,62 @@ function parseComponent({ componentPath, componentName = 'default', brand = BRAN
 	}
 }
 
+/**
+ * Extract the markup from a component
+ *
+ * @param  {function} options.Component     - The component to be parsed
+ * @param  {string}   options.componentPath - The path to this component for error message
+ * @param  {object}   options.brand         - The brand to be passed into the Core
+ * @param  {function} options.children      - Possible children to be passed to the component
+ *
+ * @return {object}                         - The static markup in an object
+ */
 function extractMarkup({ Component, componentPath, brand, children }) {
 	D.header('extractMarkup', { Component, componentPath, brand, children });
+
+	// we will try to use the emotion package of the cwd before we fallback to our own
+	let createCache;
+	let CacheProvider;
+	try {
+		const emotionCorePath = require.resolve(`${SETTINGS.get.cwd}/node_modules/@emotion/core`);
+		CacheProvider = require(emotionCorePath).CacheProvider;
+
+		const emotionCachePath = require.resolve(`${SETTINGS.get.cwd}/node_modules/@emotion/cache`);
+		createCache = require(emotionCachePath).default;
+
+		D.log(
+			`Used cwd emotion/core and emotion/cache package at ${color.yellow(
+				emotionCorePath
+			)} and ${color.yellow(emotionCachePath)}`
+		);
+	} catch (_) {
+		createCache = require('@emotion/cache').default;
+		CacheProvider = require('@emotion/core').CacheProvider;
+		D.log(`Used local emotion/core and emotion/cache package`);
+	}
 
 	const cache = createCache();
 	const { extractCritical } = createEmotionServer(cache);
 	let staticMarkup;
+
+	// we will try to use the react package of the cwd before we fallback to our own
+	let renderToStaticMarkup;
+	let createElement;
+	try {
+		const reactPath = require.resolve(`${SETTINGS.get.cwd}/node_modules/react`);
+		createElement = require(reactPath).createElement;
+		const reactDomPath = require.resolve(`${SETTINGS.get.cwd}/node_modules/react-dom/server`);
+		renderToStaticMarkup = require(reactDomPath).renderToStaticMarkup;
+		D.log(
+			`Used cwd react and reac-dom package at ${color.yellow(reactPath)} and ${color.yellow(
+				reactDomPath
+			)}`
+		);
+	} catch (_) {
+		createElement = require('react').createElement;
+		renderToStaticMarkup = require('react-dom/server').renderToStaticMarkup;
+		D.log(`Used local react and reac-dom package`);
+	}
 
 	try {
 		staticMarkup = extractCritical(
@@ -167,4 +215,5 @@ function extractMarkup({ Component, componentPath, brand, children }) {
 
 module.exports = exports = {
 	parseComponent,
+	extractMarkup,
 };
