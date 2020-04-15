@@ -16,6 +16,7 @@ const { generateJSFile } = require('./generate-js.js');
 const { version } = require('../package.json');
 const { SETTINGS } = require('./settings.js');
 const { LOADING } = require('./loading.js');
+const { COMMENT } = require('./const.js');
 const { FILES } = require('./files.js');
 const { color } = require('./color.js');
 const { D } = require('./log.js');
@@ -101,22 +102,22 @@ function generator(packages) {
 
 	if (!SETTINGS.get.modules) {
 		// Add the css we collected from all packages
-		if (SETTINGS.get.outputCss) {
+		if (SETTINGS.get.outputCss && cssFile) {
 			D.log(`Adding main css to store`);
 			FILES.add = {
 				name: `styles${SETTINGS.get.prettify ? '' : '.min'}.css`,
 				dir: SETTINGS.get.outputCss,
-				content: formatCode(cssFile, 'css'),
+				content: `${COMMENT.join('\n')}\n${formatCode(cssFile, 'css')}`,
 			};
 		}
 
 		// Add the js we collected from all packages
-		if (SETTINGS.get.outputJs) {
+		if (SETTINGS.get.outputJs && jsFile) {
 			D.log(`Adding main js to store`);
 			FILES.add = {
 				name: `script${SETTINGS.get.prettify ? '' : '.min'}.js`,
 				dir: SETTINGS.get.outputJs,
-				content: formatCode(jsFile, 'js'),
+				content: `${COMMENT.join('\n')}\n${formatCode(jsFile, 'js')}`,
 			};
 		}
 	}
@@ -133,23 +134,27 @@ function generator(packages) {
 			content: index,
 		};
 
-		// adding css file to docs
-		D.log(`Adding ${color.yellow('docs/styles.min.css')} to store`);
-		FILES.add = {
-			name: 'styles.min.css',
-			filePath: 'assets/',
-			dir: SETTINGS.get.outputDocs,
-			content: cssFile,
-		};
+		if (cssFile) {
+			// adding css file to docs
+			D.log(`Adding ${color.yellow('docs/styles.min.css')} to store`);
+			FILES.add = {
+				name: 'styles.min.css',
+				filePath: 'assets/',
+				dir: SETTINGS.get.outputDocs,
+				content: cssFile,
+			};
+		}
 
-		// adding js file to docs
-		D.log(`Adding ${color.yellow('docs/script.min.js')} to store`);
-		FILES.add = {
-			name: 'script.min.js',
-			filePath: 'assets/',
-			dir: SETTINGS.get.outputDocs,
-			content: jsFile,
-		};
+		if (jsFile) {
+			// adding js file to docs
+			D.log(`Adding ${color.yellow('docs/script.min.js')} to store`);
+			FILES.add = {
+				name: 'script.min.js',
+				filePath: 'assets/',
+				dir: SETTINGS.get.outputDocs,
+				content: jsFile,
+			};
+		}
 
 		// adding each docs assets file
 		generateDocsAssets().map((file) => {
@@ -240,7 +245,7 @@ function blendPkg({
 			FILES.add = {
 				name: `${stripScope(thisPkg.name)}${SETTINGS.get.prettify ? '' : '.min'}.css`,
 				dir: SETTINGS.get.outputCss,
-				content: formatCode(css, 'css'),
+				content: `${COMMENT.join('\n')}\n${formatCode(css, 'css')}`,
 			};
 		}
 	}
@@ -294,7 +299,7 @@ function blendPkg({
 			FILES.add = {
 				name: `${stripScope(thisPkg.name)}${SETTINGS.get.prettify ? '' : '.min'}.js`,
 				dir: SETTINGS.get.outputJs,
-				content: formatCode(js, 'js'),
+				content: `${COMMENT.join('\n')}\n${formatCode(js, 'js')}`,
 			};
 		}
 	}
