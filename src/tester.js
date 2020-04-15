@@ -89,6 +89,7 @@ function tester(packages) {
 
 			LOADING.tick();
 		});
+
 	LOADING.abort();
 
 	D.log(`tester return: "${color.yellow(JSON.stringify(result))}"`);

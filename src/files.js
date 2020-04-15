@@ -52,7 +52,6 @@ function saveFiles() {
 	return new Promise((resolve, reject) => {
 		LOADING.start = {
 			total: FILES.get.size,
-			minTotal: 300,
 		};
 
 		const result = {
@@ -63,10 +62,10 @@ function saveFiles() {
 		const allFiles = [];
 
 		// save all files to a directory
-		FILES.get.forEach(async (pack) => {
+		FILES.get.forEach((pack) => {
 			D.log(`Saving file ${color.yellow(pack.name)} to ${color.yellow(pack.dir)}`);
 			try {
-				allFiles.push(await writeFile(pack));
+				allFiles.push(writeFile(pack));
 			} catch (error) {
 				reject(error);
 			}
