@@ -24,7 +24,7 @@ const { D } = require('./log.js');
  *
  * @return {object}                  - A result object with css key
  */
-function generateCss({ pkg, coreCss = '', children }) {
+async function generateCss({ pkg, coreCss = '', children }) {
 	D.header('generateCss', { pkg, coreCss, children });
 
 	const result = {
@@ -33,7 +33,7 @@ function generateCss({ pkg, coreCss = '', children }) {
 		messages: [],
 	};
 
-	const parsedPkg = parseComponent({
+	const parsedPkg = await parseComponent({
 		componentPath: path.normalize(`${pkg.path}/${pkg.pkg.recipe}`),
 		componentName: 'AllStyles',
 		children,
@@ -83,7 +83,7 @@ function generateCss({ pkg, coreCss = '', children }) {
  *
  * @return {object}                  - A result object with html key
  */
-function generateHtml({ pkg, coreHtml = '' }) {
+async function generateHtml({ pkg, coreHtml = '' }) {
 	D.header('generateHtml', { pkg, coreHtml });
 
 	const result = {
@@ -92,7 +92,7 @@ function generateHtml({ pkg, coreHtml = '' }) {
 		messages: [],
 	};
 
-	const parsedPkg = parseComponent({
+	const parsedPkg = await parseComponent({
 		componentPath: path.normalize(`${pkg.path}/${pkg.pkg.recipe}`),
 		componentName: 'docs',
 	});
