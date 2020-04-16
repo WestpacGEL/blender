@@ -75,6 +75,6 @@ const color = {
 };
 
 module.exports = exports = {
-	color,
 	stripColor,
+	color,
 };

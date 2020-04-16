@@ -292,6 +292,7 @@ function checkInput(cliArgs, options = CLIOPTIONS) {
 module.exports = exports = {
 	SETTINGS,
 	getSettings,
+	getDefaults,
 	camelCase,
 	getPkgOptions,
 	getCliArgs,
