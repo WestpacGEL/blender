@@ -44,133 +44,140 @@ function generator(packages) {
 
 	LOADING.start = { total: packages.length };
 
-	// Building core first so we can remove it from other packages
-	packages
-		.filter((pkg) => pkg.pkg.isCore)
-		.map((core) => {
-			const { oldCss, oldHtml, js, css, html, ...rest } = blendPkg({
-				thisPkg: core,
-				includeJs: !!SETTINGS.get.outputJs && !SETTINGS.get.excludeJquery,
-				children: 'CORE',
+	return new Promise(async (resolve) => {
+		// Building core first so we can remove it from other packages
+		const allCore = packages
+			.filter((pkg) => pkg.pkg.isCore)
+			.map(async (core) => {
+				const { oldCss, oldHtml, js, css, html, ...rest } = await blendPkg({
+					thisPkg: core,
+					includeJs: !!SETTINGS.get.outputJs && !SETTINGS.get.excludeJquery,
+					children: 'CORE',
+				});
+
+				if (rest.code > 0) {
+					result.code = 1;
+					result.errors = [...result.errors, ...rest.errors];
+				}
+				result.messages = [...result.messages, ...rest.messages];
+
+				// we keep track of the core css and html so we can remove it from other packages
+				coreCss += oldCss;
+				coreHtml += oldHtml;
+
+				// we collect all css and js for a possible concatenated css/js file
+				cssFile += css;
+				jsFile += js;
+				if (html) {
+					docs.push(html);
+				}
+
+				LOADING.tick();
 			});
 
-			if (rest.code > 0) {
-				result.code = 1;
-				result.errors = [...result.errors, ...rest.errors];
-			}
-			result.messages = [...result.messages, ...rest.messages];
+		// need to wait for all cores to be finished before we can deal with the rest
+		await Promise.all(allCore);
 
-			// we keep track of the core css and html so we can remove it from other packages
-			coreCss += oldCss;
-			coreHtml += oldHtml;
+		// Building rest of packages (drawing the rest of the f** owl)
+		const allPkgs = packages
+			.filter((pkg) => !pkg.pkg.isCore)
+			.map(async (thisPkg) => {
+				const { css, js, html, ...rest } = await blendPkg({
+					thisPkg,
+					coreCss,
+					coreHtml,
+				});
 
-			// we collect all css and js for a possible concatenated css/js file
-			cssFile += css;
-			jsFile += js;
-			if (html) {
-				docs.push(html);
-			}
+				if (rest.code > 0) {
+					result.code = 1;
+					result.errors = [...result.errors, ...rest.errors];
+				}
+				result.messages = [...result.messages, ...rest.messages];
 
-			LOADING.tick();
-		});
+				// we collect all css and js for a possible concatenated css/js file
+				cssFile += css;
+				jsFile += js;
+				if (html) {
+					docs.push(html);
+				}
 
-	// Building rest of packages (drawing the rest of the f** owl)
-	packages
-		.filter((pkg) => !pkg.pkg.isCore)
-		.map((thisPkg) => {
-			const { css, js, html, ...rest } = blendPkg({
-				thisPkg,
-				coreCss,
-				coreHtml,
+				LOADING.tick();
 			});
 
-			if (rest.code > 0) {
-				result.code = 1;
-				result.errors = [...result.errors, ...rest.errors];
+		await Promise.all(allPkgs);
+
+		if (!SETTINGS.get.modules) {
+			// Add the css we collected from all packages
+			if (SETTINGS.get.outputCss && cssFile) {
+				D.log(`Adding main css to store`);
+				FILES.add = {
+					name: `styles${SETTINGS.get.prettify ? '' : '.min'}.css`,
+					dir: SETTINGS.get.outputCss,
+					content: `${COMMENT.join('\n')}\n${formatCode(cssFile, 'css')}`,
+				};
 			}
-			result.messages = [...result.messages, ...rest.messages];
 
-			// we collect all css and js for a possible concatenated css/js file
-			cssFile += css;
-			jsFile += js;
-			if (html) {
-				docs.push(html);
+			// Add the js we collected from all packages
+			if (SETTINGS.get.outputJs && jsFile) {
+				D.log(`Adding main js to store`);
+				FILES.add = {
+					name: `script${SETTINGS.get.prettify ? '' : '.min'}.js`,
+					dir: SETTINGS.get.outputJs,
+					content: `${COMMENT.join('\n')}\n${formatCode(jsFile, 'js')}`,
+				};
+			}
+		}
+
+		// Add the index docs file
+		if (SETTINGS.get.outputDocs && docs.length) {
+			const index = generateIndexFile(docs);
+
+			// adding index file
+			D.log(`Adding ${color.yellow('docs/index.html')} to store`);
+			FILES.add = {
+				name: 'index.html',
+				dir: SETTINGS.get.outputDocs,
+				content: index,
+			};
+
+			if (cssFile) {
+				// adding css file to docs
+				D.log(`Adding ${color.yellow('docs/styles.min.css')} to store`);
+				FILES.add = {
+					name: 'styles.min.css',
+					filePath: 'assets/',
+					dir: SETTINGS.get.outputDocs,
+					content: cssFile,
+				};
 			}
 
-			LOADING.tick();
+			if (jsFile) {
+				// adding js file to docs
+				D.log(`Adding ${color.yellow('docs/script.min.js')} to store`);
+				FILES.add = {
+					name: 'script.min.js',
+					filePath: 'assets/',
+					dir: SETTINGS.get.outputDocs,
+					content: jsFile,
+				};
+			}
+
+			// adding each docs assets file
+			generateDocsAssets().map((file) => {
+				D.log(`Adding ${color.yellow(file.name)} to store`);
+				FILES.add = file;
+			});
+		}
+
+		LOADING.abort();
+
+		D.log(`generator return: "${color.yellow(JSON.stringify(result))}"`);
+
+		resolve({
+			...result,
+			files: [...FILES.get],
 		});
-
-	if (!SETTINGS.get.modules) {
-		// Add the css we collected from all packages
-		if (SETTINGS.get.outputCss && cssFile) {
-			D.log(`Adding main css to store`);
-			FILES.add = {
-				name: `styles${SETTINGS.get.prettify ? '' : '.min'}.css`,
-				dir: SETTINGS.get.outputCss,
-				content: `${COMMENT.join('\n')}\n${formatCode(cssFile, 'css')}`,
-			};
-		}
-
-		// Add the js we collected from all packages
-		if (SETTINGS.get.outputJs && jsFile) {
-			D.log(`Adding main js to store`);
-			FILES.add = {
-				name: `script${SETTINGS.get.prettify ? '' : '.min'}.js`,
-				dir: SETTINGS.get.outputJs,
-				content: `${COMMENT.join('\n')}\n${formatCode(jsFile, 'js')}`,
-			};
-		}
-	}
-
-	// Add the index docs file
-	if (SETTINGS.get.outputDocs && docs.length) {
-		const index = generateIndexFile(docs);
-
-		// adding index file
-		D.log(`Adding ${color.yellow('docs/index.html')} to store`);
-		FILES.add = {
-			name: 'index.html',
-			dir: SETTINGS.get.outputDocs,
-			content: index,
-		};
-
-		if (cssFile) {
-			// adding css file to docs
-			D.log(`Adding ${color.yellow('docs/styles.min.css')} to store`);
-			FILES.add = {
-				name: 'styles.min.css',
-				filePath: 'assets/',
-				dir: SETTINGS.get.outputDocs,
-				content: cssFile,
-			};
-		}
-
-		if (jsFile) {
-			// adding js file to docs
-			D.log(`Adding ${color.yellow('docs/script.min.js')} to store`);
-			FILES.add = {
-				name: 'script.min.js',
-				filePath: 'assets/',
-				dir: SETTINGS.get.outputDocs,
-				content: jsFile,
-			};
-		}
-
-		// adding each docs assets file
-		generateDocsAssets().map((file) => {
-			D.log(`Adding ${color.yellow(file.name)} to store`);
-			FILES.add = file;
-		});
-	}
-
-	LOADING.abort();
-
-	D.log(`generator return: "${color.yellow(JSON.stringify(result))}"`);
-
-	return {
-		...result,
-		files: [...FILES.get],
-	};
+	});
 }
 
 /**
@@ -186,7 +193,7 @@ function generator(packages) {
  *
  * @return {object}                        - A return object with css key
  */
-function blendPkg({
+async function blendPkg({
 	thisPkg,
 	coreCss = '',
 	coreHtml = '',
@@ -226,7 +233,11 @@ function blendPkg({
 	// Building CSS
 	if (includeCss && thisPkg.pkg.recipe) {
 		D.log(`Creating css for ${color.yellow(thisPkg.name)}`);
-		const { css, oldCss, oldHtml, ...parsedPkg } = generateCss({ pkg: thisPkg, coreCss, children });
+		const { css, oldCss, oldHtml, ...parsedPkg } = await generateCss({
+			pkg: thisPkg,
+			coreCss,
+			children,
+		});
 
 		if (parsedPkg.code > 0) {
 			result.code = 1;
@@ -254,7 +265,7 @@ function blendPkg({
 	if (includeHtml && thisPkg.pkg.recipe) {
 		D.log(`Creating html file for ${color.yellow(thisPkg.name)}`);
 
-		const { html, ...parsedPkg } = generateHtml({
+		const { html, ...parsedPkg } = await generateHtml({
 			pkg: thisPkg,
 			coreHtml,
 		});

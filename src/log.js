@@ -132,7 +132,6 @@ const log = {
 };
 
 module.exports = exports = {
-	DEBUG,
 	D,
 	log,
 };

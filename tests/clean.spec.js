@@ -4,8 +4,6 @@
  * PACKAGES
  * getPackages
  **/
-const path = require('path');
-
 const { DEBUG, DEBUGdefaults } = require('../src/debug.js');
 const { PACKAGES } = require('../src/packages.js');
 const { SETTINGS } = require('../src/settings.js');
@@ -38,6 +36,7 @@ describe('clean', () => {
 		PACKAGES.set = 'stuff';
 		SETTINGS.set = 'stuff';
 		LOADING.start = { total: 5, other: 'stuff', end: true };
+		LOADING.abort();
 		BRAND.set = 'stuff';
 		FILES.add = { name: 'stuff', filePath: 'path stuff', dir: 'dir stuff', other: 'stuff' };
 		FILES.add = { name: 'stuff2', filePath: 'path stuff2', dir: 'dir stuff2', other: 'stuff2' };

@@ -114,7 +114,7 @@ async function cli() {
 
 	// run tester
 	if (SETTINGS.get.test) {
-		const result = tester(PACKAGES.get);
+		const result = await tester(PACKAGES.get);
 		if (result.messages) {
 			result.messages.map((error) => {
 				log.error(error);
@@ -124,7 +124,7 @@ async function cli() {
 		process.exit(result.code);
 	}
 
-	const result = generator(PACKAGES.get);
+	const result = await generator(PACKAGES.get);
 	if (result.code > 0) {
 		result.messages.map((error) => {
 			log.error(error);

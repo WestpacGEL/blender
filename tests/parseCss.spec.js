@@ -12,8 +12,8 @@ const { parseComponent, extractMarkup } = require('../src/parseCss.js');
  * parseComponent
  */
 describe('parseComponent', () => {
-	test('parse AllStyles component correctly', () => {
-		const result = parseComponent({
+	test('parse AllStyles component correctly', async () => {
+		const result = await parseComponent({
 			componentPath: path.normalize(`${__dirname}/../tests/mock/recipe1.js`),
 			componentName: 'AllStyles',
 			brand: {},
@@ -33,36 +33,40 @@ describe('parseComponent', () => {
 		);
 	});
 
-	test(`error when AllStyles component doesn't exist`, () => {
-		const result = parseComponent({
-			componentPath: path.normalize(`${__dirname}/../tests/mock/void`),
-			componentName: 'AllStyles',
-			brand: {},
-		});
-
-		expect(result.code).toBe(1);
-		expect(typeof result.error).not.toBe(undefined);
-		expect(typeof result.message).not.toBe(undefined);
-		expect(result.message.includes('tests/mock/void')).toBe(true);
-		expect(result.message.includes('open')).toBe(true);
+	test(`error when AllStyles component doesn't exist`, async () => {
+		try {
+			await parseComponent({
+				componentPath: path.normalize(`${__dirname}/../tests/mock/void`),
+				componentName: 'AllStyles',
+				brand: {},
+			});
+		} catch (result) {
+			expect(result.code).toBe(1);
+			expect(typeof result.error).not.toBe(undefined);
+			expect(typeof result.message).not.toBe(undefined);
+			expect(result.message.includes('tests/mock/void')).toBe(true);
+			expect(result.message.includes('open')).toBe(true);
+		}
 	});
 
-	test('error when AllStyles component is invalid', () => {
-		const result = parseComponent({
-			componentPath: path.normalize(`${__dirname}/../tests/mock/recipe-invalid.js`),
-			componentName: 'AllStyles',
-			brand: {},
-		});
-
-		expect(result.code).toBe(1);
-		expect(typeof result.error).not.toBe(undefined);
-		expect(typeof result.message).not.toBe(undefined);
-		expect(result.message.includes('tests/mock/recipe-invalid.js')).toBe(true);
-		expect(result.message.includes('parse')).toBe(true);
+	test('error when AllStyles component is invalid', async () => {
+		try {
+			await parseComponent({
+				componentPath: path.normalize(`${__dirname}/../tests/mock/recipe-invalid.js`),
+				componentName: 'AllStyles',
+				brand: {},
+			});
+		} catch (result) {
+			expect(result.code).toBe(1);
+			expect(typeof result.error).not.toBe(undefined);
+			expect(typeof result.message).not.toBe(undefined);
+			expect(result.message.includes('tests/mock/recipe-invalid.js')).toBe(true);
+			expect(result.message.includes('parse')).toBe(true);
+		}
 	});
 
-	test('parse AllStyles component correctly even without brand', () => {
-		const result = parseComponent({
+	test('parse AllStyles component correctly even without brand', async () => {
+		const result = await parseComponent({
 			componentPath: path.normalize(`${__dirname}/../tests/mock/recipe1.js`),
 			componentName: 'AllStyles',
 		});
@@ -81,8 +85,8 @@ describe('parseComponent', () => {
 		);
 	});
 
-	test('parse docs component correctly', () => {
-		const result = parseComponent({
+	test('parse docs component correctly', async () => {
+		const result = await parseComponent({
 			componentPath: path.normalize(`${__dirname}/../tests/mock/recipe1.js`),
 			componentName: 'docs',
 			brand: {},
@@ -118,39 +122,43 @@ describe('parseComponent', () => {
 		});
 	});
 
-	test(`error when docs component doesn't exist`, () => {
-		const result = parseComponent({
-			componentPath: path.normalize(`${__dirname}/../tests/mock/void`),
-			componentName: 'docs',
-			brand: {},
-		});
-
-		expect(result.code).toBe(1);
-		expect(typeof result.error).not.toBe(undefined);
-		expect(typeof result.message).not.toBe(undefined);
-		expect(result.message.includes('tests/mock/void')).toBe(true);
-		expect(result.message.includes('open')).toBe(true);
+	test(`error when docs component doesn't exist`, async () => {
+		try {
+			await parseComponent({
+				componentPath: path.normalize(`${__dirname}/../tests/mock/void`),
+				componentName: 'docs',
+				brand: {},
+			});
+		} catch (result) {
+			expect(result.code).toBe(1);
+			expect(typeof result.error).not.toBe(undefined);
+			expect(typeof result.message).not.toBe(undefined);
+			expect(result.message.includes('tests/mock/void')).toBe(true);
+			expect(result.message.includes('open')).toBe(true);
+		}
 	});
 
-	test('error when docs component is invalid', () => {
-		const result = parseComponent({
-			componentPath: path.normalize(`${__dirname}/../tests/mock/recipe-invalid.js`),
-			componentName: 'docs',
-			brand: {},
-		});
-
-		expect(result.code).toBe(1);
-		expect(typeof result.error).not.toBe(undefined);
-		expect(typeof result.message).not.toBe(undefined);
-		expect(result.message.length).toBe(3);
-		expect(result.message[0].includes('tests/mock/recipe-invalid.js')).toBe(true);
-		expect(result.message[1].includes('tests/mock/recipe-invalid.js')).toBe(true);
-		expect(result.message[2].includes('tests/mock/recipe-invalid.js')).toBe(true);
-		expect(result.recipes.length).toBe(3);
+	test('error when docs component is invalid', async () => {
+		try {
+			await parseComponent({
+				componentPath: path.normalize(`${__dirname}/../tests/mock/recipe-invalid.js`),
+				componentName: 'docs',
+				brand: {},
+			});
+		} catch (result) {
+			expect(result.code).toBe(1);
+			expect(typeof result.error).not.toBe(undefined);
+			expect(typeof result.message).not.toBe(undefined);
+			expect(result.message.length).toBe(3);
+			expect(result.message[0].includes('tests/mock/recipe-invalid.js')).toBe(true);
+			expect(result.message[1].includes('tests/mock/recipe-invalid.js')).toBe(true);
+			expect(result.message[2].includes('tests/mock/recipe-invalid.js')).toBe(true);
+			expect(result.recipes.length).toBe(3);
+		}
 	});
 
-	test('parse AllStyles component correctly with children', () => {
-		const result = parseComponent({
+	test('parse AllStyles component correctly with children', async () => {
+		const result = await parseComponent({
 			componentPath: path.normalize(`${__dirname}/../tests/mock/recipe2.js`),
 			componentName: 'AllStyles',
 			brand: {},
@@ -168,8 +176,8 @@ describe('parseComponent', () => {
  * extractMarkup
  */
 describe('extractMarkup', () => {
-	test('extract markup from a simple component', () => {
-		const result = extractMarkup({
+	test('extract markup from a simple component', async () => {
+		const result = await extractMarkup({
 			Component: () => createElement('div', null, `Hello there`),
 			componentPath: 'path/to/component',
 			brand: {},
@@ -181,8 +189,8 @@ describe('extractMarkup', () => {
 		expect(result.css).toBe('');
 	});
 
-	test('extract markup from a simple component with children', () => {
-		const result = extractMarkup({
+	test('extract markup from a simple component with children', async () => {
+		const result = await extractMarkup({
 			Component: ({ children }) => createElement('div', null, `Hello ${children}`),
 			componentPath: 'path/to/component',
 			brand: {},

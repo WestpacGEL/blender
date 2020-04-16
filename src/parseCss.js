@@ -42,94 +42,98 @@ const { D } = require('./log.js');
 function parseComponent({ componentPath, componentName, brand = BRAND.get, children }) {
 	D.header('parseComponent', { componentPath, componentName, brand });
 
-	if (componentName === 'docs') {
-		D.log('Running parseComponent in "docs" mode');
+	return new Promise((resolve) => {
+		if (componentName === 'docs') {
+			D.log('Running parseComponent in "docs" mode');
 
-		let recipes;
-		const result = {
-			code: 0,
-			error: [],
-			message: [],
-		};
-
-		try {
-			recipes = require(componentPath)['Docs']({ brand });
-		} catch (error) {
-			D.error(`Component failed to be required at "${color.yellow(componentPath)}"`);
-			D.error(error);
-
-			return {
-				code: 1,
-				error,
-				message: `An error occured when trying to open ${color.yellow(componentPath)}`,
+			let recipes;
+			const result = {
+				code: 0,
+				error: [],
+				message: [],
 			};
-		}
 
-		recipes = recipes.map((variation) => {
-			const staticMarkup = extractMarkup({
-				Component: variation.component,
-				componentPath,
-				brand,
-				children,
-			});
+			try {
+				recipes = require(componentPath)['Docs']({ brand });
+			} catch (error) {
+				D.error(`Component failed to be required at "${color.yellow(componentPath)}"`);
+				D.error(error);
 
-			if (staticMarkup.code > 0) {
-				D.error(`Component failed to be rendered at "${color.yellow(componentPath)}"`);
-				D.error(staticMarkup.error);
-
-				result.code = 1;
-				result.error.push(staticMarkup.error);
-				result.message.push(staticMarkup.message);
+				resolve({
+					code: 1,
+					error,
+					message: `An error occured when trying to open ${color.yellow(componentPath)}`,
+				});
 			}
 
-			return {
-				...variation,
-				static: staticMarkup,
-			};
-		});
+			recipes = recipes.map((variation) => {
+				return extractMarkup({
+					Component: variation.component,
+					componentPath,
+					brand,
+					children,
+				})
+					.catch((error) => {
+						D.error(`Component failed to be rendered at "${color.yellow(componentPath)}"`);
+						D.error(error.error);
 
-		return {
-			...result,
-			recipes,
-		};
-	} else {
-		D.log('Running parseComponent in "normal" mode');
+						result.code = 1;
+						result.error.push(error.error);
+						result.message.push(error.message);
+					})
+					.then((staticMarkup) => {
+						return {
+							...variation,
+							static: staticMarkup,
+						};
+					});
+			});
 
-		let Component;
+			Promise.all(recipes)
+				.catch((error) => resolve(result))
+				.then((recipes) => {
+					resolve({ ...result, recipes });
+				});
+		} else {
+			D.log('Running parseComponent in "normal" mode');
 
-		try {
-			Component = require(componentPath)[componentName];
-		} catch (error) {
-			D.error(`Component failed to be required at "${color.yellow(componentPath)}"`);
-			D.error(error);
+			let Component;
 
-			return {
-				code: 1,
-				error,
-				message: `An error occured when trying to open ${color.yellow(componentPath)}`,
-			};
+			try {
+				Component = require(componentPath)[componentName];
+			} catch (error) {
+				D.error(`Component failed to be required at "${color.yellow(componentPath)}"`);
+				D.error(error);
+
+				resolve({
+					code: 1,
+					error,
+					message: `An error occured when trying to open ${color.yellow(componentPath)}`,
+				});
+			}
+			D.log(`Component successfully required via "${color.yellow(componentPath)}"`);
+
+			extractMarkup({ Component, componentPath, brand, children })
+				.catch((error) => {
+					D.error(`Component failed to be rendered at "${color.yellow(componentPath)}"`);
+					D.error(error.error);
+
+					resolve({
+						code: error.code,
+						error: error.error,
+						message: error.message,
+					});
+				})
+				.then((staticMarkup) => {
+					D.log(`Component successfully rendered via "${color.yellow(componentPath)}"`);
+
+					resolve({
+						code: 0,
+						...staticMarkup,
+					});
+				});
 		}
-		D.log(`Component successfully required via "${color.yellow(componentPath)}"`);
-
-		const staticMarkup = extractMarkup({ Component, componentPath, brand, children });
-
-		if (staticMarkup.code > 0) {
-			D.error(`Component failed to be rendered at "${color.yellow(componentPath)}"`);
-			D.error(staticMarkup.error);
-
-			return {
-				code: staticMarkup.code,
-				error: staticMarkup.error,
-				message: staticMarkup.message,
-			};
-		}
-		D.log(`Component successfully rendered via "${color.yellow(componentPath)}"`);
-
-		return {
-			code: 0,
-			...staticMarkup,
-		};
-	}
+	});
 }
 
 /**
@@ -145,72 +149,77 @@ function parseComponent({ componentPath, componentName, brand = BRAND.get, child
 function extractMarkup({ Component, componentPath, brand, children }) {
 	D.header('extractMarkup', { Component, componentPath, brand, children });
 
-	// we will try to use the emotion package of the cwd before we fallback to our own
-	let createCache;
-	let CacheProvider;
-	try {
-		const emotionCorePath = require.resolve(`${SETTINGS.get.cwd}/node_modules/@emotion/core`);
-		CacheProvider = require(emotionCorePath).CacheProvider;
+	return new Promise((resolve, reject) => {
+		// we will try to use the emotion package of the cwd before we fallback to our own
+		let createCache;
+		let CacheProvider;
+		try {
+			const emotionCorePath = require.resolve(`${SETTINGS.get.cwd}/node_modules/@emotion/core`);
+			CacheProvider = require(emotionCorePath).CacheProvider;
 
-		const emotionCachePath = require.resolve(`${SETTINGS.get.cwd}/node_modules/@emotion/cache`);
-		createCache = require(emotionCachePath).default;
+			const emotionCachePath = require.resolve(`${SETTINGS.get.cwd}/node_modules/@emotion/cache`);
+			createCache = require(emotionCachePath).default;
 
-		D.log(
-			`Used cwd emotion/core and emotion/cache package at ${color.yellow(
-				emotionCorePath
-			)} and ${color.yellow(emotionCachePath)}`
-		);
-	} catch (_) {
-		createCache = require('@emotion/cache').default;
-		CacheProvider = require('@emotion/core').CacheProvider;
-		D.log(`Used local emotion/core and emotion/cache package`);
-	}
+			D.log(
+				`Used cwd emotion/core and emotion/cache package at ${color.yellow(
+					emotionCorePath
+				)} and ${color.yellow(emotionCachePath)}`
+			);
+		} catch (_) {
+			createCache = require('@emotion/cache').default;
+			CacheProvider = require('@emotion/core').CacheProvider;
+			D.log(`Used local emotion/core and emotion/cache package`);
+		}
 
-	const cache = createCache();
-	const { extractCritical } = createEmotionServer(cache);
-	let staticMarkup;
+		const cache = createCache();
+		const { extractCritical } = createEmotionServer(cache);
+		let staticMarkup;
 
-	// we will try to use the react package of the cwd before we fallback to our own
-	let renderToStaticMarkup;
-	let createElement;
-	try {
-		const reactPath = require.resolve(`${SETTINGS.get.cwd}/node_modules/react`);
-		createElement = require(reactPath).createElement;
-		const reactDomPath = require.resolve(`${SETTINGS.get.cwd}/node_modules/react-dom/server`);
-		renderToStaticMarkup = require(reactDomPath).renderToStaticMarkup;
-		D.log(
-			`Used cwd react and reac-dom package at ${color.yellow(reactPath)} and ${color.yellow(
-				reactDomPath
-			)}`
-		);
-	} catch (_) {
-		createElement = require('react').createElement;
-		renderToStaticMarkup = require('react-dom/server').renderToStaticMarkup;
-		D.log(`Used local react and reac-dom package`);
-	}
+		// we will try to use the react package of the cwd before we fallback to our own
+		let renderToStaticMarkup;
+		let createElement;
+		try {
+			const reactPath = require.resolve(`${SETTINGS.get.cwd}/node_modules/react`);
+			createElement = require(reactPath).createElement;
+			const reactDomPath = require.resolve(`${SETTINGS.get.cwd}/node_modules/react-dom/server`);
+			renderToStaticMarkup = require(reactDomPath).renderToStaticMarkup;
+			D.log(
+				`Used cwd react and reac-dom package at ${color.yellow(reactPath)} and ${color.yellow(
+					reactDomPath
+				)}`
+			);
+		} catch (_) {
+			createElement = require('react').createElement;
+			renderToStaticMarkup = require('react-dom/server').renderToStaticMarkup;
+			D.log(`Used local react and reac-dom package`);
+		}
 
-	try {
-		staticMarkup = extractCritical(
-			renderToStaticMarkup(
-				createElement(
-					CacheProvider,
-					{ value: cache },
-					Component({ brand, ...(children ? { children } : {}) })
-				)
-			)
-		);
-	} catch (error) {
-		return {
-			code: 1,
-			error,
-			message: `An error occured when trying to parse ${color.yellow(componentPath)}`,
-		};
-	}
+		// we allow some garbage collection here as the next task is intense
+		process.nextTick(() => {
+			try {
+				staticMarkup = extractCritical(
+					renderToStaticMarkup(
+						createElement(
+							CacheProvider,
+							{ value: cache },
+							Component({ brand, ...(children ? { children } : {}) })
+						)
+					)
+				);
+			} catch (error) {
+				reject({
+					code: 1,
+					error,
+					message: `An error occured when trying to parse ${color.yellow(componentPath)}`,
+				});
+			}
 
-	return {
-		code: 0,
-		...staticMarkup,
-	};
+			resolve({
+				code: 0,
+				...staticMarkup,
+			});
+		});
+	});
 }
 
 module.exports = exports = {

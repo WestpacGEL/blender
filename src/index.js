@@ -48,7 +48,7 @@ function blender(options = {}) {
 
 		// run tester
 		if (SETTINGS.get.test) {
-			const result = tester(PACKAGES.get);
+			const result = await tester(PACKAGES.get);
 			if (result.code > 0) {
 				reject(result);
 			} else {
@@ -60,7 +60,7 @@ function blender(options = {}) {
 			}
 		}
 
-		const { files, ...result } = generator(PACKAGES.get);
+		const { files, ...result } = await generator(PACKAGES.get);
 		if (result.code > 0) {
 			reject(result);
 		}

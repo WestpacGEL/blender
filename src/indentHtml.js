@@ -26,10 +26,9 @@ function indentHtml(html_source, options) {
 	indent_size = options.indent_size || 1;
 	indent_character = options.indent_char || '\t';
 	brace_style = options.brace_style || 'collapse';
-	max_char = options.max_char == 0 ? Infinity : options.max_char || 70;
+	max_char = options.max_char == 0 ? Infinity : options.max_char || 10000;
 	unformatted = options.unformatted || [
 		'a',
-		'span',
 		'bdo',
 		'em',
 		'strong',
@@ -64,6 +63,8 @@ function indentHtml(html_source, options) {
 		'h4',
 		'h5',
 		'h6',
+		'svg',
+		'polygon',
 	];
 
 	function Parser() {

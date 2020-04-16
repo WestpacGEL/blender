@@ -131,7 +131,7 @@ function getPackages(cwd = process.cwd()) {
 				},
 			],
 		],
-		only: packages.map((pkg) => `${pkg.path}`),
+		only: packages.filter((pkg) => pkg.pkg.recipe).map((pkg) => `${pkg.path}`),
 	});
 
 	return packages;
