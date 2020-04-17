@@ -26,10 +26,10 @@ function generateDocsFile(name, html) {
 	const recipes = html
 		.map(
 			(variation) =>
-				`<section>` +
-				`<h2>${variation.heading}</h2>\n` +
-				`<div class="codeBox">${variation.html}</div>\n` +
-				`<pre><code class="language-html">${indentHtml(variation.html)
+				`<section class="docs-section">` +
+				`<h2 class="docs-h2">${variation.heading}</h2>\n` +
+				`<div class="docs-codeBox">${variation.html}</div>\n` +
+				`<pre class="docs-pre"><code class="language-html">${indentHtml(variation.html)
 					.replace(/&/g, '&amp;')
 					.replace(/</g, '&lt;')
 					.replace(/>/g, '&gt;')
@@ -48,8 +48,8 @@ function generateDocsFile(name, html) {
 </head>
 <body class="GEL-core-v1_1_0">
 	<div class="GEL-grid-container-v1_0_0">
-		<header class="small">
-			<a class="back" href="../index.html">Back to your components</a>
+		<header class="docs-header docs-header-small">
+			<a class="docs-link docs-link-back" href="../index.html">Back to your components</a>
 		</header>
 
 		<div class="GEL-grid-flow_row-height_auto-minRowHeight_2rem-v1_0_0">
@@ -89,45 +89,49 @@ function generateIndexFile(docs) {
 	<div class="GEL-grid-container-v1_0_0">
 		<div class="GEL-grid-flow_row-height_auto-minRowHeight_2rem-v1_0_0">
 			<div class="GEL-grid-cell-v1_0_0">
-				<header>
-					<svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 132 53">
+				<header class="docs-header">
+					<svg class="docs-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 132 53">
 						<path fill="#263238" fill-rule="nonzero" d="M27 0c12.2 0 23 5.5 24 18.9H36.4c-.8-4.8-3.9-7.3-9.3-7.3-7.3 0-11.7 5.6-11.7 14.8v.6c0 8.3 3.1 14.8 12 14.8 7.2 0 10-3.7 10.3-7.8H28V23.8h24.2V30C52.2 43 43.6 53 27 53 9.5 53 0 42.2 0 26.8v-.6C0 10.6 11.5 0 27 0zm65.1.8V12H71.2V21H88v10.5H71.2v9.3h22V52H56.6V.8h35.6zm20.5 0v40H132V52H97.7V.8h14.9z"/>
 					</svg>
 				</header>
 
-				<main>
-					<section>
-						<h1>Your ${brand} Design System blend</h1>
-						<p class="lead">
+				<main class="docs-main">
+					<section class="docs-section">
+						<h1 class="docs-h1">Your ${brand} Design System blend</h1>
+						<p class="docs-lead">
 							This page contains the documentation of each package you blended with the ${brand} blender.
 						</p>
 					</section>
 
-					<section>
-						<h2>Your packages</h2>
+					<section class="docs-section">
+						<h2 class="docs-h2">Your packages</h2>
 
-						<ul>
+						<ul class="docs-ul">
 							${docs
 								.map(
-									(doc) => `<li><a href="${doc.path.replace('/docs/', '')}">${doc.name}</a></li>`
+									(doc) =>
+										`<li class="docs-li"><a class="docs-link" href="${doc.path.replace(
+											'/docs/',
+											''
+										)}">${doc.name}</a></li>`
 								)
 								.join('\n\t\t')}
 						</ul>
 					</section>
 
-					<section>
-						<h2>Your web fonts</h2>
-						<p class="lead">
+					<section class="docs-section">
+						<h2 class="docs-h2">Your web fonts</h2>
+						<p class="docs-lead">
 							The license agreements for web fonts don’t allow us to distribute them with the blender. However, for those who work at Westpac we provide an internal
 							link to the web font package for each blend within our internal network. Please click the link below to download the webfont.
 						</p>
 						<p>
-							<a href="https://sites.thewestpacgroup.com.au/sites/TS1206/Shared%20Documents/webfonts/" target="_blank" rel="noopener">Download the web fonts for this blend</a>
+							<a class="docs-link" href="https://sites.thewestpacgroup.com.au/sites/TS1206/Shared%20Documents/webfonts/" target="_blank" rel="noopener">Download the web fonts for this blend</a>
 						</p>
 					</section>
 
-					<section class="clear">
-						<svg class="enjoy" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 551 229">
+					<section class="docs-section docs-section-clear">
+						<svg class="docs-enjoy" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 551 229">
 							<g fill="none" fill-rule="evenodd">
 								<path fill="#8E6E63" fill-rule="nonzero" d="M0 0v178.5h121.25v-9.501H11V90.5h102.5V81H11V9.499h109V0zM133.25 50h9.5v27.5h.5c1.664-4.832 4.039-9.125 7.125-12.875A47.302 47.302 0 01161.125 55c4.082-2.664 8.539-4.664 13.375-6 4.832-1.332 9.75-2 14.75-2 7.5 0 13.875.918 19.125 2.75 5.25 1.836 9.539 4.25 12.875 7.25 3.332 3 5.957 6.375 7.875 10.125 1.914 3.75 3.289 7.543 4.125 11.375.832 3.836 1.332 7.543 1.5 11.125.164 3.586.25 6.71.25 9.375v79.5h-9.5V97.25c0-3.164-.25-7.164-.75-12-.5-4.832-1.961-9.457-4.375-13.875-2.418-4.414-6.086-8.207-11-11.375-4.918-3.164-11.711-4.75-20.375-4.75-7.336 0-13.836 1.336-19.5 4-5.668 2.668-10.5 6.375-14.5 11.125s-7.043 10.418-9.125 17c-2.086 6.586-3.125 13.793-3.125 21.625v69.5h-9.5V50zM260.249 25.75h9.5V0h-9.5v25.75zm9.5 24.25v142.25c0 4.332-.336 8.457-1 12.375-.668 3.914-1.961 7.332-3.875 10.25-1.918 2.914-4.586 5.25-8 7-3.418 1.75-7.875 2.625-13.375 2.625h-6a8.377 8.377 0 01-2-.25v-8.5c.836.164 1.75.289 2.75.375 1 .082 2.168.125 3.5.125 3.332 0 6.164-.375 8.5-1.121 2.332-.754 4.25-2.082 5.75-3.996 1.5-1.915 2.582-4.497 3.25-7.739.664-3.246 1-7.281 1-12.105V50h9.5zM298.499 114.25c0 7.668 1.082 15.043 3.25 22.125 2.164 7.086 5.332 13.375 9.5 18.875 4.164 5.5 9.332 9.875 15.5 13.125 6.164 3.25 13.25 4.875 21.25 4.875s15.082-1.625 21.25-4.875c6.164-3.25 11.332-7.625 15.5-13.125 4.164-5.5 7.332-11.79 9.5-18.875 2.164-7.082 3.25-14.457 3.25-22.125 0-7.664-1.086-15.04-3.25-22.125-2.168-7.082-5.336-13.375-9.5-18.875-4.168-5.5-9.336-9.875-15.5-13.125-6.168-3.25-13.25-4.875-21.25-4.875s-15.086 1.625-21.25 4.875c-6.168 3.25-11.336 7.625-15.5 13.125-4.168 5.5-7.336 11.793-9.5 18.875-2.168 7.086-3.25 14.46-3.25 22.125m-9.5 0c0-9.164 1.289-17.79 3.875-25.875 2.582-8.082 6.375-15.207 11.375-21.375 5-6.164 11.164-11.04 18.5-14.625 7.332-3.582 15.75-5.375 25.25-5.375s17.914 1.793 25.25 5.375c7.332 3.586 13.5 8.46 18.5 14.625 5 6.168 8.789 13.293 11.375 21.375 2.582 8.086 3.875 16.71 3.875 25.875 0 9.168-1.293 17.836-3.875 26-2.586 8.168-6.375 15.293-11.375 21.375-5 6.086-11.168 10.918-18.5 14.5-7.336 3.582-15.75 5.375-25.25 5.375s-17.918-1.793-25.25-5.375c-7.336-3.582-13.5-8.414-18.5-14.5-5-6.082-8.793-13.207-11.375-21.375-2.586-8.164-3.875-16.832-3.875-26"/>
 								<path fill="#FFF" fill-rule="nonzero" stroke="#8E6E63" stroke-width="3" d="M399.45 36.755c-.957 0-1.859.269-2.609.753a4.425 4.425 0 00-1.716 2.08c-.355.89-.373 1.822-.123 2.707.246.871.757 1.695 1.44 2.348l71.35 68v95.945c-11.054.205-20.928 1.129-28.115 2.5-3.905.745-7.035 1.63-9.17 2.592-1.186.536-2.09 1.11-2.705 1.688-.883.83-1.244 1.71-1.244 2.562 0 .882.385 1.796 1.333 2.655.66.598 1.633 1.19 2.907 1.742 2.309.999 5.69 1.908 9.895 2.66 8.033 1.439 19.137 2.332 31.432 2.332 12.302 0 23.44-.894 31.503-2.334 4.215-.753 7.607-1.662 9.924-2.66 1.277-.55 2.252-1.143 2.914-1.74.952-.858 1.338-1.773 1.338-2.655 0-.852-.36-1.732-1.234-2.562-.611-.579-1.51-1.155-2.691-1.692-2.12-.963-5.23-1.849-9.115-2.594-7.131-1.368-16.94-2.29-27.973-2.494v-95.945l70.999-67.59c.669-.64 1.15-1.565 1.356-2.563.206-.995.136-2.043-.206-2.899-.37-.92-1.001-1.518-1.79-1.893-.755-.359-1.684-.492-2.634-.492l-145.065-.45z"/>
@@ -176,76 +180,77 @@ body {
 	font-weight: 300;
 	margin-bottom: 5rem;
 }
-header {
+.docs-header {
 	margin: 10rem 0 3.125rem 0;
 }
-header.small {
+.docs-header-small {
 	margin-top: 2rem;
 }
-section + section {
+.docs-section + .docs-section {
 	margin-top: 2.5rem;
 }
-section.clear {
+.docs-section-clear {
 	overflow: hidden;
 	margin-top: 5rem;
 }
-a {
+.docs-link {
 	color: #263238;
 	display: inline-block;
 	text-decoration: none;
 }
-a:before {
+.docs-link:before {
 	content: '';
 	display: inline-block;
 	width: 0.7rem;
 	height: 0.75rem;
 	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 12'%3E%3Cpath fill='%23C80038' fill-rule='evenodd' d='M4.73 6l-4.4 4.39.94.94L6.61 6 1.27.67l-.94.94z'/%3E%3C/svg%3E") no-repeat;
 }
-a.back:before {
+.docs-link-back:before {
 	width: 1rem;
 	transform: rotate(180deg);
 	background-position-x: 0.5rem;
 }
-a:hover, a:active, a:focus {
+.docs-link:hover, .docs-link:active, .docs-link:focus {
 	text-decoration: underline;
 }
-ul {
+.docs-ul {
 	list-style: none;
 	padding: 0;
 	margin: 0;
 }
-li {
+.docs-li {
 	margin-bottom: 0.2rem;
 }
-.logo {
+.docs-logo {
 	max-width: 8.25rem;
 	height: auto;
 }
-h1 {
+.docs-h1 {
 	font-size: 1.875rem;
 	font-weight: bold;
 	margin: 0 0 2.1875rem 0;
 }
-h2 {
+.docs-h2 {
 	font-size: 1.125rem;
 	font-weight: bold;
 	margin: 0 0 1.25rem 0;
 }
-.lead {
+.docs-lead {
 	font-size: 1rem;
 	line-height: 2;
 }
-.codeBox {
+.docs-codeBox {
 	background: #fff;
 	overflow: auto;
 	padding: 2rem;
 	margin-bottom: 0;
 }
-pre {
+.docs-pre {
 	margin-top: 0;
 	min-height: 3rem;
+	overflow: auto;
 }
-.enjoy {
+.docs-enjoy {
 	max-width: 15rem;
 	height: auto;
 	float: right
