@@ -12,7 +12,7 @@
 const path = require('path');
 const fs = require('fs');
 
-const { CLIOPTIONS } = require('./const.js');
+const { CLIOPTIONS } = require('./config.js');
 const { color } = require('./color.js');
 const { D, log } = require('./log.js');
 
