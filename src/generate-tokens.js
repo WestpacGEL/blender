@@ -5,7 +5,7 @@
  * flattenTokens     - Flatten a nested object recursively into a single dimensional object
  * compileTokens     - Compile flat tokens into supported languages
  **/
-const { COMMENT } = require('./const.js');
+const { COMMENT } = require('./config.js');
 const { D } = require('./log.js');
 
 /**

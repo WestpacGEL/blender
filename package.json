@@ -18,6 +18,7 @@
 	],
 	"license": "GPL-3.0+",
 	"scripts": {
+		"prepublish": "yarn test",
 		"start": "echo 'TODO'",
 		"build": "yarn build:lib && yarn build:bin",
 		"build:lib": "npx mkdirp lib && babel src --out-dir lib",
@@ -37,6 +38,9 @@
 	"main": "lib/index.js",
 	"bin": {
 		"blender": "./bin/index.js"
+	},
+	"engines": {
+		"node": ">=10"
 	},
 	"jest": {
 		"displayName": "Blender",

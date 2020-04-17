@@ -1,5 +1,5 @@
 /**
- * All constance shared with all functions
+ * All config objects
  *
  * CLIOPTIONS - Default settings for our cli flags
  * COMMENT    - The comment added to each generated file
