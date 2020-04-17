@@ -299,7 +299,7 @@ async function blendPkg({
 
 		if (rest.code > 0) {
 			result.code = 1;
-			result.messages = [...result.messages, ...rest.message];
+			result.messages = [...result.messages, rest.message];
 		}
 
 		result.js = `${js}\n`;
