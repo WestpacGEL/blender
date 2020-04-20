@@ -30,51 +30,76 @@ function tester(packages) {
 	};
 
 	LOADING.start = { total: packages.length };
-	packages
-		.filter((thisPackage) => thisPackage.pkg.recipe)
-		.map((thisPackage) => {
-			D.log(`Testing ${color.yellow(thisPackage.name)}`);
 
-			const parsedPkg = parseComponent({
-				componentPath: path.normalize(`${thisPackage.path}/${thisPackage.pkg.recipe}`),
-				componentName: 'AllStyles',
-			});
+	return new Promise(async (resolve) => {
+		const allTests = packages
+			.filter((thisPackage) => thisPackage.pkg.recipe)
+			.map(async (thisPackage) => {
+				D.log(`Testing ${color.yellow(thisPackage.name)}`);
 
-			// TODO also test the Docs component to see if there are errors
-
-			if (parsedPkg.code > 0) {
-				result.errors.push({
-					package: thisPackage.name,
-					error: parsedPkg.message,
+				// testing recipe
+				let parsedPkg = await parseComponent({
+					componentPath: path.normalize(`${thisPackage.path}/${thisPackage.pkg.recipe}`),
+					componentName: 'AllStyles',
 				});
-				result.messages.push(parsedPkg.message);
-				result.code = 1;
-			} else {
-				const idResult = testLabels(parsedPkg);
 
-				if (idResult.code === 1) {
-					result.code = 1;
+				if (parsedPkg.code > 0) {
 					result.errors.push({
 						package: thisPackage.name,
-						error: idResult.ids,
+						error: parsedPkg.message,
+					});
+					result.messages.push(parsedPkg.message);
+					result.code = 1;
+				} else {
+					const idResult = testLabels(parsedPkg);
+
+					if (idResult.code === 1) {
+						result.code = 1;
+						result.errors.push({
+							package: thisPackage.name,
+							error: idResult.ids,
+						});
+						result.messages.push(
+							`The package ${color.yellow(
+								thisPackage.name
+							)} included labels that can't be made human readable:\n    ${color.yellow(
+								idResult.ids.join('\n    ')
+							)}`
+						);
+					}
+				}
+
+				// testing docs
+				parsedPkg = await parseComponent({
+					componentPath: path.normalize(`${thisPackage.path}/${thisPackage.pkg.recipe}`),
+					componentName: 'docs',
+				});
+
+				if (parsedPkg.code > 0) {
+					result.errors.push({
+						package: thisPackage.name,
+						error: parsedPkg.message,
 					});
 					result.messages.push(
 						`The package ${color.yellow(
 							thisPackage.name
-						)} included labels that can't be made human readable:\n    ${color.yellow(
-							idResult.ids.join('\n    ')
-						)}`
+						)} contains errors in it's documentation file:`
 					);
+					result.messages.push(parsedPkg.error);
+					result.code = 1;
 				}
-			}
 
-			LOADING.tick();
-		});
-	LOADING.abort();
+				LOADING.tick();
+			});
 
-	D.log(`tester return: "${color.yellow(JSON.stringify(result))}"`);
+		await Promise.all(allTests);
 
-	return result;
+		LOADING.abort();
+
+		D.log(`tester return: "${color.yellow(JSON.stringify(result))}"`);
+
+		resolve(result);
+	});
 }
 
 /**

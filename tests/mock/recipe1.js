@@ -1,13 +1,20 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
+import { Fragment } from 'react';
 
-function Alert({ look = '', children }) {
+function Component({ look = 'look1', children }) {
+	const styleMap = {
+		look1: 'rebeccapurple',
+		look2: 'hotpinnk',
+		look3: 'red',
+	};
+
 	return (
 		<div
 			css={{
-				label: `alert-${look}`,
-				background: look,
+				label: `component1-${look}`,
+				background: styleMap[look],
 			}}
 		>
 			{children}
@@ -15,17 +22,41 @@ function Alert({ look = '', children }) {
 	);
 }
 
-function Recipe() {
+export function AllStyles({ brand }) {
 	return (
-		<div>
-			<Alert>Text</Alert>
-			<Alert look="red">Text</Alert>
-			<Alert look="blue">Text</Alert>
-			<Alert look="green">Text</Alert>
-			<Alert look="gray">Text</Alert>
-			<Alert look="orange">Text</Alert>
-		</div>
+		<Fragment>
+			<Component look="look1" />
+			<Component look="look2" />
+			<Component look="look3" />
+		</Fragment>
 	);
 }
 
-export default Recipe;
+export function Docs({ brand }) {
+	return [
+		{
+			heading: 'Variation 1 for Component 1',
+			component: () => (
+				<Fragment>
+					<Component>Here comes the content</Component>
+				</Fragment>
+			),
+		},
+		{
+			heading: 'Variation 2 for Component 1',
+			component: () => (
+				<Fragment>
+					<Component look="look2">Here comes the content</Component>
+				</Fragment>
+			),
+		},
+		{
+			heading: 'Variation 3 for Component 1',
+			component: () => (
+				<Fragment>
+					<Component look="look3">Here comes the content</Component>
+				</Fragment>
+			),
+		},
+	];
+}
