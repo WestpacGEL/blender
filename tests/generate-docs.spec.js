@@ -58,10 +58,24 @@ describe('generateIndexFile', () => {
 
 		console.log(indexFile);
 
-		// Check that brand is correct and each component is linked
+		// Check that brand is correct and each component is linked...
 
 	});
 });
+
+/**
+ * generateIndexFile
+ */
+describe('generateIndexFile', () => {
+	test.only('Get a index file to navigate the docs', () => {
+
+		// const brandFlag = SETTINGS.get.brand.startsWith('@westpac/')
+		// 	? SETTINGS.get.brand.replace('@westpac/', '')
+		// 	: SETTINGS.get.brand; <<< test this
+
+	});
+});
+
 
 /**
  * generateDocsAssets
