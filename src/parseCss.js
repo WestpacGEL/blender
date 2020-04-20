@@ -60,7 +60,7 @@ function parseComponent({ componentPath, componentName, brand = BRAND.get, child
 					D.error(`Component failed to be required at "${color.yellow(componentPath)}"`);
 					D.error(error);
 
-					resolve({
+					return resolve({
 						code: 1,
 						error,
 						message: `An error occured when trying to open ${color.yellow(componentPath)}`,
@@ -106,7 +106,7 @@ function parseComponent({ componentPath, componentName, brand = BRAND.get, child
 					D.error(`Component failed to be required at "${color.yellow(componentPath)}"`);
 					D.error(error);
 
-					resolve({
+					return resolve({
 						code: 1,
 						error,
 						message: `An error occured when trying to open ${color.yellow(componentPath)}`,
@@ -119,7 +119,7 @@ function parseComponent({ componentPath, componentName, brand = BRAND.get, child
 						D.error(`Component failed to be rendered at "${color.yellow(componentPath)}"`);
 						D.error(error.error);
 
-						resolve({
+						return resolve({
 							code: error.code,
 							error: error.error,
 							message: error.message,
@@ -128,7 +128,7 @@ function parseComponent({ componentPath, componentName, brand = BRAND.get, child
 					.then((staticMarkup) => {
 						D.log(`Component successfully rendered via "${color.yellow(componentPath)}"`);
 
-						resolve({
+						return resolve({
 							code: 0,
 							...staticMarkup,
 						});
