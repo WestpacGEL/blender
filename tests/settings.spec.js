@@ -1,19 +1,73 @@
 /**
  * Testing src/settings.js functions
  *
+ * SETTINGS
  * getSettings
+ * camelCase
+ * getPkgOptions
  * getCliArgs
  * checkInput
- * SETTINGS
  **/
 const path = require('path');
 
-const { getSettings, getCliArgs, checkInput, SETTINGS } = require('../src/settings.js');
+const {
+	SETTINGS,
+	getSettings,
+	camelCase,
+	getPkgOptions,
+	getCliArgs,
+	checkInput,
+} = require('../src/settings.js');
+
+/**
+ * SETTINGS
+ */
+describe('SETTINGS', () => {
+	beforeEach(() => {
+		jest.resetModules();
+	});
+
+	test('Get the current settings', () => {
+		expect(SETTINGS.get).toStrictEqual({});
+	});
+
+	test('Set the settings', () => {
+		const settings = {
+			key: 'value',
+			sub: {
+				deep: 'value',
+			},
+		};
+		SETTINGS.set = settings;
+
+		expect(SETTINGS.get).toStrictEqual(settings);
+	});
+
+	test('Clear the settings', () => {
+		const settings = {
+			key: 'value',
+			sub: {
+				deep: 'value',
+			},
+		};
+		SETTINGS.set = settings;
+
+		expect(SETTINGS.get).toStrictEqual(settings);
+
+		SETTINGS.clean();
+
+		expect(SETTINGS.get).toStrictEqual({});
+	});
+});
 
 /**
  * getSettings
  */
 describe('getSettings', () => {
+	beforeEach(() => {
+		jest.resetModules();
+	});
+
 	test('Get nothing when nothing is set', () => {
 		const options = {
 			flag1: {},
@@ -196,7 +250,7 @@ describe('getSettings', () => {
 		expect(console.info.mock.calls[0][0].includes('package.json')).toBeTruthy();
 	});
 
-	test('Record cli rogue agrs', () => {
+	test('Record cli rogue args', () => {
 		const options = {
 			flag1: {},
 			flag2: {
@@ -221,6 +275,103 @@ describe('getSettings', () => {
 			'--i-am-rogue': true,
 			'-x': true,
 		});
+	});
+
+	test('Spread output to all output settings', () => {
+		const cliArgs = {
+			output: 'thing',
+		};
+
+		const result = getSettings(cliArgs);
+
+		expect(result).toMatchObject({
+			output: 'thing',
+			outputCss: 'thing/css/',
+			outputJs: 'thing/js/',
+			outputDocs: 'thing/docs/',
+			outputTokens: 'thing/tokens/',
+		});
+	});
+
+	test(`Don't spread output to all output settings when one is set`, () => {
+		const options = {
+			output: {},
+			'output-css': {},
+			'output-js': {},
+			'output-docs': {},
+			'output-tokens': {},
+		};
+		const cwd = path.normalize(`${__dirname}/mock/pkg1/`);
+		const cliArgs = {
+			output: 'thing',
+			outputDocs: 'other thing',
+		};
+
+		const result = getSettings(cliArgs, cwd, options);
+
+		expect(result).toMatchObject({
+			output: 'thing',
+			outputDocs: 'other thing',
+		});
+	});
+
+	test('Set the cwd with cli arguments', () => {
+		const cliArgs = {
+			cwd: 'path/to/cwd',
+		};
+
+		const result = getSettings(cliArgs);
+
+		expect(result.cwd.endsWith('path/to/cwd')).toBeTruthy();
+	});
+});
+
+/**
+ * CAMELCASE
+ */
+describe('camelCase', () => {
+	test('Camel case a word', () => {
+		expect(camelCase('camel-case-this')).toBe('camelCaseThis');
+		expect(camelCase('-case-this')).toBe('CaseThis');
+	});
+
+	test('Return if not string', () => {
+		expect(camelCase(2)).toBe(2);
+	});
+});
+
+/**
+ * GETPKGOPTIONS
+ */
+describe('getPkgOptions', () => {
+	test('Get blender options from package.json', () => {
+		expect(getPkgOptions(path.normalize(`${__dirname}/mock/`))).toMatchObject({
+			cwd: 'path/to/cwd',
+			test: true,
+			scope: '@bank',
+			output: 'path/to/all',
+			outputCss: 'path/to/css',
+			outputJs: 'path/to/js',
+			outputHtml: 'path/to/html',
+			outputToken: 'path/to/token',
+			outputZip: true,
+			tokensFormat: 'css',
+			include: ['@westpac/button', '@westpac/core'],
+			exclude: ['@westpac/tabcordion'],
+			prettify: true,
+			modules: true,
+			brand: 'BOM',
+			excludeJquery: false,
+			versionInClass: false,
+		});
+	});
+
+	test('Warn when no package.json was found', () => {
+		console.info = jest.fn();
+		getPkgOptions(path.normalize(`${__dirname}/void`));
+
+		expect(console.info.mock.calls.length).toBe(1);
+		expect(console.info.mock.calls[0][0].includes('No package.json file found')).toBeTruthy();
 	});
 });
 
@@ -286,35 +437,62 @@ describe('getCliArgs', () => {
 			flag3: true,
 		});
 	});
-});
 
-/**
- * SETTINGS
- */
-describe('SETTINGS', () => {
-	beforeEach(() => {
-		jest.resetModules();
-	});
-
-	test('Get the current settings', () => {
-		expect(SETTINGS.get).toStrictEqual({});
-	});
-
-	test('Set the settings', () => {
-		const settings = {
-			key: 'value',
-			sub: {
-				deep: 'value',
+	test('Include unknown flags', () => {
+		const options = {
+			flag1: {
+				flag: 'a',
+			},
+			flag2: {
+				flag: 'b',
+			},
+			flag3: {
+				flag: 'c',
 			},
 		};
-		SETTINGS.set = settings;
+		const inputArgs = ['path/to/node', 'path/to/script', '--flag4', '-cd'];
+		const result = getCliArgs(options, inputArgs);
 
-		expect(SETTINGS.get).toStrictEqual(settings);
+		expect(result).toStrictEqual({
+			'--flag4': true,
+			'-d': true,
+			flag3: true,
+		});
+	});
+
+	test('Respect the types', () => {
+		const options = {
+			flag1: {
+				type: 'string',
+			},
+			flag2: {
+				type: 'boolean',
+			},
+			flag3: {
+				type: 'array',
+			},
+		};
+		const inputArgs = [
+			'path/to/node',
+			'path/to/script',
+			'--flag1',
+			'flag1Value1',
+			'--flag2',
+			'--flag3',
+			'value1',
+		];
+		const result = getCliArgs(options, inputArgs);
+
+		expect(result).toStrictEqual({
+			flag1: 'flag1Value1',
+			flag2: true,
+			flag3: ['value1'],
+		});
 	});
 });
 
 /**
- * SETTINGS
+ * checkInput
  */
 describe('checkInput', () => {
 	test('Arguments are validated correctly', () => {
@@ -333,9 +511,9 @@ describe('checkInput', () => {
 			},
 		};
 
-		expect(checkInput({ flag1: 'DOMINIK' }, options).pass).toBe(true);
-		expect(checkInput({ flag1: 'dominik' }, options).pass).toBe(true);
-		expect(checkInput({ flag2: 'alex' }, options).pass).toBe(false);
+		expect(checkInput({ flag1: 'DOMINIK' }, options).pass).toBeTruthy();
+		expect(checkInput({ flag1: 'dominik' }, options).pass).toBeTruthy();
+		expect(checkInput({ flag2: 'alex' }, options).pass).toBeFalsy();
 	});
 
 	test('String type is validated correctly', () => {
@@ -348,8 +526,8 @@ describe('checkInput', () => {
 			},
 		};
 
-		expect(checkInput({ flag1: 'dominik' }, options).pass).toBe(true);
-		expect(checkInput({ flag2: true }, options).pass).toBe(false);
+		expect(checkInput({ flag1: 'dominik' }, options).pass).toBeTruthy();
+		expect(checkInput({ flag2: true }, options).pass).toBeFalsy();
 	});
 
 	test('Array type is validated correctly', () => {
@@ -362,8 +540,8 @@ describe('checkInput', () => {
 			},
 		};
 
-		expect(checkInput({ flag1: ['dominik', 'thomas'] }, options).pass).toBe(true);
-		expect(checkInput({ flag2: '' }, options).pass).toBe(false);
+		expect(checkInput({ flag1: ['dominik', 'thomas'] }, options).pass).toBeTruthy();
+		expect(checkInput({ flag2: '' }, options).pass).toBeFalsy();
 	});
 
 	test('Invalid type is validated correctly', () => {
@@ -376,7 +554,23 @@ describe('checkInput', () => {
 			},
 		};
 
-		expect(checkInput({ flag1: 'mock' }, options).pass).toBe(false);
-		expect(checkInput({ flag2: 'mock' }, options).pass).toBe(false);
+		expect(checkInput({ flag1: 'mock' }, options).pass).toBeFalsy();
+		expect(checkInput({ flag2: 'mock' }, options).pass).toBeFalsy();
+	});
+
+	test('Rouge flag is warned about', () => {
+		const options = {
+			flag1: {
+				type: 'string',
+			},
+			flag2: {
+				type: 'string',
+			},
+		};
+
+		const result = checkInput({ flag3: 'mock' }, options);
+
+		expect(result.warnings.length).toBe(1);
+		expect(result.warnings[0].includes('flag3')).toBeTruthy();
 	});
 });

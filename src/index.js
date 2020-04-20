@@ -8,10 +8,11 @@ const path = require('path');
 const { SETTINGS, getSettings, checkInput } = require('./settings.js');
 const { PACKAGES, getPackages } = require('./packages.js');
 const { generator } = require('./generator.js');
+const { version } = require('../package.json');
 const { setBrand } = require('./brand.js');
 const { tester } = require('./tester.js');
+const { DEBUG } = require('./debug.js');
 const { clean } = require('./clean.js');
-const { DEBUG } = require('./log.js');
 
 /**
  * The blender API
@@ -34,7 +35,6 @@ function blender(options = {}) {
 		// return version
 		if (SETTINGS.get.version) {
 			resolve(`v${version}`);
-			process.exit();
 		}
 
 		// get all packages
@@ -48,7 +48,7 @@ function blender(options = {}) {
 
 		// run tester
 		if (SETTINGS.get.test) {
-			const result = tester(PACKAGES.get);
+			const result = await tester(PACKAGES.get);
 			if (result.code > 0) {
 				reject(result);
 			} else {
@@ -60,30 +60,19 @@ function blender(options = {}) {
 			}
 		}
 
-		const result = generator(PACKAGES.get);
+		const { files, ...result } = await generator(PACKAGES.get);
 		if (result.code > 0) {
 			reject(result);
-		} else {
-			resolve({
-				packages: PACKAGES.get,
-				options: { ...SETTINGS.get },
-				result,
-			});
 		}
 
 		resolve({
 			packages: PACKAGES.get,
-			options: { ...SETTINGS.get },
+			options: SETTINGS.get,
+			result,
+			files,
 		});
 	});
 }
-
-blender({
-	cwd: path.normalize(`${__dirname}/../tests/mock/mock-project1/`),
-	// test: true,
-})
-	.then((data) => console.log(JSON.stringify(data, null, 2)))
-	.catch((error) => console.log(JSON.stringify(error, null, 2)));
 
 module.exports = exports = {
 	blender,

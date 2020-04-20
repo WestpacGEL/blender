@@ -1,9 +1,9 @@
 /**
- * Testing src/const.js functions
+ * Testing src/config.js functions
  *
  * CLIOPTIONS
  **/
-const { CLIOPTIONS } = require('../src/const.js');
+const { CLIOPTIONS } = require('../src/config.js');
 
 /**
  * CLIOPTIONS

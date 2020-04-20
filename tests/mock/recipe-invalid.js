@@ -1,18 +1,43 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
+import { Fragment } from 'react';
 
-function Recipe() {
+export function AllStyles({ brand }) {
 	return (
-		<div>
-			<Undefined>Text</Undefined>
-			<Undefined look="red">Text</Undefined>
-			<Undefined look="blue">Text</Undefined>
-			<Undefined look="green">Text</Undefined>
-			<Undefined look="gray">Text</Undefined>
-			<Undefined look="orange">Text</Undefined>
-		</div>
+		<Fragment>
+			<Component look="look1" />
+			<Component look="look2" />
+			<Component look="look3" />
+		</Fragment>
 	);
 }
 
-export default Recipe;
+export function Docs({ brand }) {
+	return [
+		{
+			heading: 'Variation 1 for Component 1',
+			component: () => (
+				<Fragment>
+					<Component>Here comes the content</Component>
+				</Fragment>
+			),
+		},
+		{
+			heading: 'Variation 2 for Component 1',
+			component: () => (
+				<Fragment>
+					<Component look="look2">Here comes the content</Component>
+				</Fragment>
+			),
+		},
+		{
+			heading: 'Variation 3 for Component 1',
+			component: () => (
+				<Fragment>
+					<Component look="look3">Here comes the content</Component>
+				</Fragment>
+			),
+		},
+	];
+}

@@ -14,12 +14,13 @@ const { PACKAGES, getPackages } = require('./packages.js');
 const { stripColor, color } = require('./color.js');
 const { generator } = require('./generator.js');
 const { version } = require('../package.json');
-const { DEBUG, D, log } = require('./log.js');
-const { CLIOPTIONS } = require('./const.js');
+const { CLIOPTIONS } = require('./config.js');
 const { saveFiles } = require('./files.js');
 const { setBrand } = require('./brand.js');
 const { tester } = require('./tester.js');
+const { DEBUG } = require('./debug.js');
 const { clean } = require('./clean.js');
+const { D, log } = require('./log.js');
 const { TIME } = require('./time.js');
 
 /**
@@ -71,6 +72,22 @@ async function cli() {
 		});
 	}
 
+	if (
+		!SETTINGS.get.outputCss &&
+		!SETTINGS.get.outputJs &&
+		!SETTINGS.get.outputDocs &&
+		!SETTINGS.get.outputTokens &&
+		!SETTINGS.get.test
+	) {
+		log.error(`You need to specify an output path`);
+		log.info(
+			`You can specify an output path for all assets with ${color.cyan(
+				'-o path/'
+			)}.\n   To learn more have a look into our help ${color.cyan('$ blender -h')}.`
+		);
+		process.exit(1);
+	}
+
 	const cwd = SETTINGS.get.cwd;
 
 	// get brand
@@ -80,9 +97,10 @@ async function cli() {
 			log.error(error);
 		});
 		log.info(
-			`You can specify a brand with the ${color.yellow('--brand')} and the arguments ${color.yellow(
-				CLIOPTIONS.brand.arguments.join(', ')
-			)}\n   Example: ${color.cyan('$ blender --brand WBC')}`
+			`You can specify a brand with the ${color.yellow('--brand')}\n   ` +
+				`Example: ${color.cyan('$ blender --brand WBC')} or ${color.cyan(
+					'$ blender --brand "@westpac/stg"'
+				)}`
 		);
 		process.exit(1);
 	}
@@ -96,7 +114,7 @@ async function cli() {
 
 	// run tester
 	if (SETTINGS.get.test) {
-		const result = tester(PACKAGES.get);
+		const result = await tester(PACKAGES.get);
 		if (result.messages) {
 			result.messages.map((error) => {
 				log.error(error);
@@ -106,7 +124,7 @@ async function cli() {
 		process.exit(result.code);
 	}
 
-	const result = generator(PACKAGES.get);
+	const result = await generator(PACKAGES.get);
 	if (result.code > 0) {
 		result.messages.map((error) => {
 			log.error(error);
