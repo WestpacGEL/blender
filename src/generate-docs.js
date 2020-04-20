@@ -30,7 +30,9 @@ function generateDocsFile(name, html) {
 				`<section class="docs-section">\n\t\t\t\t\t` +
 				`<h2 class="docs-h2">${variation.heading}</h2>\n\t\t\t\t\t` +
 				`<div class="docs-codeBox">\n\t\t\t\t\t\t${variation.html}\n\t\t\t\t\t</div>\n` +
-				`<pre class="docs-pre"><code class="language-html">${indentHtml(variation.html)
+				`<pre class="docs-pre language-html"><code class="language-html">${indentHtml(
+					variation.html
+				)
 					.replace(/&/g, '&amp;')
 					.replace(/</g, '&lt;')
 					.replace(/>/g, '&gt;')
@@ -266,8 +268,6 @@ body {
 }
 .docs-pre {
 	margin-top: 0;
-	min-height: 3rem;
-	overflow: auto;
 }
 .docs-enjoy {
 	max-width: 15rem;
