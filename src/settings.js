@@ -71,6 +71,8 @@ function getSettings(cliArgs, cwd = process.cwd(), options = CLIOPTIONS) {
 		settings.outputTokens = path.normalize(`${settings.output}/tokens/`);
 	}
 
+	settings.tokensFormat = settings.tokensFormat.toLowerCase();
+
 	D.log(`getSettings return: "${color.yellow(JSON.stringify(settings))}"`);
 
 	return settings;
@@ -261,7 +263,7 @@ function checkInput(cliArgs, options = CLIOPTIONS) {
 			if (
 				argDict[key].arguments &&
 				Array.isArray(argDict[key].arguments) &&
-				!argDict[key].arguments.includes(value.toUpperCase())
+				!argDict[key].arguments.includes(value)
 			) {
 				D.error(
 					`Invalid argument for ${color.yellow(key)} Expected ${color.yellow(
