@@ -14,7 +14,7 @@ const { SETTINGS } = require('../src/settings.js');
 describe('generateTokenFile', () => {
 	test('Generate a token file as JSON', () => {
 		SETTINGS.set = {
-			tokensFormat: 'JSON',
+			tokensFormat: 'json',
 		};
 
 		const pkg = {
@@ -36,7 +36,7 @@ describe('generateTokenFile', () => {
 
 	test('Generate a token file as LESS', () => {
 		SETTINGS.set = {
-			tokensFormat: 'LESS',
+			tokensFormat: 'less',
 		};
 
 		const pkg = {
@@ -54,7 +54,7 @@ describe('generateTokenFile', () => {
 
 	test('Generate a token file as SASS', () => {
 		SETTINGS.set = {
-			tokensFormat: 'SASS',
+			tokensFormat: 'sass',
 		};
 
 		const pkg = {
@@ -72,7 +72,7 @@ describe('generateTokenFile', () => {
 
 	test('Generate a token file as SCSS', () => {
 		SETTINGS.set = {
-			tokensFormat: 'SCSS',
+			tokensFormat: 'scss',
 		};
 
 		const pkg = {
@@ -90,7 +90,7 @@ describe('generateTokenFile', () => {
 
 	test('Generate a token file as CSS', () => {
 		SETTINGS.set = {
-			tokensFormat: 'CSS',
+			tokensFormat: 'css',
 		};
 
 		const pkg = {
@@ -106,22 +106,4 @@ describe('generateTokenFile', () => {
 		expect(result.includes('--COLORS_color1: #ff0000;')).toBe(true);
 		expect(result.includes('--BRAND: "WBC";')).toBe(true);
 	});
-
-	// test.only('ARRAY?', () => {
-	// 	SETTINGS.set = {
-	// 		tokensFormat: 'CSS',
-	// 	};
-	//
-	// 	const pkg = {
-	// 		name: '@westpac/wbc',
-	// 		version: '1.0.0',
-	// 		path: path.normalize(`${__dirname}/../tests/mock/mock-project1/node_modules/@westpac`),
-	// 		pkg: { tokens: true }
-	// 	}
-	//
-	// 	const result = generateTokenFile(pkg.path, SETTINGS.get.tokensFormat);
-	//
-	// 	console.log(result);
-	//
-	// });
 });
