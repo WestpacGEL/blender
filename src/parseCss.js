@@ -67,6 +67,10 @@ function parseComponent({ componentPath, componentName, brand = BRAND.get, child
 					});
 				}
 
+				if (!recipes) {
+					recipes = [];
+				}
+
 				recipes = recipes.map((variation) => {
 					return extractMarkup({
 						Component: variation.component,
