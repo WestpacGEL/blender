@@ -77,7 +77,18 @@ function generateDocsFile(name, html) {
 function generateIndexFile(docs) {
 	D.header('generateIndexFile', { docs });
 
-	const brand = SETTINGS.get.brand.startsWith('@') ? 'Westpac' : SETTINGS.get.brand.toUpperCase();
+	const brandFlag = SETTINGS.get.brand.startsWith('@westpac/')
+		? SETTINGS.get.brand.replace('@westpac/', '')
+		: SETTINGS.get.brand;
+	const dict = {
+		BOM: 'Bank of Melbourne',
+		BSA: 'Bank SA',
+		BTFG: 'BT Financial Group',
+		STG: 'StGeorge',
+		WBC: 'Westpac',
+		WBG: 'Westpac Group',
+	};
+	const brand = dict[brandFlag.toUpperCase()];
 
 	return `<!DOCTYPE html>
 <html>
