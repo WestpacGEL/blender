@@ -26,15 +26,15 @@ function generateDocsFile(name, html) {
 	const recipes = html
 		.map(
 			(variation) =>
-				`<section class="docs-section">` +
-				`<h2 class="docs-h2">${variation.heading}</h2>\n` +
-				`<div class="docs-codeBox">${variation.html}</div>\n` +
+				`<section class="docs-section">\n\t\t\t\t\t` +
+				`<h2 class="docs-h2">${variation.heading}</h2>\n\t\t\t\t\t` +
+				`<div class="docs-codeBox">\n\t\t\t\t\t\t${variation.html}\n\t\t\t\t\t</div>\n` +
 				`<pre class="docs-pre"><code class="language-html">${indentHtml(variation.html)
 					.replace(/&/g, '&amp;')
 					.replace(/</g, '&lt;')
 					.replace(/>/g, '&gt;')
 					.replace(/"/g, '&quot;')
-					.replace(/'/g, '&#039;')}</code></pre>` +
+					.replace(/'/g, '&#039;')}</code></pre>\n\t\t\t\t` +
 				`</section>`
 		)
 		.join('\n');
@@ -126,7 +126,7 @@ function generateIndexFile(docs) {
 											''
 										)}">${doc.name}</a></li>`
 								)
-								.join('\n\t\t')}
+								.join('\n\t\t\t\t\t\t\t')}
 						</ul>
 					</section>
 
