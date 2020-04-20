@@ -147,7 +147,7 @@ function generator(packages) {
 					name: 'styles.min.css',
 					filePath: 'assets/',
 					dir: SETTINGS.get.outputDocs,
-					content: cssFile,
+					content: `${COMMENT.join('\n')}\n${cssFile}`,
 				};
 			}
 
@@ -158,7 +158,7 @@ function generator(packages) {
 					name: 'script.min.js',
 					filePath: 'assets/',
 					dir: SETTINGS.get.outputDocs,
-					content: jsFile,
+					content: `${COMMENT.join('\n')}\n${jsFile}`,
 				};
 			}
 
