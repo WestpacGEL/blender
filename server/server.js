@@ -8,7 +8,7 @@ require('dotenv').config();
 const fs = require('fs');
 
 const { blender } = require('../lib/index.js');
-const propTypes = require('./prop-types.json');
+const propTypes = require('./GEL.json');
 
 // SETTINGS
 const slackUrls = JSON.parse(process.env.SLACKURLS);
