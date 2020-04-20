@@ -5,7 +5,7 @@
  **/
 const path = require('path');
 
-const { generateTokenFile } = require('../src/generate-tokens.js');
+const { generateTokenFile, flattenTokens, compileTokens } = require('../src/generate-tokens.js');
 const { SETTINGS } = require('../src/settings.js');
 
 /**
@@ -40,10 +40,7 @@ describe('generateTokenFile', () => {
 		};
 
 		const pkg = {
-			name: '@westpac/wbc',
-			version: '1.0.0',
 			path: path.normalize(`${__dirname}/../tests/mock/mock-project1/node_modules/@westpac/wbc`),
-			pkg: { tokens: true },
 		};
 
 		const result = generateTokenFile(pkg.path, SETTINGS.get.tokensFormat);
@@ -58,10 +55,7 @@ describe('generateTokenFile', () => {
 		};
 
 		const pkg = {
-			name: '@westpac/wbc',
-			version: '1.0.0',
 			path: path.normalize(`${__dirname}/../tests/mock/mock-project1/node_modules/@westpac/wbc`),
-			pkg: { tokens: true },
 		};
 
 		const result = generateTokenFile(pkg.path, SETTINGS.get.tokensFormat);
@@ -76,10 +70,7 @@ describe('generateTokenFile', () => {
 		};
 
 		const pkg = {
-			name: '@westpac/wbc',
-			version: '1.0.0',
 			path: path.normalize(`${__dirname}/../tests/mock/mock-project1/node_modules/@westpac/wbc`),
-			pkg: { tokens: true },
 		};
 
 		const result = generateTokenFile(pkg.path, SETTINGS.get.tokensFormat);
@@ -106,4 +97,25 @@ describe('generateTokenFile', () => {
 		expect(result.includes('--COLORS_color1: #ff0000;')).toBe(true);
 		expect(result.includes('--BRAND: "WBC";')).toBe(true);
 	});
+});
+
+/**
+ * flattenTokens
+ */
+describe('flattenTokens', () => {
+	test('Flattens object', () => {
+		const result = flattenTokens({
+			color: ['green', 'blue'],
+		});
+		expect(result).toStrictEqual({});
+	}),
+});
+
+/**
+ * compileTokens
+ */
+describe('compileTokens', () => {
+	test('Compile tokens', () => {
+		//
+	}),
 });
