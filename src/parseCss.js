@@ -93,7 +93,7 @@ function parseComponent({ componentPath, componentName, brand = BRAND.get, child
 				Promise.all(recipes)
 					.catch((error) => resolve(result))
 					.then((recipes) => {
-						resolve({ ...result, recipes });
+						return resolve({ ...result, recipes });
 					});
 			} else {
 				D.log('Running parseComponent in "normal" mode');
@@ -216,7 +216,7 @@ function extractMarkup({ Component, componentPath, brand, children }) {
 				});
 			}
 
-			resolve({
+			return resolve({
 				code: 0,
 				...staticMarkup,
 			});

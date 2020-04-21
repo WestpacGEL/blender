@@ -173,7 +173,7 @@ function generator(packages) {
 
 		D.log(`generator return: "${color.yellow(JSON.stringify(result))}"`);
 
-		resolve({
+		return resolve({
 			...result,
 			files: [...FILES.get],
 		});

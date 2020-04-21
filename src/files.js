@@ -77,10 +77,10 @@ function saveFiles() {
 			.then(() => {
 				D.log(`All ${color.yellow(allFiles.length)} files saved`);
 				LOADING.abort();
-				resolve(result);
+				return resolve(result);
 			})
 			.catch((error) => {
-				reject(error);
+				return reject(error);
 			});
 	});
 }

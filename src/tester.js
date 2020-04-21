@@ -98,7 +98,7 @@ function tester(packages) {
 
 		D.log(`tester return: "${color.yellow(JSON.stringify(result))}"`);
 
-		resolve(result);
+		return resolve(result);
 	});
 }
 
