@@ -8,7 +8,6 @@ const path = require('path');
 const {
 	generateJSFile,
 } = require('../src/generate-js.js');
-const { SETTINGS } = require('../src/settings.js');
 
 /**
  * generateJSFile
