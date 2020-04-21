@@ -18,10 +18,7 @@ describe('generateTokenFile', () => {
 		};
 
 		const pkg = {
-			name: '@westpac/wbc',
-			version: '1.0.0',
 			path: path.normalize(`${__dirname}/../tests/mock/mock-project1/node_modules/@westpac/wbc`),
-			pkg: { tokens: true },
 		};
 
 		const result = generateTokenFile(pkg.path, SETTINGS.get.tokensFormat);
@@ -85,10 +82,7 @@ describe('generateTokenFile', () => {
 		};
 
 		const pkg = {
-			name: '@westpac/wbc',
-			version: '1.0.0',
 			path: path.normalize(`${__dirname}/../tests/mock/mock-project1/node_modules/@westpac/wbc`),
-			pkg: { tokens: true },
 		};
 
 		const result = generateTokenFile(pkg.path, SETTINGS.get.tokensFormat);
@@ -103,19 +97,47 @@ describe('generateTokenFile', () => {
  * flattenTokens
  */
 describe('flattenTokens', () => {
-	test('Flattens object', () => {
+	test('Flattens tokens with objects', () => {
 		const result = flattenTokens({
-			color: ['green', 'blue'],
+			colors: ['green', 'blue'],
+			height: 10,
+			heights: [
+				{
+					small: '5',
+					medium: '10',
+					large: '15',
+				},
+			],
+			deep1: {
+				key: 'a',
+				key: 'b',
+				deep2: {
+					key: 'a',
+					key: 'b',
+					deep3: {
+						key: 'a',
+						key: 'b',
+					},
+				},
+			},
 		});
-		expect(result).toStrictEqual({});
-	}),
-});
 
-/**
- * compileTokens
- */
-describe('compileTokens', () => {
-	test('Compile tokens', () => {
-		//
-	}),
+		expect(result).toStrictEqual({
+			'colors-0': 'green',
+			'colors-1': 'blue',
+			height: 10,
+			heights0_small: '5',
+			heights0_medium: '10',
+			heights0_large: '15',
+			deep1_key: 'b',
+			deep1_deep2_key: 'b',
+			deep1_deep2_deep3_key: 'b',
+		});
+	});
+
+	test('Should not flatten strings', () => {
+		const result = flattenTokens('orange');
+
+		expect(result).toBe('orange');
+	});
 });
