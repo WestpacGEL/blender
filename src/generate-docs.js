@@ -94,7 +94,7 @@ function generateIndexFile(docs) {
 		WBC: 'Westpac',
 		WBG: 'Westpac Group',
 	};
-	const brand = dict[brandFlag.toUpperCase()] || SETTINGS.get.brand;
+	const brand = dict[brandFlag.toUpperCase()];
 
 	return `<!DOCTYPE html>
 <!--

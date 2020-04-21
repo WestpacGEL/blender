@@ -33,11 +33,11 @@ describe('generateDocsFile', () => {
 			},
 		];
 
-		const docsFile = generateDocsFile(pkg.name, recipes);
+		const result = generateDocsFile(pkg.name, recipes);
 
-		console.log(docsFile);
-
-		// Check that title and each recipe is rendered?
+		expect(result.includes('<h1>@westpac/core</h1>')).toBe(true);
+		expect(result.includes('<h2 class="docs-h2">Variation 1 for Core Component</h2>')).toBe(true);
+		expect(result.includes('<h2 class="docs-h2">Variation 2 for Core Component</h2>')).toBe(true);
 	});
 });
 
@@ -45,9 +45,9 @@ describe('generateDocsFile', () => {
  * generateIndexFile
  */
 describe('generateIndexFile', () => {
-	test.only('Get a index file to navigate the docs', () => {
+	test('Get a index file to navigate the docs with WBC branding', () => {
 		SETTINGS.set = {
-			brand: 'WBC',
+			brand: '@westpac/WBC',
 		};
 
 		const docs = [
@@ -56,11 +56,10 @@ describe('generateIndexFile', () => {
 			{ name: '@westpac/component2', path: 'packages/component2.html' },
 		];
 
-		const indexFile = generateIndexFile(docs);
+		const result = generateIndexFile(docs);
 
-		console.log(indexFile);
-
-		// Check that brand is correct and each component is linked...
+		expect(result.includes('Your Westpac Design System blend')).toBe(true);
+		expect(result.match(/<li class="docs-li"><a class="docs-link"/g).length).toBe(3);
 	});
 });
 
@@ -68,10 +67,20 @@ describe('generateIndexFile', () => {
  * generateIndexFile
  */
 describe('generateIndexFile', () => {
-	test.only('Get a index file to navigate the docs', () => {
-		// const brandFlag = SETTINGS.get.brand.startsWith('@westpac/')
-		// 	? SETTINGS.get.brand.replace('@westpac/', '')
-		// 	: SETTINGS.get.brand; <<< test this
+	test('Get a index file to navigate the docs with BOM branding', () => {
+		SETTINGS.set = {
+			brand: 'BOM',
+		};
+
+		const docs = [
+			{ name: '@westpac/core', path: 'packages/core.html' },
+			{ name: '@westpac/component1', path: 'packages/component1.html' },
+		];
+
+		const result = generateIndexFile(docs);
+
+		expect(result.includes('Your Bank of Melbourne Design System blend')).toBe(true);
+		expect(result.match(/<li class="docs-li"><a class="docs-link"/g).length).toBe(2);
 	});
 });
 
@@ -80,10 +89,9 @@ describe('generateIndexFile', () => {
  */
 describe('generateDocsAssets', () => {
 	test('Get assets files for the documentation', () => {
-		const docsAssets = generateDocsAssets();
+		const results = generateDocsAssets();
 
-		console.log(docsAssets);
-
-		// Check that assets are rendered?
+		expect(results[0].name === 'docs.min.css').toBe(true);
+		expect(results[1].name === 'docs.min.js').toBe(true);
 	});
 });
