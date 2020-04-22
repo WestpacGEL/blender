@@ -118,6 +118,12 @@ function getPackages(cwd = process.cwd()) {
 
 	D.log(`getPackages return: "${color.yellow(JSON.stringify(packages))}"`);
 
+	babelRegister(packages.filter((pkg) => pkg.pkg.recipe).map((pkg) => `${pkg.path}`));
+
+	return packages;
+}
+
+function babelRegister(packages) {
 	// we need to flag all packages with babel to include them
 	require('@babel/register')({
 		presets: [require.resolve('@babel/preset-env'), require.resolve('@babel/preset-react')],
@@ -131,13 +137,12 @@ function getPackages(cwd = process.cwd()) {
 				},
 			],
 		],
-		only: packages.filter((pkg) => pkg.pkg.recipe).map((pkg) => `${pkg.path}`),
+		only: packages,
 	});
-
-	return packages;
 }
 
 module.exports = exports = {
 	PACKAGES,
 	getPackages,
+	babelRegister,
 };

@@ -5,9 +5,7 @@
  **/
 const path = require('path');
 
-const {
-	generateJSFile,
-} = require('../src/generate-js.js');
+const { generateJSFile } = require('../src/generate-js.js');
 
 /**
  * generateJSFile
@@ -20,7 +18,7 @@ describe('generateJSFile', () => {
 			pkg: {
 				recipe: 'blender/recipe.js',
 				js: 'blender/script.js',
-			}
+			},
 		});
 
 		expect(result.code).toBe(0);
@@ -32,7 +30,7 @@ describe('generateJSFile', () => {
 			pkg: {
 				recipe: 'blender/recipe.js',
 				js: 'blender/script.js',
-			}
+			},
 		});
 		expect(result.code).toBe(1);
 	});
