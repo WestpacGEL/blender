@@ -85,6 +85,27 @@ describe('generateIndexFile', () => {
 });
 
 /**
+ * generateIndexFile
+ */
+describe('generateIndexFile', () => {
+	test('Get a index file to navigate the docs with an invalid branding', () => {
+		SETTINGS.set = {
+			brand: 'VOID',
+		};
+
+		const docs = [
+			{ name: '@westpac/core', path: 'packages/core.html' },
+			{ name: '@westpac/component1', path: 'packages/component1.html' },
+		];
+
+		const result = generateIndexFile(docs);
+
+		expect(result.includes('Your VOID Design System blend')).toBe(true);
+		expect(result.match(/<li class="docs-li"><a class="docs-link"/g).length).toBe(2);
+	});
+});
+
+/**
  * generateDocsAssets
  */
 describe('generateDocsAssets', () => {
