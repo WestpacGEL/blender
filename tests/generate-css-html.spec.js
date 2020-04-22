@@ -6,43 +6,29 @@
 const path = require('path');
 
 const { generateCss, generateHtml, convertClasses } = require('../src/generate-css-html.js');
-
-const { babelRegister } = require('../src/packages.js');
-
 const { SETTINGS } = require('../src/settings.js');
 
 /**
  * generateCss
  */
 describe('generateCss', () => {
-	// TODO: Babel issues
-	// test.only('Generate CSS', async () => {
-	// 	SETTINGS.set = {
-	// 		cwd: process.cwd(),
-	// 	};
-	//
-	// 	const packagePath = path.normalize(`${__dirname}/mock/mock-project1/node_modules/@westpac/core`);
-	//
-	// 	babelRegister([packagePath]);
-	//
-	// 	const result = await generateCss({
-	// 		pkg: {
-	// 			name: '@westpac/core',
-	// 			version: '3.17.0',
-	// 			path: packagePath,
-	// 			pkg: {
-	// 				recipe: 'blender/recipe.js',
-	// 				js: 'blender/jquery.js',
-	// 				isCore: true
-	// 			}
-	// 		},
-	// 		coreCss: '',
-	// 		children: 'CORE'
-	// 	});
-	//
-	// 	console.log(result);
-	//
-	// });
+	test('Generate CSS', async () => {
+		const result = await generateCss({
+			pkg: {
+				name: '@westpac/core',
+				version: '3.17.0',
+				path: path.normalize(`${__dirname}/../tests/mock/`),
+				pkg: {
+					recipe: 'recipe2.js',
+					isCore: true,
+				},
+			},
+			coreCss: '',
+			children: 'CORE',
+		});
+
+		// console.log(result);
+	});
 });
 
 /**
