@@ -4,13 +4,7 @@
  * TIME
  * convertHrtime
  **/
-const path = require('path');
-
-const {
-	TIME,
-	convertHrtime,
-} = require('../src/time.js');
-const { SETTINGS } = require('../src/settings.js');
+const { TIME, convertHrtime } = require('../src/time.js');
 
 /**
  * TIME
@@ -25,7 +19,7 @@ describe('TIME', () => {
 	test('Stop a timer', async () => {
 		TIME.clean();
 		TIME.start();
-		await new Promise(resolve => setTimeout(resolve, 10));
+		await new Promise((resolve) => setTimeout(resolve, 10));
 		const result = TIME.stop();
 
 		expect(TIME.store.time.length).toBe(0);
@@ -55,7 +49,7 @@ describe('TIME', () => {
  */
 describe('convertHrtime', () => {
 	test('Convert hrtime array to elapsed time in seconds', () => {
-		const timeInPast = [ 526372, 265833855 ];
+		const timeInPast = [526372, 265833855];
 		const result = convertHrtime(process.hrtime(timeInPast));
 		const parsedTime = parseFloat(result);
 
