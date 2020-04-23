@@ -51,7 +51,10 @@ describe('convertHrtime', () => {
 	test('Convert hrtime array to elapsed time in seconds', () => {
 		const timeInPast = [526372, 265833855];
 		const result = convertHrtime(process.hrtime(timeInPast));
+		console.log(1,process.hrtime(timeInPast));
+		console.log(2,result);
 		const parsedTime = parseFloat(result);
+		console.log(3,parsedTime);
 
 		expect(typeof parsedTime).toBe('number');
 		expect(parsedTime).toBeGreaterThan(0);
