@@ -23,7 +23,7 @@ describe('TIME', () => {
 		const result = TIME.stop();
 
 		expect(TIME.store.time.length).toBe(0);
-		expect(result.length > 0).toBe(true);
+		expect(result.length).toBeGreaterThan(0);
 		expect(result.includes('s')).toBe(true);
 		expect(result).not.toBe('0.000s');
 	});
@@ -54,7 +54,7 @@ describe('convertHrtime', () => {
 		const parsedTime = parseFloat(result);
 
 		expect(typeof parsedTime).toBe('number');
-		expect(parsedTime > 0).toBe(true);
+		expect(parsedTime).toBeGreaterThan(0);
 	});
 	test('Pass in string and get the same thing back', () => {
 		const result = convertHrtime(5);
