@@ -45,7 +45,7 @@ function tester(packages) {
 				if (parsedPkg.code > 0) {
 					result.errors.push({
 						package: thisPackage.name,
-						error: parsedPkg.message,
+						error: [parsedPkg.message],
 					});
 					result.messages.push(parsedPkg.message);
 					result.code = 1;
