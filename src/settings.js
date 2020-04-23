@@ -70,7 +70,9 @@ function getSettings(cliArgs, cwd = process.cwd(), options = CLIOPTIONS) {
 		settings.outputTokens = path.normalize(`${settings.output}/tokens/`);
 	}
 
-	settings.tokensFormat = settings.tokensFormat.toLowerCase();
+	if (settings.tokensFormat) {
+		settings.tokensFormat = settings.tokensFormat.toLowerCase();
+	}
 
 	D.log(`getSettings return: "${color.yellow(JSON.stringify(settings))}"`);
 

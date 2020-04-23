@@ -114,7 +114,7 @@ function testLabels(parsedPkg) {
 }
 
 /**
- * Filter out all ids whcih have not been used in the css output
+ * Filter out all ids which have not been used in the css output
  *
  * @param  {array}  ids - An array of the ids
  * @param  {string} css - The css output to check against

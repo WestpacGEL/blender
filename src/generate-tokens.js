@@ -24,6 +24,8 @@ function generateTokenFile(pathToTokens, tokensFormat) {
 		tokens = flattenTokens(tokens);
 	}
 
+	// console.log(tokens, tokensFormat);
+
 	return compileTokens(tokens, tokensFormat);
 }
 
@@ -39,7 +41,11 @@ function generateTokenFile(pathToTokens, tokensFormat) {
 function flattenTokens(tokens, key = '', list = {}) {
 	const seperator = key === '' ? '' : '_';
 
-	if (typeof tokens === 'object' && !Array.isArray(tokens)) {
+	if (typeof tokens !== 'object') {
+		return tokens;
+	}
+
+	if (!Array.isArray(tokens)) {
 		Object.entries(tokens).map(([name, value]) => {
 			if (typeof value === 'string') {
 				list[`${key}${seperator}${name}`] = value;
@@ -51,9 +57,8 @@ function flattenTokens(tokens, key = '', list = {}) {
 				return;
 			}
 		});
-
 		return list;
-	} else if (Array.isArray(tokens)) {
+	} else {
 		tokens.map((token, i) => {
 			if (typeof token === 'string') {
 				list[`${key}-${i}`] = token;
