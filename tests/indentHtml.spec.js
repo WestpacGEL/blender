@@ -46,7 +46,8 @@ describe('indentHtml', () => {
 		<li>
 			List item 2
 		</li>
-	</ul><a href="https://test.com">Link</a>
+	</ul>
+	<a href="https://test.com">Link</a>
 	<div>
 		<span>
 			<a href="https://test.com"><strong>Text</strong></a>
