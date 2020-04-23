@@ -9,7 +9,6 @@
 const path = require('path');
 
 const { parseComponent } = require('./parseCss.js');
-const { SETTINGS } = require('./settings.js');
 const { LOADING } = require('./loading.js');
 const { color } = require('./color.js');
 const { D } = require('./log.js');

@@ -5,7 +5,6 @@
  * COMMENT    - The comment added to each generated file
  **/
 const { version } = require('../package.json');
-const { color } = require('./color.js');
 
 /**
  * Default settings for our cli flags

@@ -3,6 +3,8 @@
  *
  * indentHtml - Indent html especially very small HTML bits
  **/
+/* eslint-disable */
+
 const { D } = require('./log.js');
 
 /**
