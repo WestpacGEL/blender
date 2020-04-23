@@ -118,6 +118,7 @@ function getPackages(cwd = process.cwd()) {
 
 	D.log(`getPackages return: "${color.yellow(JSON.stringify(packages))}"`);
 
+	// we need to flag all packages with babel to include them
 	require('@babel/register')({
 		presets: [require.resolve('@babel/preset-env'), require.resolve('@babel/preset-react')],
 		plugins: [

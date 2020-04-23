@@ -2,6 +2,8 @@
  * Testing src/generate-tokens.js functions
  *
  * generateTokenFile
+ * flattenTokens
+ * compileTokens
  **/
 const path = require('path');
 
@@ -139,5 +141,13 @@ describe('flattenTokens', () => {
 		const result = flattenTokens('orange');
 
 		expect(result).toBe('orange');
+	});
+});
+
+/**
+ * compileTokens
+ */
+describe('compileTokens', () => {
+	test('TODO', () => {
 	});
 });

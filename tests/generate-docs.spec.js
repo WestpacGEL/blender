@@ -61,12 +61,7 @@ describe('generateIndexFile', () => {
 		expect(result.includes('Your Westpac Design System blend')).toBe(true);
 		expect(result.match(/<li class="docs-li"><a class="docs-link"/g).length).toBe(3);
 	});
-});
 
-/**
- * generateIndexFile
- */
-describe('generateIndexFile', () => {
 	test('Get a index file to navigate the docs with BOM branding', () => {
 		SETTINGS.set = {
 			brand: 'BOM',
@@ -82,12 +77,7 @@ describe('generateIndexFile', () => {
 		expect(result.includes('Your Bank of Melbourne Design System blend')).toBe(true);
 		expect(result.match(/<li class="docs-li"><a class="docs-link"/g).length).toBe(2);
 	});
-});
 
-/**
- * generateIndexFile
- */
-describe('generateIndexFile', () => {
 	test('Get a index file to navigate the docs with an invalid branding', () => {
 		SETTINGS.set = {
 			brand: 'VOID',

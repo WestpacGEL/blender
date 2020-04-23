@@ -24,8 +24,6 @@ function generateTokenFile(pathToTokens, tokensFormat) {
 		tokens = flattenTokens(tokens);
 	}
 
-	// console.log(tokens, tokensFormat);
-
 	return compileTokens(tokens, tokensFormat);
 }
 
