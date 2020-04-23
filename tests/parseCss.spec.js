@@ -7,6 +7,7 @@ const { createElement } = require('react');
 const path = require('path');
 
 const { parseComponent, extractMarkup } = require('../src/parseCss.js');
+const { SETTINGS } = require('../src/settings.js');
 
 /**
  * parseComponent
@@ -176,6 +177,10 @@ describe('parseComponent', () => {
  * extractMarkup
  */
 describe('extractMarkup', () => {
+	beforeEach(() => {
+		jest.resetModules();
+	});
+
 	test('extract markup from a simple component', async () => {
 		const result = await extractMarkup({
 			Component: () => createElement('div', null, `Hello there`),
@@ -192,6 +197,24 @@ describe('extractMarkup', () => {
 	test('extract markup from a simple component with children', async () => {
 		const result = await extractMarkup({
 			Component: ({ children }) => createElement('div', null, `Hello ${children}`),
+			componentPath: 'path/to/component',
+			brand: {},
+			children: 'World',
+		});
+
+		expect(result.code).toBe(0);
+		expect(result.html).toBe('<div>Hello World</div>');
+		expect(result.ids).toStrictEqual([]);
+		expect(result.css).toBe('');
+	});
+
+	test('use local node modules over built in ones', async () => {
+		SETTINGS.set = {
+			cwd: path.normalize(`${__dirname}/../`),
+		};
+
+		const result = await extractMarkup({
+			Component: () => createElement('div', null, 'Hello World'),
 			componentPath: 'path/to/component',
 			brand: {},
 			children: 'World',

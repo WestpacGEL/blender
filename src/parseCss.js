@@ -66,7 +66,7 @@ function parseComponent({ componentPath, componentName, brand = BRAND.get, child
 					});
 				}
 
-				recipes = recipes.map((variation) => {
+				const allRecipes = recipes.map((variation) => {
 					return extractMarkup({
 						Component: variation.component,
 						componentPath,
@@ -89,11 +89,9 @@ function parseComponent({ componentPath, componentName, brand = BRAND.get, child
 						});
 				});
 
-				Promise.all(recipes)
-					.catch(() => resolve(result))
-					.then((recipes) => {
-						return resolve({ ...result, recipes });
-					});
+				Promise.all(allRecipes).then((recipes) => {
+					return resolve({ ...result, recipes });
+				});
 			} else {
 				D.log('Running parseComponent in "normal" mode');
 
