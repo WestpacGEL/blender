@@ -9,7 +9,6 @@
 const path = require('path');
 
 const { parseComponent } = require('./parseCss.js');
-const { SETTINGS } = require('./settings.js');
 const { LOADING } = require('./loading.js');
 const { color } = require('./color.js');
 const { D } = require('./log.js');
@@ -46,7 +45,7 @@ function tester(packages) {
 				if (parsedPkg.code > 0) {
 					result.errors.push({
 						package: thisPackage.name,
-						error: parsedPkg.message,
+						error: [parsedPkg.message],
 					});
 					result.messages.push(parsedPkg.message);
 					result.code = 1;
@@ -98,7 +97,7 @@ function tester(packages) {
 
 		D.log(`tester return: "${color.yellow(JSON.stringify(result))}"`);
 
-		resolve(result);
+		return resolve(result);
 	});
 }
 
@@ -115,7 +114,7 @@ function testLabels(parsedPkg) {
 }
 
 /**
- * Filter out all ids whcih have not been used in the css output
+ * Filter out all ids which have not been used in the css output
  *
  * @param  {array}  ids - An array of the ids
  * @param  {string} css - The css output to check against

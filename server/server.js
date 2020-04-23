@@ -8,7 +8,7 @@ require('dotenv').config();
 const fs = require('fs');
 
 const { blender } = require('../lib/index.js');
-const propTypes = require('./prop-types.json');
+const propTypes = require('./GEL.json');
 
 // SETTINGS
 const slackUrls = JSON.parse(process.env.SLACKURLS);
@@ -147,19 +147,21 @@ async function createZip({ response, cleanReq, IP }) {
  * @return {object}         - A flat object with only those keys which are allowed
  */
 function sanitizeRequest(request, allPkgs) {
-	cleanReq = {};
 	const pkgDict = Object.keys(allPkgs.components);
 	const brandDict = Object.keys(allPkgs.brands);
+	const tokensDict = ['json', 'less', 'sass', 'scss', 'css'];
 
-	cleanReq.packages = request.body.packages.filter((pkg) => pkgDict.includes(pkg));
-	cleanReq.brand = brandDict.includes(request.body.brand) ? request.body.brand : 'wbc';
-	cleanReq.modules = !!request.body.modules;
-	cleanReq.prettify = !!request.body.prettify;
-	cleanReq.excludeJquery = !!request.body.excludeJquery;
-	cleanReq.noVersionInClass = !!request.body.noVersionInClass;
-	cleanReq.tokensFormat = request.body.tokensFormat;
-
-	return cleanReq;
+	return {
+		packages: request.body.packages.filter((pkg) => pkgDict.includes(pkg)),
+		brand: brandDict.includes(request.body.brand) ? request.body.brand : 'wbc',
+		modules: !!request.body.modules,
+		prettify: !!request.body.prettify,
+		excludeJquery: !!request.body.excludeJquery,
+		noVersionInClass: !!request.body.noVersionInClass,
+		tokensFormat: tokensDict.includes(request.body.tokensFormat.toLowerCase())
+			? request.body.tokensFormat.toLowerCase()
+			: 'json',
+	};
 }
 
 /**

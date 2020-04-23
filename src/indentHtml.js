@@ -3,6 +3,8 @@
  *
  * indentHtml - Indent html especially very small HTML bits
  **/
+/* eslint-disable */
+
 const { D } = require('./log.js');
 
 /**
@@ -504,9 +506,9 @@ function indentHtml(html_source, options) {
 			case 'TK_TAG_SINGLE':
 				// Don't add a newline before elements that should remain unformatted.
 				var tag_check = multi_parser.token_text.match(/^\s*<([a-z]+)/i);
-				if (!tag_check || !multi_parser.Utils.in_array(tag_check[1], unformatted)) {
-					multi_parser.print_newline(false, multi_parser.output);
-				}
+				// if (!tag_check || !multi_parser.Utils.in_array(tag_check[1], unformatted)) {
+				multi_parser.print_newline(false, multi_parser.output);
+				// }
 				multi_parser.print_token(multi_parser.token_text);
 				multi_parser.current_mode = 'CONTENT';
 				break;

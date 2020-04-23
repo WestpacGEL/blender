@@ -3,8 +3,6 @@
  *
  * blender - The blender API
  **/
-const path = require('path');
-
 const { SETTINGS, getSettings, checkInput } = require('./settings.js');
 const { PACKAGES, getPackages } = require('./packages.js');
 const { generator } = require('./generator.js');
@@ -29,12 +27,12 @@ function blender(options = {}) {
 		DEBUG.enabled = SETTINGS.get.debug;
 
 		if (isGoodHuman.pass === false) {
-			reject(isGoodHuman);
+			return reject(isGoodHuman);
 		}
 
 		// return version
 		if (SETTINGS.get.version) {
-			resolve(`v${version}`);
+			return resolve(`v${version}`);
 		}
 
 		// get all packages
@@ -43,16 +41,16 @@ function blender(options = {}) {
 		// set brand
 		const brandSetting = setBrand(SETTINGS.get.brand, SETTINGS.get.cwd);
 		if (brandSetting.code > 0) {
-			reject(brandSetting);
+			return reject(brandSetting);
 		}
 
 		// run tester
 		if (SETTINGS.get.test) {
 			const result = await tester(PACKAGES.get);
 			if (result.code > 0) {
-				reject(result);
+				return reject(result);
 			} else {
-				resolve({
+				return resolve({
 					packages: PACKAGES.get,
 					options: { ...SETTINGS.get },
 					result,
@@ -62,10 +60,10 @@ function blender(options = {}) {
 
 		const { files, ...result } = await generator(PACKAGES.get);
 		if (result.code > 0) {
-			reject(result);
+			return reject(result);
 		}
 
-		resolve({
+		return resolve({
 			packages: PACKAGES.get,
 			options: SETTINGS.get,
 			result,

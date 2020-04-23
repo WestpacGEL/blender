@@ -6,7 +6,6 @@
  **/
 const createEmotionServer = require('create-emotion-server').default;
 const { SETTINGS } = require('./settings.js');
-const fs = require('fs');
 
 const { color } = require('./color.js');
 const { BRAND } = require('./brand.js');
@@ -43,96 +42,96 @@ function parseComponent({ componentPath, componentName, brand = BRAND.get, child
 	D.header('parseComponent', { componentPath, componentName, brand });
 
 	return new Promise((resolve) => {
-		if (componentName === 'docs') {
-			D.log('Running parseComponent in "docs" mode');
+		process.nextTick(() => {
+			if (componentName === 'docs') {
+				D.log('Running parseComponent in "docs" mode');
 
-			let recipes;
-			const result = {
-				code: 0,
-				error: [],
-				message: [],
-			};
+				let recipes;
+				const result = {
+					code: 0,
+					error: [],
+					message: [],
+				};
 
-			try {
-				recipes = require(componentPath)['Docs']({ brand });
-			} catch (error) {
-				D.error(`Component failed to be required at "${color.yellow(componentPath)}"`);
-				D.error(error);
+				try {
+					recipes = require(componentPath)['Docs']({ brand });
+				} catch (error) {
+					D.error(`Component failed to be required at "${color.yellow(componentPath)}"`);
+					D.error(error);
 
-				resolve({
-					code: 1,
-					error,
-					message: `An error occured when trying to open ${color.yellow(componentPath)}`,
+					return resolve({
+						code: 1,
+						error,
+						message: `An error occured when trying to open ${color.yellow(componentPath)}`,
+					});
+				}
+
+				const allRecipes = recipes.map((variation) => {
+					return extractMarkup({
+						Component: variation.component,
+						componentPath,
+						brand,
+						children,
+					})
+						.catch((error) => {
+							D.error(`Component failed to be rendered at "${color.yellow(componentPath)}"`);
+							D.error(error.error);
+
+							result.code = 1;
+							result.error.push(error.error);
+							result.message.push(error.message);
+						})
+						.then((staticMarkup) => {
+							return {
+								...variation,
+								static: staticMarkup,
+							};
+						});
 				});
-			}
 
-			recipes = recipes.map((variation) => {
-				return extractMarkup({
-					Component: variation.component,
-					componentPath,
-					brand,
-					children,
-				})
+				Promise.all(allRecipes).then((recipes) => {
+					return resolve({ ...result, recipes });
+				});
+			} else {
+				D.log('Running parseComponent in "normal" mode');
+
+				let Component;
+
+				try {
+					Component = require(componentPath)[componentName];
+				} catch (error) {
+					D.error(`Component failed to be required at "${color.yellow(componentPath)}"`);
+					D.error(error);
+
+					return resolve({
+						code: 1,
+						error,
+						message: `An error occured when trying to open ${color.yellow(componentPath)}`,
+					});
+				}
+				D.log(`Component successfully required via "${color.yellow(componentPath)}"`);
+
+				extractMarkup({ Component, componentPath, brand, children })
 					.catch((error) => {
 						D.error(`Component failed to be rendered at "${color.yellow(componentPath)}"`);
 						D.error(error.error);
 
-						result.code = 1;
-						result.error.push(error.error);
-						result.message.push(error.message);
+						return resolve({
+							code: error.code,
+							error: error.error,
+							message: error.message,
+						});
 					})
 					.then((staticMarkup) => {
-						return {
-							...variation,
-							static: staticMarkup,
-						};
+						D.log(`Component successfully rendered via "${color.yellow(componentPath)}"`);
+
+						return resolve({
+							code: 0,
+							...staticMarkup,
+						});
 					});
-			});
-
-			Promise.all(recipes)
-				.catch((error) => resolve(result))
-				.then((recipes) => {
-					resolve({ ...result, recipes });
-				});
-		} else {
-			D.log('Running parseComponent in "normal" mode');
-
-			let Component;
-
-			try {
-				Component = require(componentPath)[componentName];
-			} catch (error) {
-				D.error(`Component failed to be required at "${color.yellow(componentPath)}"`);
-				D.error(error);
-
-				resolve({
-					code: 1,
-					error,
-					message: `An error occured when trying to open ${color.yellow(componentPath)}`,
-				});
 			}
-			D.log(`Component successfully required via "${color.yellow(componentPath)}"`);
-
-			extractMarkup({ Component, componentPath, brand, children })
-				.catch((error) => {
-					D.error(`Component failed to be rendered at "${color.yellow(componentPath)}"`);
-					D.error(error.error);
-
-					resolve({
-						code: error.code,
-						error: error.error,
-						message: error.message,
-					});
-				})
-				.then((staticMarkup) => {
-					D.log(`Component successfully rendered via "${color.yellow(componentPath)}"`);
-
-					resolve({
-						code: 0,
-						...staticMarkup,
-					});
-				});
-		}
+		});
 	});
 }
 
@@ -214,7 +213,7 @@ function extractMarkup({ Component, componentPath, brand, children }) {
 				});
 			}
 
-			resolve({
+			return resolve({
 				code: 0,
 				...staticMarkup,
 			});

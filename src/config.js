@@ -5,7 +5,6 @@
  * COMMENT    - The comment added to each generated file
  **/
 const { version } = require('../package.json');
-const { color } = require('./color.js');
 
 /**
  * Default settings for our cli flags
@@ -110,7 +109,7 @@ const CLIOPTIONS = {
 		example: 'blender -f json',
 		flag: 'f',
 		type: 'string',
-		arguments: ['JSON', 'LESS', 'SASS', 'SCSS', 'CSS'],
+		arguments: ['json', 'less', 'sass', 'scss', 'css'],
 		default: 'json',
 	},
 	cwd: {

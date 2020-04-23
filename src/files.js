@@ -9,9 +9,7 @@
 const path = require('path');
 const fs = require('fs');
 
-const { SETTINGS } = require('./settings.js');
 const { LOADING } = require('./loading.js');
-const { DEBUG } = require('./debug.js');
 const { color } = require('./color.js');
 const { D } = require('./log.js');
 
@@ -77,10 +75,10 @@ function saveFiles() {
 			.then(() => {
 				D.log(`All ${color.yellow(allFiles.length)} files saved`);
 				LOADING.abort();
-				resolve(result);
+				return resolve(result);
 			})
 			.catch((error) => {
-				reject(error);
+				return reject(error);
 			});
 	});
 }

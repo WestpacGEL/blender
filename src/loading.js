@@ -6,7 +6,6 @@
 const winSize = require('window-size');
 
 const { DEBUG } = require('./debug.js');
-const { color } = require('./color.js');
 
 /**
  * Display a loading indicator in cli
@@ -51,7 +50,11 @@ const LOADING = {
 
 	tick() {
 		this.store.current++;
-		this.bar();
+		if (this.store.current === this.store.total) {
+			this.abort(); // erase all traces of this thing and free memory
+		} else {
+			this.bar();
+		}
 	},
 
 	spinner() {
@@ -77,8 +80,9 @@ const LOADING = {
 
 			const bufferRight = 8;
 			const percentage = String(Math.floor((this.store.current / this.store.total) * 100));
+			const winSizeW = winSize ? winSize.width : 80;
 			const width =
-				winSize.width -
+				winSizeW -
 				this.store.left.length -
 				this.store.bufferLeft.length -
 				bufferRight -
@@ -97,10 +101,6 @@ const LOADING = {
 					'\u001b[1G' // this moves the cursor to the start of the line
 				// ^ like why is the last line indented? WHY???
 			);
-
-			if (this.store.current === this.store.total) {
-				this.abort(); // erase all traces of this thing and free memory
-			}
 		}
 	},
 

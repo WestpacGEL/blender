@@ -10,7 +10,6 @@
  * checkInput    - Check the cli input and log out helpful errors messages
  **/
 const path = require('path');
-const fs = require('fs');
 
 const { CLIOPTIONS } = require('./config.js');
 const { color } = require('./color.js');
@@ -69,6 +68,10 @@ function getSettings(cliArgs, cwd = process.cwd(), options = CLIOPTIONS) {
 		settings.outputJs = path.normalize(`${settings.output}/js/`);
 		settings.outputDocs = path.normalize(`${settings.output}/docs/`);
 		settings.outputTokens = path.normalize(`${settings.output}/tokens/`);
+	}
+
+	if (settings.tokensFormat) {
+		settings.tokensFormat = settings.tokensFormat.toLowerCase();
 	}
 
 	D.log(`getSettings return: "${color.yellow(JSON.stringify(settings))}"`);
@@ -232,7 +235,7 @@ function checkInput(cliArgs, options = CLIOPTIONS) {
 	};
 
 	const argDict = {};
-	Object.entries(options).map(([key, value]) => {
+	Object.entries(options).map(([key]) => {
 		argDict[camelCase(key)] = options[key];
 	});
 
@@ -261,7 +264,7 @@ function checkInput(cliArgs, options = CLIOPTIONS) {
 			if (
 				argDict[key].arguments &&
 				Array.isArray(argDict[key].arguments) &&
-				!argDict[key].arguments.includes(value.toUpperCase())
+				!argDict[key].arguments.includes(value)
 			) {
 				D.error(
 					`Invalid argument for ${color.yellow(key)} Expected ${color.yellow(
