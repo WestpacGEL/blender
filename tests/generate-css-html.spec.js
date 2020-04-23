@@ -14,7 +14,7 @@ const { SETTINGS } = require('../src/settings.js');
  * generateCss
  */
 describe('generateCss', () => {
-	test('Generate CSS', async () => {
+	test('TODO', async () => {
 		const result = await generateCss({
 			pkg: {
 				name: '@westpac/core',
@@ -37,7 +37,7 @@ describe('generateCss', () => {
  * generateHtml
  */
 describe('generateHtml', () => {
-	test('Generate HTML', async () => {});
+	test('TODO', async () => {});
 });
 
 /**
