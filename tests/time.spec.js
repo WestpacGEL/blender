@@ -16,6 +16,7 @@ describe('TIME', () => {
 
 		expect(TIME.store.time.length).toBe(2);
 	});
+
 	test('Stop a timer', async () => {
 		TIME.clean();
 		TIME.start();
@@ -27,6 +28,7 @@ describe('TIME', () => {
 		expect(result.includes('s')).toBe(true);
 		expect(result).not.toBe('0.000s');
 	});
+
 	test('Check timer has stopped', async () => {
 		TIME.clean();
 		TIME.start();
@@ -35,6 +37,7 @@ describe('TIME', () => {
 
 		expect(result).toBe(true);
 	});
+
 	test('Clean a timer from cache', async () => {
 		TIME.clean();
 		TIME.start();
@@ -50,16 +53,13 @@ describe('TIME', () => {
 describe('convertHrtime', () => {
 	test('Convert hrtime array to elapsed time in seconds', () => {
 		const timeInPast = [526, 2658];
-		console.log(0, timeInPast);
 		const result = convertHrtime(process.hrtime(timeInPast));
-		console.log(1, process.hrtime(timeInPast));
-		console.log(2, result);
 		const parsedTime = parseFloat(result);
-		console.log(3, parsedTime);
 
 		expect(typeof parsedTime).toBe('number');
 		expect(parsedTime).toBeGreaterThan(0);
 	});
+
 	test('Pass in string and get the same thing back', () => {
 		const result = convertHrtime(5);
 

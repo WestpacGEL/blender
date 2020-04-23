@@ -1,7 +1,9 @@
 /**
  * Testing src/generate-css-html.js functions
  *
- * generateJSFile
+ * generateCss
+ * generateHtml
+ * convertClasses
  **/
 const path = require('path');
 

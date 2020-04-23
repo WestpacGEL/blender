@@ -23,6 +23,7 @@ describe('generateJSFile', () => {
 
 		expect(result.code).toBe(0);
 	});
+
 	test('Attempt to get a non-existant component file', () => {
 		const result = generateJSFile({
 			name: '@westpac/component4',
