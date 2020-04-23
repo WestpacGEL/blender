@@ -25,7 +25,7 @@
 		"build:bin": "npx mkdirp bin && mv lib/bin.js bin/index.js",
 		"watch": "yarn build:lib && onchange 'src/**/*' -- yarn build:lib",
 		"format": "prettier --write \"**/*.{js,md,mdx,json}\"",
-		"test": "yarn test:format && test:lint && yarn test:unit",
+		"test": "yarn test:format && yarn test:lint && yarn test:unit",
 		"test:format": "prettier --list-different \"**/*.{js,md,mdx,json}\"",
 		"test:unit": "jest --coverage",
 		"test:unit-watch": "jest --watchAll --coverage",
