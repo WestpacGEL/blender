@@ -7,13 +7,11 @@
  * formatCode - Prettifying js or css
  **/
 const beautify = require('js-beautify');
-const path = require('path');
 
 const { generateIndexFile, generateDocsAssets } = require('./generate-docs.js');
 const { generateCss, generateHtml } = require('./generate-css-html.js');
 const { generateTokenFile } = require('./generate-tokens.js');
 const { generateJSFile } = require('./generate-js.js');
-const { version } = require('../package.json');
 const { SETTINGS } = require('./settings.js');
 const { LOADING } = require('./loading.js');
 const { COMMENT } = require('./config.js');

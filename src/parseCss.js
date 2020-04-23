@@ -6,7 +6,6 @@
  **/
 const createEmotionServer = require('create-emotion-server').default;
 const { SETTINGS } = require('./settings.js');
-const fs = require('fs');
 
 const { color } = require('./color.js');
 const { BRAND } = require('./brand.js');
@@ -91,7 +90,7 @@ function parseComponent({ componentPath, componentName, brand = BRAND.get, child
 				});
 
 				Promise.all(recipes)
-					.catch((error) => resolve(result))
+					.catch(() => resolve(result))
 					.then((recipes) => {
 						return resolve({ ...result, recipes });
 					});

@@ -5,9 +5,6 @@
  * generateIndexFile  - Generate the index docs file
  * generateDocsAssets - Return all files around docs
  **/
-const path = require('path');
-const fs = require('fs');
-
 const { indentHtml } = require('./indentHtml.js');
 const { SETTINGS } = require('./settings.js');
 const { COMMENT } = require('./config.js');

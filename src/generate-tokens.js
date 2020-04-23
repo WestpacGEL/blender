@@ -48,6 +48,7 @@ function flattenTokens(tokens, key = '', list = {}) {
 			} else if (typeof value === 'object') {
 				return { ...list, ...flattenTokens(value, `${key}${seperator}${name}`, list) };
 			} else {
+				return;
 			}
 		});
 

@@ -62,7 +62,6 @@ function setBrand(brand, cwd = process.cwd()) {
 		`${cwd}/node_modules/${SETTINGS.get.scope}/${brand.toLowerCase()}`
 	);
 
-	let brandPkg;
 	try {
 		BRAND.set = require(brandPath).default;
 	} catch (error) {

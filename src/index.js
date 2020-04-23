@@ -3,8 +3,6 @@
  *
  * blender - The blender API
  **/
-const path = require('path');
-
 const { SETTINGS, getSettings, checkInput } = require('./settings.js');
 const { PACKAGES, getPackages } = require('./packages.js');
 const { generator } = require('./generator.js');

@@ -159,7 +159,7 @@ function help(options = CLIOPTIONS) {
 	});
 	console.log(` v${version}\n\n`);
 
-	Object.entries(CLIOPTIONS).map(([name, option]) => {
+	Object.entries(options).map(([name, option]) => {
 		console.log(
 			` ${color.bold(name.toUpperCase())}\n` +
 				color.cyan(` --${name}, ${option.flag ? `-${option.flag}` : ''}\n`) +
@@ -188,11 +188,12 @@ function exitHandler(_, error, debug = DEBUG) {
 			process.exit(error);
 		} else {
 			if ((error && error !== 0) || debug.errorCount > 0) {
+				// prettier-ignore
 				const messages = debug.messages
 					? debug.messages.join('\n') +
-					  `\n\n` +
-					  `Errors: ${debug.errorCount}\n` +
-					  `Duration: ${time}\n`
+						`\n\n` +
+						`Errors: ${debug.errorCount}\n` +
+						`Duration: ${time}\n`
 					: [];
 				const logPath = path.normalize(`${process.cwd()}/blender-error.log`);
 
