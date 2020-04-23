@@ -52,7 +52,8 @@
 			"tests/"
 		],
 		"collectCoverageFrom": [
-			"src/*.js"
+			"src/*.js",
+			"!src/indentHtml.js"
 		],
 		"coverageThreshold": {
 			"global": {

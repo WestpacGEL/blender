@@ -148,6 +148,5 @@ describe('flattenTokens', () => {
  * compileTokens
  */
 describe('compileTokens', () => {
-	test('TODO', () => {
-	});
+	test('TODO', () => {});
 });
