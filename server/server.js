@@ -66,11 +66,10 @@ server.post(BLENDERURL, async (request, response) => {
  *
  * @param  {object} options.response - The express response object
  * @param  {object} options.cleanReq - The clean request object
- * @param  {string} options.IP       - The current IP
  *
  * @return {void}
  */
-async function createZip({ response, cleanReq, IP }) {
+async function createZip({ response, cleanReq }) {
 	const prefix = 'zip';
 	let result;
 
@@ -100,7 +99,7 @@ async function createZip({ response, cleanReq, IP }) {
 	archive
 		.on('warning', (error) => {
 			// catch warnings
-			if (err.code === 'ENOENT') {
+			if (error.code === 'ENOENT') {
 				log.error(`Could not find file or directory: ${JSON.stringify(error)}`);
 				response
 					.status(500)
