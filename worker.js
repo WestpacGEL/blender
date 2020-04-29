@@ -1,35 +1,28 @@
-const { Worker, isMainThread } = require('worker_threads');
+const { parentPort, workerData } = require('worker_threads');
+const path = require('path');
 
-const worker = (() => {
+function doSomethingForALongTime() {
+	console.log('worker.js > initial data:', workerData);
 
-	console.log('worker.js > triggered');
-
-	console.log('worker.js > isMainThread:', isMainThread);
-
-	new Promise((resolve, reject) => {
-
-		const worker = new Worker('./thread.js', {
-			// data
-		});
-
-		worker.on('message', resolve);
-		worker.on('error', reject);
-		worker.on('exit', code => {
-			if (code !== 0) {
-				reject(new Error(`Worker stopped with exit code ${code}`));
-			}
-		});
-
-	}).then((output) => {
-
-		console.log('worker.js > worker output:', output);
-
+	const recipe = path.normalize(`${__dirname}/../GUI3/components/alert/blender/recipe.js`);
+	require('@babel/register')({
+		presets: [require.resolve('@babel/preset-env'), require.resolve('@babel/preset-react')],
+		plugins: [
+			require.resolve('@babel/plugin-transform-runtime'),
+			[
+				require.resolve('@babel/plugin-syntax-dynamic-import'),
+				{
+					root: process.cwd,
+					suppressResolveWarning: true,
+				},
+			],
+		],
+		only: [recipe],
 	});
 
-});
+	require(recipe);
 
-Array.from(Array(12)).forEach(() => {
-	return worker();
-});
+	parentPort.postMessage('finished' /**/);
+}
 
-// exports.worker = worker;
+doSomethingForALongTime();
