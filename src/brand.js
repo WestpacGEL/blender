@@ -39,12 +39,13 @@ const BRAND = {
  *
  * @return {object}       - The brand object
  */
-function setBrand(brand, cwd = process.cwd()) {
+function setBrand(brand, cwd = process.cwd(), scope = SETTINGS.get.scope) {
 	D.header('setBrand', { brand, cwd });
 
 	const result = {
 		code: 0,
 		messages: [],
+		pkg: {},
 	};
 
 	if (!brand || typeof brand !== 'string') {
@@ -59,11 +60,12 @@ function setBrand(brand, cwd = process.cwd()) {
 	}
 
 	const brandPath = path.normalize(
-		`${cwd}/node_modules/${SETTINGS.get.scope}/${brand.toLowerCase()}`
+		`${cwd}/node_modules/${scope}/${brand.toLowerCase()}`
 	);
 
 	try {
 		BRAND.set = require(brandPath).default;
+		result.pkg = BRAND.get;
 	} catch (error) {
 		result.code = 1;
 		result.messages.push(error);
