@@ -50,11 +50,14 @@ server.post(BLENDERURL, async (request, response) => {
 		return;
 	}
 
-	log.incoming(`Request received at ${time} with:\n            ${JSON.stringify(cleanReq)}`);
+	const IP = request.headers[`x-forwarded-for`] || request.connection.remoteAddress || 'unknown';
+
+	log.incoming(
+		`Request received at ${time} from ${IP} with:\n            ${JSON.stringify(cleanReq)}`
+	);
 
 	// manually add core and brand package as that's not something you get to chose in the form
 	cleanReq.packages = [...cleanReq.packages, 'core', `${cleanReq.brand}`];
-	const IP = request.headers[`x-forwarded-for`] || request.connection.remoteAddress || 'unknown';
 
 	// create a pipe zip
 	await createZip({ response, cleanReq, IP });
