@@ -18,7 +18,7 @@
 	],
 	"license": "GPL-3.0+",
 	"scripts": {
-		"prepublish": "yarn test",
+		"prepublishOnly": "yarn test",
 		"start": "echo 'TODO'",
 		"build": "yarn build:lib && yarn build:bin",
 		"build:lib": "npx mkdirp lib && babel src --out-dir lib",
@@ -33,6 +33,20 @@
 		"test:lint": "eslint src/",
 		"types:clean": "find lib/ -type f -name '*.d.ts' -exec rm {} +",
 		"types:declaration": "tsc -p declaration.tsconfig.json",
+		"deploy:staging:sync": "rsync --exclude=node_modules --exclude=coverage --exclude=tests --exclude=lib --exclude=.env --exclude=starter.sh -avzhe ssh --progress ./* deploy@165.22.110.244:/srv/blender",
+		"deploy:staging:yarn:root": "ssh deploy@165.22.110.244 yarn --cwd /srv/blender install --frozen-lockfile",
+		"deploy:staging:yarn:server": "ssh deploy@165.22.110.244 yarn --cwd /srv/blender/server install --frozen-lockfile --production",
+		"deploy:staging:build": "ssh deploy@165.22.110.244 yarn --cwd /srv/blender build",
+		"deploy:staging:restart": "ssh deploy@165.22.110.244 forever restart /srv/blender/server/server.js",
+		"deploy:staging:msg": "echo \"If you made changes to the nginx config follow below steps:\n\n1. Log into the server: \\x1b[33mssh deploy@165.22.110.244\\x1b[0m\n2. Copy the file: \\x1b[33msudo cp /srv/blender/server/nginx/blender-routes.conf /etc/nginx/snippets/blender-routes.conf\\x1b[0m\n3. Test the new config: \\x1b[33msudo nginx -t\\x1b[0m\n4. If there are errors correct them in this repo and start again from scratch by running \\x1b[33myarn deploy:staging\\x1b[0m\n5. If all is well run \\x1b[33msudo nginx -s reload\\x1b[0m\n6. ✨ Done\n\"",
+		"deploy:staging": "yarn deploy:staging:sync && yarn deploy:staging:yarn:root && yarn deploy:staging:yarn:server && yarn deploy:staging:build && yarn deploy:staging:restart && yarn deploy:staging:msg",
+		"deploy:live:sync": "rsync --exclude=node_modules --exclude=coverage --exclude=tests --exclude=lib --exclude=.env --exclude=starter.sh -avzhe ssh --progress ./* deploy@128.199.200.220:/srv/blender",
+		"deploy:live:yarn:root": "ssh deploy@128.199.200.220 yarn --cwd /srv/blender install --frozen-lockfile",
+		"deploy:live:yarn:server": "ssh deploy@128.199.200.220 yarn --cwd /srv/blender/server install --frozen-lockfile --production",
+		"deploy:live:build": "ssh deploy@128.199.200.220 yarn --cwd /srv/blender build",
+		"deploy:live:restart": "ssh deploy@128.199.200.220 forever restart /srv/blender/server/server.js",
+		"deploy:live:msg": "echo \"If you made changes to the nginx config follow below steps:\n\n1. Log into the server: \\x1b[33mssh deploy@128.199.200.220\\x1b[0m\n2. Copy the file: \\x1b[33msudo cp /srv/blender/server/nginx/blender-routes.conf /etc/nginx/snippets/blender-routes.conf\\x1b[0m\n3. Test the new config: \\x1b[33msudo nginx -t\\x1b[0m\n4. If there are errors correct them in this repo and start again from scratch by running \\x1b[33myarn deploy:live\\x1b[0m\n5. If all is well run \\x1b[33msudo nginx -s reload\\x1b[0m\n6. ✨ Done\n\"",
+		"deploy:live": "yarn deploy:live:sync && yarn deploy:live:yarn:root && yarn deploy:live:yarn:server && yarn deploy:live:build && yarn deploy:live:restart && yarn deploy:live:msg",
 		"nuke": "rm -rf lib && rm -rf node_modules && rm yarn.lock",
 		"fresh": "yarn nuke && yarn"
 	},
@@ -76,7 +90,7 @@
 			"SharedArrayBuffer": "readonly"
 		},
 		"parserOptions": {
-			"ecmaVersion": 8
+			"ecmaVersion": 2018
 		},
 		"rules": {
 			"no-async-promise-executor": "off",

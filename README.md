@@ -55,15 +55,15 @@ blender
 	-J                                    # --exclude-jquery
 	-m                                    # --modules
 	-C                                    # --no-version-in-class
-	-d                                    # --debug
+	-g                                    # --debug
 	-v                                    # --version
-	-H                                    # --help
+	-h                                    # --help
 ```
 
 An example of running the blender with all flags would be:
 
 ```sh
-blender -T -b WBC --output path/to/all --output-css path/to/css --output-js path/to/js --output-html path/to/html --output-token path/to/token --scope "@westpac" --include "@westpac/button" "@westpac/core" --exclude "@westpac/tabcordion" -pJmCf less -dvH
+blender -Tb WBC --output path/to/all --output-css path/to/css --output-js path/to/js --output-html path/to/html --output-token path/to/token --scope "@westpac" --include "@westpac/button" "@westpac/core" --exclude "@westpac/tabcordion" -pJmCf less -gvh
 ```
 
 _(💡 Note that you can combine boolean flags together: `blender -pmj` is the same as `blender -p -m -j`)_
