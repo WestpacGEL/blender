@@ -93,7 +93,7 @@ async function createZip({ response, cleanReq }) {
 			noVersionInClass: cleanReq.noVersionInClass,
 			tokensFormat: cleanReq.tokensFormat,
 			output: prefix,
-			include: cleanReq.packages.map((pkg) => `@westpac/${pkg}`),
+			include: cleanReq.packages.map((pkg) => `@westpac/${pkg.toLowerCase()}`),
 		});
 	} catch (error) {
 		log.error(`The blender failed with: ${JSON.stringify(error)}`);
