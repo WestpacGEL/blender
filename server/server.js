@@ -43,6 +43,13 @@ server.post(BLENDERURL, async (request, response) => {
 	const time = new Date().toISOString();
 	const cleanReq = sanitizeRequest(request, GEL);
 
+	// discard invalid requests
+	if (!cleanReq) {
+		response.status(400).send({ error: 'The request made was invalid' });
+
+		return;
+	}
+
 	log.incoming(`Request received at ${time} with:\n            ${JSON.stringify(cleanReq)}`);
 
 	// manually add core and brand package as that's not something you get to chose in the form
@@ -74,7 +81,7 @@ async function createZip({ response, cleanReq }) {
 
 	try {
 		result = await blender({
-			cwd: path.normalize(`${__dirname}/../tests/mock/mock-project2/`),
+			cwd: path.normalize(process.env.GEL_PATH),
 			brand: `@westpac/${cleanReq.brand}`,
 			scope: '',
 			modules: cleanReq.modules,
@@ -145,6 +152,10 @@ async function createZip({ response, cleanReq }) {
  * @return {object}         - A flat object with only those keys which are allowed
  */
 function sanitizeRequest(request, allPkgs) {
+	if (!request.body.packages || !request.body.brand || !request.body.tokensFormat) {
+		return;
+	}
+
 	const pkgDict = Object.keys(allPkgs.components);
 	const brandDict = Object.keys(allPkgs.brands);
 	const tokensDict = ['json', 'less', 'sass', 'scss', 'css'];
