@@ -8,19 +8,18 @@ require('dotenv').config();
 const fs = require('fs');
 
 const { blender } = require('../lib/index.js');
-const propTypes = require('./GEL.json');
 
 // SETTINGS
 const slackUrls = JSON.parse(process.env.SLACKURLS);
-const PORT = 1337;
-const BLENDERURL = '/blender';
+const PORT = 1339;
+const BLENDERURL = '/api/blender2';
 const DSURL = 'https://gel.westpacgroup.com.au/design-system';
 const LOGFILE = 'blender.log';
+const GEL = require(path.normalize(`${process.env.GEL_PATH}/GEL.json`));
 
 // SERVER
 const server = express();
 server
-	.use(express.static('.')) // TODO: this will go in production
 	.get('*', (_, response) => {
 		response.redirect(301, DSURL);
 	})
@@ -42,7 +41,7 @@ server
 
 server.post(BLENDERURL, async (request, response) => {
 	const time = new Date().toISOString();
-	const cleanReq = sanitizeRequest(request, propTypes);
+	const cleanReq = sanitizeRequest(request, GEL);
 
 	log.incoming(`Request received at ${time} with:\n            ${JSON.stringify(cleanReq)}`);
 
