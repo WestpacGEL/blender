@@ -328,4 +328,3 @@ Same as the core component.
 | `deploy:live`       | Deploy the blender to live environment, this will sync up all files, install dependencies and restart the service    |
 
 </details>
-<details>
