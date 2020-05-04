@@ -43,11 +43,21 @@ server.post(BLENDERURL, async (request, response) => {
 	const time = new Date().toISOString();
 	const cleanReq = sanitizeRequest(request, GEL);
 
-	log.incoming(`Request received at ${time} with:\n            ${JSON.stringify(cleanReq)}`);
+	// discard invalid requests
+	if (!cleanReq) {
+		response.status(400).send({ error: 'The request made was invalid' });
+
+		return;
+	}
+
+	const IP = request.headers[`x-forwarded-for`] || request.connection.remoteAddress || 'unknown';
+
+	log.incoming(
+		`Request received at ${time} from ${IP} with:\n            ${JSON.stringify(cleanReq)}`
+	);
 
 	// manually add core and brand package as that's not something you get to chose in the form
 	cleanReq.packages = [...cleanReq.packages, 'core', `${cleanReq.brand}`];
-	const IP = request.headers[`x-forwarded-for`] || request.connection.remoteAddress || 'unknown';
 
 	// create a pipe zip
 	await createZip({ response, cleanReq, IP });
@@ -74,7 +84,7 @@ async function createZip({ response, cleanReq }) {
 
 	try {
 		result = await blender({
-			cwd: path.normalize(`${__dirname}/../tests/mock/mock-project2/`),
+			cwd: path.normalize(process.env.GEL_PATH),
 			brand: `@westpac/${cleanReq.brand}`,
 			scope: '',
 			modules: cleanReq.modules,
@@ -83,7 +93,7 @@ async function createZip({ response, cleanReq }) {
 			noVersionInClass: cleanReq.noVersionInClass,
 			tokensFormat: cleanReq.tokensFormat,
 			output: prefix,
-			include: cleanReq.packages.map((pkg) => `@westpac/${pkg}`),
+			include: cleanReq.packages.map((pkg) => `@westpac/${pkg.toLowerCase()}`),
 		});
 	} catch (error) {
 		log.error(`The blender failed with: ${JSON.stringify(error)}`);
@@ -145,6 +155,10 @@ async function createZip({ response, cleanReq }) {
  * @return {object}         - A flat object with only those keys which are allowed
  */
 function sanitizeRequest(request, allPkgs) {
+	if (!request.body.packages || !request.body.brand || !request.body.tokensFormat) {
+		return;
+	}
+
 	const pkgDict = Object.keys(allPkgs.components);
 	const brandDict = Object.keys(allPkgs.brands);
 	const tokensDict = ['json', 'less', 'sass', 'scss', 'css'];

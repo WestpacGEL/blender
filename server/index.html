@@ -11,49 +11,21 @@
 </head>
 <body>
 	<h1>Blender</h1>
-	<form action="/blender" method="POST">
+	<form action="http://localhost:1339/api/blender2" method="POST">
 		<fieldset>
 			<legend>Choose components</legend>
 
 			<label>
-				Component 1
-				<input type="checkbox" name="packages[]" value="component1">
+				alert
+				<input type="checkbox" name="packages[]" value="alert">
 			</label>
 			<label>
-				Component 2
-				<input type="checkbox" name="packages[]" value="component2">
+				Breadcrumb
+				<input type="checkbox" name="packages[]" value="breadcrumb">
 			</label>
 			<label>
-				Component 3
-				<input type="checkbox" name="packages[]" value="component3">
-			</label>
-			<label>
-				Component 4
-				<input type="checkbox" name="packages[]" value="component4">
-			</label>
-			<label>
-				Component 5
-				<input type="checkbox" name="packages[]" value="component5">
-			</label>
-			<label>
-				Component 6
-				<input type="checkbox" name="packages[]" value="component6">
-			</label>
-			<label>
-				Component 7
-				<input type="checkbox" name="packages[]" value="component7">
-			</label>
-			<label>
-				Component 8
-				<input type="checkbox" name="packages[]" value="component8">
-			</label>
-			<label>
-				Component 9
-				<input type="checkbox" name="packages[]" value="component9">
-			</label>
-			<label>
-				Component 10
-				<input type="checkbox" name="packages[]" value="component10">
+				Badge
+				<input type="checkbox" name="packages[]" value="badge">
 			</label>
 		</fieldset>
 
@@ -88,7 +60,7 @@
 			</label>
 		</fieldset>
 
-		<input type="hidden" name="brand" value="wbc">
+		<input type="hidden" name="brand" value="WBC">
 
 		<button type="submit">Submit</button>
 	</form>

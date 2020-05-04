@@ -24,6 +24,7 @@ function generateDocsFile(name, html) {
 	const recipes = html
 		.map(
 			(variation) =>
+				`\t\t\t\t\t` +
 				`<section class="docs-section">\n\t\t\t\t\t` +
 				`<h2 class="docs-h2">${variation.heading}</h2>\n\t\t\t\t\t` +
 				`<div class="docs-codeBox">\n\t\t\t\t\t\t${variation.html}\n\t\t\t\t\t</div>\n` +
