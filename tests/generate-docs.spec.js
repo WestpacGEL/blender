@@ -36,8 +36,12 @@ describe('generateDocsFile', () => {
 		const result = generateDocsFile(pkg.name, recipes);
 
 		expect(result.includes('<h1>@westpac/core</h1>')).toBe(true);
-		expect(result.includes('<h2 class="docs-h2">Variation 1 for Core Component</h2>')).toBe(true);
-		expect(result.includes('<h2 class="docs-h2">Variation 2 for Core Component</h2>')).toBe(true);
+		expect(result).toContain(
+			'<h2 id="Variation_1_for_Core_Component" class="docs-h2">Variation 1 for Core Component</h2>'
+		);
+		expect(result).toContain(
+			'<h2 id="Variation_2_for_Core_Component" class="docs-h2">Variation 2 for Core Component</h2>'
+		);
 	});
 });
 

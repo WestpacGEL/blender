@@ -126,7 +126,7 @@ const result = await blender({
 The blender can generate human readable html and css from react and emotion components.
 For this to work we require `label` attributes in our `css` prop and a couple files to blend and the `blender` key inside your `package.json`.
 
-### getLabel
+### `getLabel`
 
 We have to add labels for every variations for props.
 To archive this we have the [`getLabel`](https://github.com/WestpacGEL/GEL/blob/master/components/core/src/getLabel.js) function that you can import from `@westpac/core`.
@@ -134,7 +134,7 @@ Make sure you only add variations that will change CSS.
 Adding more means more css classes and more html.
 The best way to do this I found was to add the labels to the overrides files:
 
-- look at the `[something]Styles` function
+- look at the `[something]Styles` function inside the overrides
 - copy all props from there that are being constructed
 - go to the css props and insert `getLabel` with an appropriate prefix
 
@@ -191,7 +191,9 @@ Since the blender just SSR each component it won't provide the functionality of 
 For this you have to provide a `js` file for fallback.
 In the GEL3 we use jQuery for this.
 Each jQuery file should target elements via the `data-js` attribute since classes can vary depending on your blend settings.
-So things like `data-js="body"` or `data-js="component-closebtn"` should work well and you target this via `$('[data-js="component-closebtn"]')` in jQuery.
+So things like `data-js="body__version__"` or `data-js="component-closebtn__version__"` should work well and you target this via `$('[data-js="component-closebtn__version__"]')` in jQuery.
+
+The `__version__` bit is important for the blender to know where to inject the version.
 
 ### Core components
 
@@ -230,7 +232,7 @@ export function Docs({ brand }) {
 }
 ```
 
-Both of these function get the `brand` object passed in and only in core `AllStyles` also get's `children` so we can remove core from the other components later.
+Both of these function get the `brand` object passed in and only in core `AllStyles` also gets `children` so we can remove core from the other components later.
 The `Docs` component returns an array with a `heading` and a `component` key.
 
 In short:

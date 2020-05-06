@@ -2,11 +2,13 @@
  * All functions for the generator
  *
  * generateJSFile - Generates all the javascript
+ * convertVersion - Convert versions in js and html
  **/
 const path = require('path');
 const fs = require('fs');
 
 const { version } = require('../package.json');
+const { SETTINGS } = require('./settings.js');
 const { color } = require('./color.js');
 const { D } = require('./log.js');
 
@@ -35,11 +37,27 @@ function generateJSFile(pkg) {
 		D.error(`Unable to find ${pkg.pkg.js} at "${color.yellow(pkg.path)}"`);
 	}
 
-	result.js = `/*! ${pkg.name} v${pkg.version} blended with blender v${version} */\n${result.js}`;
+	result.js = `/*! ${pkg.name} v${
+		pkg.version
+	} blended with blender v${version} */\n${convertVersion(result.js, pkg.version)}`;
 
 	return result;
 }
 
+/**
+ * Convert versions in js and html
+ *
+ * @param  {string} text    - The text to be stripped of __version__
+ * @param  {string} version - The version
+ *
+ * @return {string}         - The converted text
+ */
+function convertVersion(text, version) {
+	const replacement = SETTINGS.get.noVersionInClass ? '' : `-${version.replace(/\./g, '_')}`;
+	return String(text).replace(/__version__/g, replacement);
+}
+
 module.exports = exports = {
+	convertVersion,
 	generateJSFile,
 };

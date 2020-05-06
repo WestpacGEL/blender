@@ -249,7 +249,7 @@ function send2Slack({ cleanReq, IP, slackUrls, time }) {
 		],
 	};
 
-	if (process.env.NODE_ENV === 'production') {
+	if (process.env.SLACK_ENV === 'live') {
 		slackUrls.map((slack) => {
 			const options = {
 				hostname: 'hooks.slack.com',

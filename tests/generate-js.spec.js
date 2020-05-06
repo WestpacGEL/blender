@@ -14,6 +14,7 @@ describe('generateJSFile', () => {
 	test('Get a js file for an individual component', () => {
 		const result = generateJSFile({
 			name: '@westpac/component1',
+			version: '1.0.0',
 			path: path.normalize(`${__dirname}/mock/mock-project1/node_modules/@westpac/component1/`),
 			pkg: {
 				recipe: 'blender/recipe.js',
@@ -27,6 +28,7 @@ describe('generateJSFile', () => {
 	test('Attempt to get a non-existant component file', () => {
 		const result = generateJSFile({
 			name: '@westpac/component4',
+			version: '1.0.0',
 			path: path.normalize(`${__dirname}/mock/mock-project1/node_modules/@westpac/component4/`),
 			pkg: {
 				recipe: 'blender/recipe.js',
