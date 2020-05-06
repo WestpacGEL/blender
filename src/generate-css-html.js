@@ -8,6 +8,7 @@
 const path = require('path');
 
 const { generateDocsFile } = require('./generate-docs.js');
+const { convertVersion } = require('./generate-js.js');
 const { parseComponent } = require('./parseCss.js');
 const { version } = require('../package.json');
 const { testLabels } = require('./tester.js');
@@ -123,7 +124,10 @@ async function generateHtml({ pkg, coreHtml = '' }) {
 		const coreBits = coreHtml.split('CORE');
 		const coreStart = new RegExp('^' + coreBits[0]);
 		const coreEnd = new RegExp(coreBits[1] + '$');
-		recipe.static.html = recipe.static.html.replace(coreStart, '').replace(coreEnd, '');
+		recipe.static.html = convertVersion(
+			recipe.static.html.replace(coreStart, '').replace(coreEnd, ''),
+			pkg.version
+		);
 
 		let { html } = convertClasses(recipe.static, pkg.version);
 
