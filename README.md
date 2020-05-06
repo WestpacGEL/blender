@@ -12,12 +12,54 @@
 
 ## What the blender does
 
-TODO
+The blender takes a react/emotion component and renders out human readable HTML and CSS.
+
+A typical render for a react component with emotion would be:
+
+HTML:
+
+```html
+<div class="css-1v0bpgp">
+	<span class="css-56rr0o">
+		My text
+	</span>
+</div>
+```
+
+This is very hard to manage for the consumer when you add modifiers for your component:
+
+```html
+<div class="css-1v0bpgp">
+	<span class="css-56rr0o">
+		Primary
+	</span>
+
+	<span class="css-eh2j24">
+		Hero
+	</span>
+</div>
+```
+
+The blender takes the above output and creates human readable classes that make it easier to manage modifiers.
+
+```html
+<div class="GEL-Core-v1_0_0">
+	<span class="GEL-badge-v1_0_0-look_primary">
+		Primary
+	</span>
+
+	<span class="GEL-badge-v1_0_0-look_hero">
+		Hero
+	</span>
+</div>
+```
 
 ### Tester
 
-The tester checked labels created by emotion for any hashes that can't be removed.
-If the tester finds labels have the same label but a different hash we can't remove the hashes easily and make the classes readable. See below example.
+The tester checks labels created by emotion for any hashes that can't be removed.
+This is useful when you implement blender support in a component and want to make sure everything is covered.
+
+If the tester finds ids (css classes) have the same label but a different hash we can't remove the hashes safely and make the classes readable. See below example.
 
 ```
 [
@@ -29,6 +71,8 @@ If the tester finds labels have the same label but a different hash we can't rem
 	"1sa041k-bar",
 ],
 ```
+
+The tester also runs the whole recipe of a component to make sure there are no render issues.
 
 ## CLI
 
@@ -330,3 +374,33 @@ Same as the core component.
 | `deploy:live`       | Deploy the blender to live environment, this will sync up all files, install dependencies and restart the service    |
 
 </details>
+
+Please use [yarn](https://yarnpkg.com/) to install the dependencies for this project.
+
+```sh
+cd path/to/repo/root
+yarn
+```
+
+Once everything is installed you can symlink the blender binary into your PATH by running:
+
+```sh
+npm link
+```
+
+This will allow you to use the `blender` command while developing the app.
+
+To see changes you make to the `src/` folder, run:
+
+```
+yarn watch
+```
+
+### Tests
+
+We use [Jest](https://jestjs.io/) for unit testing and have setup a bunch of mock folders and projects inside `tests/`.
+Run all tests via:
+
+```
+yarn test
+```
