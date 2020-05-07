@@ -153,6 +153,7 @@ ${COMMENT.join('\n')}
 
 						<ul class="docs-ul">
 							${docs
+								.sort((a, b) => (a.name === b.name ? 0 : a.name < b.name ? -1 : 1))
 								.map(
 									(doc) =>
 										`<li class="docs-li"><a class="docs-link" href="${doc.path.replace(
