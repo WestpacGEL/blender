@@ -40,10 +40,16 @@ function generateDocsFile(name, html) {
 	let recipes = '';
 	html.map((variation) => {
 		const slug = variation.heading && slugify(variation.heading);
-		const heading = variation.heading ? `<h2 id="${slug}" class="docs-h2">${variation.heading}</h2>\n\t\t\t\t\t` : '';
-		const subheading = variation.subheading ? `<h3 class="docs-h3">${variation.subheading}</h3>\n\t\t\t\t\t` : '';
+		const heading = variation.heading
+			? `<h2 id="${slug}" class="docs-h2">${variation.heading}</h2>\n\t\t\t\t\t`
+			: '';
+		const subheading = variation.subheading
+			? `<h3 class="docs-h3">${variation.subheading}</h3>\n\t\t\t\t\t`
+			: '';
 
-		list += variation.heading ? `<li class="docs-li"><a href="#${slug}" class="docs-link">${variation.heading}</a></li>` : '';
+		list += variation.heading
+			? `<li class="docs-li"><a href="#${slug}" class="docs-link">${variation.heading}</a></li>`
+			: '';
 		recipes +=
 			`\t\t\t\t\t` +
 			`<section class="docs-section">\n\t\t\t\t\t` +
