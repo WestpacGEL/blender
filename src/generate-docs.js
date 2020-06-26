@@ -39,13 +39,16 @@ function generateDocsFile(name, html) {
 	let list = '';
 	let recipes = '';
 	html.map((variation) => {
-		const slug = slugify(variation.heading);
+		const slug = variation.heading && slugify(variation.heading);
+		const heading = variation.heading ? `<h2 id="${slug}" class="docs-h2">${variation.heading}</h2>\n\t\t\t\t\t` : '';
+		const subheading = variation.subheading ? `<h3 class="docs-h3">${variation.subheading}</h3>\n\t\t\t\t\t` : '';
 
-		list += `<li class="docs-li"><a href="#${slug}" class="docs-link">${variation.heading}</a></li>`;
+		list += variation.heading ? `<li class="docs-li"><a href="#${slug}" class="docs-link">${variation.heading}</a></li>` : '';
 		recipes +=
 			`\t\t\t\t\t` +
 			`<section class="docs-section">\n\t\t\t\t\t` +
-			`<h2 id="${slug}" class="docs-h2">${variation.heading}</h2>\n\t\t\t\t\t` +
+			`${heading}` +
+			`${subheading}` +
 			`<div class="docs-codeBox">\n\t\t\t\t\t\t${variation.html}\n\t\t\t\t\t</div>\n` +
 			`<pre class="docs-pre language-html"><code class="language-html">${indentHtml(variation.html)
 				.replace(/&/g, '&amp;')
@@ -291,6 +294,11 @@ body {
 	margin: 0 0 2.1875rem 0;
 }
 .docs-h2 {
+	font-size: 1.5rem;
+	font-weight: bold;
+	margin: 0 0 1.5rem 0;
+}
+.docs-h3 {
 	font-size: 1.125rem;
 	font-weight: bold;
 	margin: 0 0 1.25rem 0;
@@ -303,7 +311,22 @@ body {
 	background: #fff;
 	padding: 2rem;
 	margin-bottom: 0;
+	overflow-x: auto;
 }
+.docs-codeBox .row>.col, .docs-codeBox .row>[class^="col-"] {
+    padding-top: .75rem;
+    padding-bottom: .75rem;
+    background-color: rgba(39,41,43,0.03);
+    border: 1px solid rgba(39,41,43,0.1)
+}
+.docs-codeBox .row+.row {
+    margin-top: 1rem
+}
+.docs-codeBox [class*="align-items"] {
+    min-height: 10rem;
+    background-color: rgba(255,0,0,0.1)
+}
+
 .docs-pre {
 	margin-top: 0;
 }
