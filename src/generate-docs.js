@@ -306,18 +306,32 @@ body {
 	font-weight: bold;
 	margin: 0 0 2.1875rem 0;
 }
-.docs-h2 {
+.docs-h2, 
+.docs-body h2 {
 	font-size: 1.5rem;
 	font-weight: bold;
 	margin: 0 0 1.5rem 0;
 }
-.docs-h3 {
+.docs-h3, 
+.docs-body h3 {
 	font-size: 1.125rem;
 	font-weight: bold;
-	margin: 0 0 1.25rem 0;
+	margin: 0 0 0.5rem 0;
 }
 .docs-body {
 	margin-bottom: 1.5rem;
+}
+.docs-body p,
+.docs-body > ul {
+	margin: 0 0 1rem;
+}
+.docs-body li {
+	margin-bottom: 0.2rem;
+}
+.docs-body code {
+	font-size: .875em;
+    color: #d63384;
+    word-wrap: break-word;
 }
 .docs-lead {
 	font-size: 1rem;
@@ -326,7 +340,7 @@ body {
 .docs-codeBox {
 	background: #fff;
 	padding: 2rem;
-	margin-top: 1.5rem;
+	margin-top: 1rem;
 	margin-bottom: 0;
 	overflow-x: auto;
 }
