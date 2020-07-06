@@ -134,6 +134,7 @@ async function generateHtml({ pkg, coreHtml = '' }) {
 		return {
 			heading: recipe.heading,
 			subheading: recipe.subheading,
+			body: recipe.body,
 			html,
 		};
 	});

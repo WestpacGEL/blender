@@ -46,6 +46,18 @@ function generateDocsFile(name, html) {
 		const subheading = variation.subheading
 			? `<h3 class="docs-h3">${variation.subheading}</h3>\n\t\t\t\t\t`
 			: '';
+		const body = variation.body ? `<div class="docs-body">${variation.body}</div>\n\t\t\t\t\t` : '';
+		const example = variation.html
+			? `<div class="docs-codeBox">\n\t\t\t\t\t\t${variation.html}\n\t\t\t\t\t</div>\n` +
+			  `<pre class="docs-pre language-html"><code class="language-html">${indentHtml(
+					variation.html
+			  )
+					.replace(/&/g, '&amp;')
+					.replace(/</g, '&lt;')
+					.replace(/>/g, '&gt;')
+					.replace(/"/g, '&quot;')
+					.replace(/'/g, '&#039;')}</code></pre>\n\t\t\t\t`
+			: '';
 
 		list += variation.heading
 			? `<li class="docs-li"><a href="#${slug}" class="docs-link">${variation.heading}</a></li>`
@@ -55,13 +67,8 @@ function generateDocsFile(name, html) {
 			`<section class="docs-section">\n\t\t\t\t\t` +
 			`${heading}` +
 			`${subheading}` +
-			`<div class="docs-codeBox">\n\t\t\t\t\t\t${variation.html}\n\t\t\t\t\t</div>\n` +
-			`<pre class="docs-pre language-html"><code class="language-html">${indentHtml(variation.html)
-				.replace(/&/g, '&amp;')
-				.replace(/</g, '&lt;')
-				.replace(/>/g, '&gt;')
-				.replace(/"/g, '&quot;')
-				.replace(/'/g, '&#039;')}</code></pre>\n\t\t\t\t` +
+			`${body}` +
+			`${example}` +
 			`</section>`;
 	});
 
@@ -309,6 +316,9 @@ body {
 	font-weight: bold;
 	margin: 0 0 1.25rem 0;
 }
+.docs-body {
+	margin-bottom: 1.5rem;
+}
 .docs-lead {
 	font-size: 1rem;
 	line-height: 2;
@@ -316,6 +326,7 @@ body {
 .docs-codeBox {
 	background: #fff;
 	padding: 2rem;
+	margin-top: 1.5rem;
 	margin-bottom: 0;
 	overflow-x: auto;
 }
