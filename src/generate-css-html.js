@@ -173,28 +173,28 @@ function convertClasses({ css, html, ids }, version) {
 		humanReadableHtml = humanReadableHtml.replace(oldClass, newClass);
 	});
 
-	// find any additional custom classes
-	const htmlClasses = findConvertClasses(humanReadableHtml, new RegExp(/__convert__[^\s"]+/, 'g'));
+	// find any additional custom/nested classes
+	const convertRegex = new RegExp(/__convert__[\w-]+/, 'g');
+	const htmlClasses = findConvertClasses(humanReadableHtml, convertRegex);
+	const cssClasses = findConvertClasses(humanReadableCSS, convertRegex);
 
-	htmlClasses.forEach((c) => {
-		const currClass = c.replace('__convert__', '');
-		const oldClass = new RegExp(c, 'g');
-		const classBits = currClass.split('-');
-		const newClass = getClassName(classBits, versionString);
+	const convert = {
+		html: htmlClasses,
+		css: cssClasses,
+	};
 
-		humanReadableHtml = humanReadableHtml.replace(oldClass, newClass);
-	});
-
-	// find any nested custom classes
-	const cssClasses = findConvertClasses(humanReadableCSS, new RegExp(/__convert__([^{])+/, 'g'));
-
-	cssClasses.forEach((c) => {
-		const currClass = c.replace('__convert__', '');
-		const oldClass = new RegExp(`${c}(?={)`, 'g');
-		const classBits = currClass.split('-');
-		const newClass = getClassName(classBits, versionString);
-
-		humanReadableCSS = humanReadableCSS.replace(oldClass, newClass);
+	Object.entries(convert).forEach(([key, classes]) => {
+		classes.forEach((c) => {
+			const currClass = c.replace('__convert__', '');
+			const oldClass = new RegExp(c, 'g');
+			const classBits = currClass.split('-');
+			const newClass = getClassName(classBits, versionString);
+			if (key === 'html') {
+				humanReadableHtml = humanReadableHtml.replace(oldClass, newClass);
+			} else if (key === 'css') {
+				humanReadableCSS = humanReadableCSS.replace(oldClass, newClass);
+			}
+		});
 	});
 
 	return {
