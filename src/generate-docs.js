@@ -85,7 +85,7 @@ ${COMMENT.join('\n')}
 	<link rel=stylesheet href="../assets/docs.min.css">
 	<link rel=stylesheet href="../assets/styles.min.css">
 </head>
-<body class="GEL-Core-v1_0_0">
+<body class="GEL GEL-Core-v1_0_0">
 	<div class="GEL-grid-container-v1_0_0">
 		<header class="docs-header docs-header-small">
 			<a class="docs-link docs-link-back" href="../index.html">Back to your components</a>
