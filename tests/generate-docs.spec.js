@@ -24,11 +24,15 @@ describe('generateDocsFile', () => {
 		};
 		const recipes = [
 			{
-				heading: 'Variation 1 for Core Component',
+				heading: 'Variation 1 for Core Component heading',
+				subheading: 'Variation 1 for Core Component subheading',
+				body: 'Variation 1 for Core Component body',
 				html: '<div class="GEL-core-v3_17_0">Here comes the content</div>',
 			},
 			{
-				heading: 'Variation 2 for Core Component',
+				heading: 'Variation 2 for Core Component heading',
+				subheading: 'Variation 2 for Core Component subheading',
+				body: 'Variation 2 for Core Component body',
 				html: '<div class="GEL-core-v3_17_0">Here comes the content</div>',
 			},
 		];
@@ -36,12 +40,18 @@ describe('generateDocsFile', () => {
 		const result = generateDocsFile(pkg.name, recipes);
 
 		expect(result.includes('<h1>@westpac/core</h1>')).toBe(true);
+
 		expect(result).toContain(
-			'<h2 id="Variation_1_for_Core_Component" class="docs-h2">Variation 1 for Core Component</h2>'
+			'<h2 id="Variation_1_for_Core_Component_heading" class="docs-h2">Variation 1 for Core Component heading</h2>'
 		);
+		expect(result).toContain('<h3 class="docs-h3">Variation 1 for Core Component subheading</h3>');
+		expect(result).toContain('<div class="docs-body">Variation 1 for Core Component body</div>');
+
 		expect(result).toContain(
-			'<h2 id="Variation_2_for_Core_Component" class="docs-h2">Variation 2 for Core Component</h2>'
+			'<h2 id="Variation_2_for_Core_Component_heading" class="docs-h2">Variation 2 for Core Component heading</h2>'
 		);
+		expect(result).toContain('<h3 class="docs-h3">Variation 2 for Core Component subheading</h3>');
+		expect(result).toContain('<div class="docs-body">Variation 2 for Core Component body</div>');
 	});
 });
 

@@ -39,20 +39,37 @@ function generateDocsFile(name, html) {
 	let list = '';
 	let recipes = '';
 	html.map((variation) => {
-		const slug = slugify(variation.heading);
+		const slug = variation.heading && slugify(variation.heading);
+		const heading = variation.heading
+			? `<h2 id="${slug}" class="docs-h2">${variation.heading}</h2>\n\t\t\t\t\t`
+			: '';
+		const subheading = variation.subheading
+			? `<h3 class="docs-h3">${variation.subheading}</h3>\n\t\t\t\t\t`
+			: '';
+		const body = variation.body ? `<div class="docs-body">${variation.body}</div>\n\t\t\t\t\t` : '';
+		const example = variation.html
+			? `<div class="docs-codeBox">\n\t\t\t\t\t\t${variation.html}\n\t\t\t\t\t</div>\n` + // eslint-disable-next-line no-mixed-spaces-and-tabs
+			  `<pre class="docs-pre language-html"><code class="language-html">${indentHtml(
+					variation.html
+					// eslint-disable-next-line no-mixed-spaces-and-tabs
+			  )
+					.replace(/&/g, '&amp;')
+					.replace(/</g, '&lt;')
+					.replace(/>/g, '&gt;')
+					.replace(/"/g, '&quot;')
+					.replace(/'/g, '&#039;')}</code></pre>\n\t\t\t\t`
+			: '';
 
-		list += `<li class="docs-li"><a href="#${slug}" class="docs-link">${variation.heading}</a></li>`;
+		list += variation.heading
+			? `<li class="docs-li"><a href="#${slug}" class="docs-link">${variation.heading}</a></li>`
+			: '';
 		recipes +=
 			`\t\t\t\t\t` +
 			`<section class="docs-section">\n\t\t\t\t\t` +
-			`<h2 id="${slug}" class="docs-h2">${variation.heading}</h2>\n\t\t\t\t\t` +
-			`<div class="docs-codeBox">\n\t\t\t\t\t\t${variation.html}\n\t\t\t\t\t</div>\n` +
-			`<pre class="docs-pre language-html"><code class="language-html">${indentHtml(variation.html)
-				.replace(/&/g, '&amp;')
-				.replace(/</g, '&lt;')
-				.replace(/>/g, '&gt;')
-				.replace(/"/g, '&quot;')
-				.replace(/'/g, '&#039;')}</code></pre>\n\t\t\t\t` +
+			`${heading}` +
+			`${subheading}` +
+			`${body}` +
+			`${example}` +
 			`</section>`;
 	});
 
@@ -153,6 +170,7 @@ ${COMMENT.join('\n')}
 
 						<ul class="docs-ul">
 							${docs
+								.sort((a, b) => (a.name === b.name ? 0 : a.name < b.name ? -1 : 1))
 								.map(
 									(doc) =>
 										`<li class="docs-li"><a class="docs-link" href="${doc.path.replace(
@@ -289,10 +307,32 @@ body {
 	font-weight: bold;
 	margin: 0 0 2.1875rem 0;
 }
-.docs-h2 {
+.docs-h2,
+.docs-body h2 {
+	font-size: 1.5rem;
+	font-weight: bold;
+	margin: 0 0 1.5rem 0;
+}
+.docs-h3,
+.docs-body h3 {
 	font-size: 1.125rem;
 	font-weight: bold;
-	margin: 0 0 1.25rem 0;
+	margin: 0 0 0.5rem 0;
+}
+.docs-body {
+	margin-bottom: 1.5rem;
+}
+.docs-body p,
+.docs-body > ul {
+	margin: 0 0 1rem;
+}
+.docs-body li {
+	margin-bottom: 0.2rem;
+}
+.docs-body code {
+	font-size: .875em;
+    color: #d63384;
+    word-wrap: break-word;
 }
 .docs-lead {
 	font-size: 1rem;
@@ -301,8 +341,24 @@ body {
 .docs-codeBox {
 	background: #fff;
 	padding: 2rem;
+	margin-top: 1rem;
 	margin-bottom: 0;
+	overflow-x: auto;
 }
+.docs-codeBox .row>.col, .docs-codeBox .row>[class^="col-"] {
+    padding-top: .75rem;
+    padding-bottom: .75rem;
+    background-color: rgba(39,41,43,0.03);
+    border: 1px solid rgba(39,41,43,0.1)
+}
+.docs-codeBox .row+.row {
+    margin-top: 1rem
+}
+.docs-codeBox [class*="align-items"] {
+    min-height: 10rem;
+    background-color: rgba(255,0,0,0.1)
+}
+
 .docs-pre {
 	margin-top: 0;
 }
