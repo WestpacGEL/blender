@@ -92,12 +92,12 @@ const LOADING = {
 
 			process.stdout.write(
 				this.store.bufferLeft + // some space for breathing
-				this.store.left +
-				(current > 0 ? this.store.done.repeat(current) : '').padEnd(width, this.store.todo) + // the indicator bar
-				this.store.right +
-				' ' + // some space for breathing
-				percentage.padStart(3, ' ') + // the percentages
-				'%' + // I have to add these comments because "prettier" is really "uglier"
+					this.store.left +
+					(current > 0 ? this.store.done.repeat(current) : '').padEnd(width, this.store.todo) + // the indicator bar
+					this.store.right +
+					' ' + // some space for breathing
+					percentage.padStart(3, ' ') + // the percentages
+					'%' + // I have to add these comments because "prettier" is really "uglier"
 					'\u001b[1G' // this moves the cursor to the start of the line
 				// ^ like why is the last line indented? WHY???
 			);
