@@ -30,7 +30,7 @@ describe('parseComponent', () => {
 			'<div class="css-gshptl-component1-look1"></div><div class="css-a2lehl-component1-look2"></div><div class="css-1imz2ok-component1-look3"></div>'
 		);
 		expect(result.css).toBe(
-			'.css-gshptl-component1-look1{background:rebeccapurple;}.css-a2lehl-component1-look2{background:hotpinnk;}.css-1imz2ok-component1-look3{background:red;}'
+			'.GEL .css-gshptl-component1-look1{background:rebeccapurple;}.GEL .css-a2lehl-component1-look2{background:hotpinnk;}.GEL .css-1imz2ok-component1-look3{background:red;}'
 		);
 	});
 
@@ -82,7 +82,7 @@ describe('parseComponent', () => {
 			'<div class="css-gshptl-component1-look1"></div><div class="css-a2lehl-component1-look2"></div><div class="css-1imz2ok-component1-look3"></div>'
 		);
 		expect(result.css).toBe(
-			'.css-gshptl-component1-look1{background:rebeccapurple;}.css-a2lehl-component1-look2{background:hotpinnk;}.css-1imz2ok-component1-look3{background:red;}'
+			'.GEL .css-gshptl-component1-look1{background:rebeccapurple;}.GEL .css-a2lehl-component1-look2{background:hotpinnk;}.GEL .css-1imz2ok-component1-look3{background:red;}'
 		);
 	});
 
@@ -103,7 +103,7 @@ describe('parseComponent', () => {
 			code: 0,
 			html: '<div class="css-gshptl-component1-look1">Here comes the content</div>',
 			ids: ['gshptl-component1-look1'],
-			css: '.css-gshptl-component1-look1{background:rebeccapurple;}',
+			css: '.GEL .css-gshptl-component1-look1{background:rebeccapurple;}',
 		});
 		expect(result.recipes[1].heading).toBe('Variation 2 for Component 1');
 		expect(typeof result.recipes[1].component).toBe('function');
@@ -111,7 +111,7 @@ describe('parseComponent', () => {
 			code: 0,
 			html: '<div class="css-a2lehl-component1-look2">Here comes the content</div>',
 			ids: ['a2lehl-component1-look2'],
-			css: '.css-a2lehl-component1-look2{background:hotpinnk;}',
+			css: '.GEL .css-a2lehl-component1-look2{background:hotpinnk;}',
 		});
 		expect(result.recipes[2].heading).toBe('Variation 3 for Component 1');
 		expect(typeof result.recipes[2].component).toBe('function');
@@ -119,7 +119,7 @@ describe('parseComponent', () => {
 			code: 0,
 			html: '<div class="css-1imz2ok-component1-look3">Here comes the content</div>',
 			ids: ['1imz2ok-component1-look3'],
-			css: '.css-1imz2ok-component1-look3{background:red;}',
+			css: '.GEL .css-1imz2ok-component1-look3{background:red;}',
 		});
 	});
 
@@ -169,7 +169,7 @@ describe('parseComponent', () => {
 		expect(result.code).toBe(0);
 		expect(result.ids).toStrictEqual(['a8hlze-Component']);
 		expect(result.html).toBe('<div class="css-a8hlze-Component">CHILD</div>');
-		expect(result.css).toBe('.css-a8hlze-Component{background:red;}');
+		expect(result.css).toBe('.GEL .css-a8hlze-Component{background:red;}');
 	});
 });
 
