@@ -147,7 +147,7 @@ ${COMMENT.join('\n')}
 	<meta name=viewport content="width=device-width, initial-scale=1">
 	<link rel=stylesheet href="assets/docs.min.css">
 </head>
-<body class="GEL-Core-v1_0_0">
+<body class="GEL GEL-Core-v1_0_0">
 	<div class="GEL-grid-container-v1_0_0">
 		<div class="GEL-grid-flow_row-height_auto-minRowHeight_2rem-v1_0_0">
 			<div class="GEL-grid-cell-v1_0_0">
