@@ -12,7 +12,18 @@ const { SETTINGS } = require('../src/settings.js');
 /**
  * parseComponent
  */
-describe('parseComponent', () => {
+describe.only('parseComponent', () => {
+	test.only('testing the freaky new core thing', async () => {
+		const result = await parseComponent({
+			componentPath: path.normalize(`${__dirname}/../tests/mock/mock-project5/recipe3.js`),
+			componentName: 'AllStyles',
+			brand: {},
+		});
+
+		console.log(result);
+		expect(result.code).toBe(0);
+	});
+
 	test('parse AllStyles component correctly', async () => {
 		const result = await parseComponent({
 			componentPath: path.normalize(`${__dirname}/../tests/mock/recipe1.js`),
