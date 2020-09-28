@@ -294,10 +294,10 @@ function counter() {
 			log.error(error);
 		}
 
-		counter = parseInt(data) + 1; // add this blend
+		counter = parseInt(data || 0) + 1; // add this blend
 
 		if (!isNaN(counter)) {
-			fs.writeFile(LOGFILE, counter, (error) => {
+			fs.writeFile(LOGFILE, String(counter), (error) => {
 				if (error) {
 					log.error(error);
 				}

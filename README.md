@@ -20,9 +20,7 @@ HTML:
 
 ```html
 <div class="css-1v0bpgp">
-	<span class="css-56rr0o">
-		My text
-	</span>
+	<span class="css-56rr0o"> My text </span>
 </div>
 ```
 
@@ -30,13 +28,9 @@ This is very hard to manage for the consumer when you add modifiers for your com
 
 ```html
 <div class="css-1v0bpgp">
-	<span class="css-56rr0o">
-		Primary
-	</span>
+	<span class="css-56rr0o"> Primary </span>
 
-	<span class="css-eh2j24">
-		Hero
-	</span>
+	<span class="css-eh2j24"> Hero </span>
 </div>
 ```
 
@@ -44,13 +38,9 @@ The blender takes the above output and creates human readable classes that make 
 
 ```html
 <div class="GEL-Core-v1_0_0">
-	<span class="GEL-badge-v1_0_0-look_primary">
-		Primary
-	</span>
+	<span class="GEL-badge-v1_0_0-look_primary"> Primary </span>
 
-	<span class="GEL-badge-v1_0_0-look_hero">
-		Hero
-	</span>
+	<span class="GEL-badge-v1_0_0-look_hero"> Hero </span>
 </div>
 ```
 
@@ -223,9 +213,7 @@ So `getLabel('Component')` on the root component and `getLabel('Component-subcom
 
 ```html
 <div class="GEL-Component-v1_0_0-props">
-	<div class="GEL-Component-v1_0_0-subcomponent-props">
-		Your sub-component
-	</div>
+	<div class="GEL-Component-v1_0_0-subcomponent-props">Your sub-component</div>
 </div>
 ```
 
@@ -267,7 +255,7 @@ Inside the `package.json`
 	"recipe": "path/to/recipe.js",
 	"js": "path/to/jquery-lib.js",
 	"isCore": true
-},
+}
 ```
 
 The `js` file should contain any framework other component rely on.
@@ -311,7 +299,7 @@ Inside the `package.json`
 "blender": {
 	"recipe": "blender/recipe.js",
 	"js": "blender/script.js"
-},
+}
 ```
 
 The `js` file is optional and only required if you have js functionality.

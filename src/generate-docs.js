@@ -48,9 +48,10 @@ function generateDocsFile(name, html) {
 			: '';
 		const body = variation.body ? `<div class="docs-body">${variation.body}</div>\n\t\t\t\t\t` : '';
 		const example = variation.html
-			? `<div class="docs-codeBox">\n\t\t\t\t\t\t${variation.html}\n\t\t\t\t\t</div>\n` +
+			? `<div class="docs-codeBox">\n\t\t\t\t\t\t${variation.html}\n\t\t\t\t\t</div>\n` + // eslint-disable-next-line no-mixed-spaces-and-tabs
 			  `<pre class="docs-pre language-html"><code class="language-html">${indentHtml(
 					variation.html
+					// eslint-disable-next-line no-mixed-spaces-and-tabs
 			  )
 					.replace(/&/g, '&amp;')
 					.replace(/</g, '&lt;')
@@ -84,7 +85,7 @@ ${COMMENT.join('\n')}
 	<link rel=stylesheet href="../assets/docs.min.css">
 	<link rel=stylesheet href="../assets/styles.min.css">
 </head>
-<body class="GEL-Core-v1_0_0">
+<body class="GEL GEL-Core-v1_0_0">
 	<div class="GEL-grid-container-v1_0_0">
 		<header class="docs-header docs-header-small">
 			<a class="docs-link docs-link-back" href="../index.html">Back to your components</a>
@@ -146,7 +147,7 @@ ${COMMENT.join('\n')}
 	<meta name=viewport content="width=device-width, initial-scale=1">
 	<link rel=stylesheet href="assets/docs.min.css">
 </head>
-<body class="GEL-Core-v1_0_0">
+<body class="GEL GEL-Core-v1_0_0">
 	<div class="GEL-grid-container-v1_0_0">
 		<div class="GEL-grid-flow_row-height_auto-minRowHeight_2rem-v1_0_0">
 			<div class="GEL-grid-cell-v1_0_0">
@@ -306,13 +307,13 @@ body {
 	font-weight: bold;
 	margin: 0 0 2.1875rem 0;
 }
-.docs-h2, 
+.docs-h2,
 .docs-body h2 {
 	font-size: 1.5rem;
 	font-weight: bold;
 	margin: 0 0 1.5rem 0;
 }
-.docs-h3, 
+.docs-h3,
 .docs-body h3 {
 	font-size: 1.125rem;
 	font-weight: bold;
