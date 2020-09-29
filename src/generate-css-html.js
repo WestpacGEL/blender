@@ -104,21 +104,6 @@ async function generateHtml({ pkg, coreHtml = '' }) {
 	}
 
 	const recipes = parsedPkg.recipes.map((recipe) => {
-		const testResults = testLabels(recipe.static);
-		if (testResults.code > 0) {
-			result.code = testResults.code;
-			result.errors.push({
-				package: pkg.name,
-				error: testResults.ids,
-			});
-			result.messages.push(
-				`The package ${color.yellow(
-					pkg.name
-				)} could not be blended. Run the blender in test mode to find out more:\n   Example: ${color.cyan(
-					'$ blender -T'
-				)}`
-			);
-		}
 
 		// remove core html
 		const coreBits = coreHtml.split('CORE');
