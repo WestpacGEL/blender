@@ -104,7 +104,6 @@ async function generateHtml({ pkg, coreHtml = '' }) {
 	}
 
 	const recipes = parsedPkg.recipes.map((recipe) => {
-
 		// remove core html
 		const coreBits = coreHtml.split('CORE');
 		const coreStart = new RegExp('^' + coreBits[0]);
