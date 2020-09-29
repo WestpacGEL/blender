@@ -170,7 +170,40 @@ function extractMarkup({ Component, componentPath, brand, children }) {
 			D.log(`Used local emotion/core and emotion/cache package`);
 		}
 
-		const cache = createCache();
+		const cache = createCache({
+			stylisPlugins: [
+				(context, content, selectors) => {
+					if (
+						context === -2 &&
+						selectors.length &&
+						selectors[0] !== '' && // exclude <Global /> styles
+						!selectors[0].includes(`-GELCore`) // exclude nested <GEL /> (Core) styles
+					) {
+						/**
+						 * Add to beginning of `content` string, if not beginning with `@`
+						 * (catches `@media` and `@font-face` queries etc)
+						 *
+						 * Regex explanation:
+						 * - ^ Beginning of string
+						 * - [^@] Negated set (not `@` symbol)
+						 * - .* Any character except new line, match 0 or more
+						 * - /g Global search
+						 */
+						content = content.replace(/^[^@].*/g, (s) => `.GEL ${s}`);
+
+						/**
+						 * Additionally, insert within @media queries
+						 *
+						 * Regex explanation:
+						 * - (\){) Match `){`
+						 * - /g Global search
+						 */
+						content = content.replace(/(\){)/g, (s) => `${s}.GEL `);
+					}
+					return content;
+				},
+			],
+		});
 		const { extractCritical } = createEmotionServer(cache);
 		let staticMarkup;
 
@@ -183,14 +216,14 @@ function extractMarkup({ Component, componentPath, brand, children }) {
 			const reactDomPath = require.resolve(`${SETTINGS.get.cwd}/node_modules/react-dom/server`);
 			renderToStaticMarkup = require(reactDomPath).renderToStaticMarkup;
 			D.log(
-				`Used cwd react and reac-dom package at ${color.yellow(reactPath)} and ${color.yellow(
+				`Used cwd react and react-dom package at ${color.yellow(reactPath)} and ${color.yellow(
 					reactDomPath
 				)}`
 			);
 		} catch (_) {
 			createElement = require('react').createElement;
 			renderToStaticMarkup = require('react-dom/server').renderToStaticMarkup;
-			D.log(`Used local react and reac-dom package`);
+			D.log(`Used local react and react-dom package`);
 		}
 
 		// we allow some garbage collection here as the next task is intense
