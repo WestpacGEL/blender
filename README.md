@@ -227,6 +227,25 @@ So things like `data-js="body__version__"` or `data-js="component-closebtn__vers
 
 The `__version__` bit is important for the blender to know where to inject the version.
 
+### Nested Classes/Custom Component Classes
+
+In order to support nested classes within css or custom classNames on a component you have to add the `__convert__` prefix. This allows the blender to also convert and format these classes into the blender format.
+
+```html
+<div className="__convert__subComponent">your sub-component</div>
+```
+
+```jsx
+const style = {
+	label: subComponent,
+	color: '#d5002b',
+
+	'.__convert__subComponent-nested': {
+		color: '#621a4b',
+	},
+};
+```
+
 ### Core components
 
 Inside the `package.json`

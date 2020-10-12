@@ -104,22 +104,6 @@ async function generateHtml({ pkg, coreHtml = '' }) {
 	}
 
 	const recipes = parsedPkg.recipes.map((recipe) => {
-		const testResults = testLabels(recipe.static);
-		if (testResults.code > 0) {
-			result.code = testResults.code;
-			result.errors.push({
-				package: pkg.name,
-				error: testResults.ids,
-			});
-			result.messages.push(
-				`The package ${color.yellow(
-					pkg.name
-				)} could not be blended. Run the blender in test mode to find out more:\n   Example: ${color.cyan(
-					'$ blender -T'
-				)}`
-			);
-		}
-
 		// remove core html
 		const coreBits = coreHtml.split('CORE');
 		const coreStart = new RegExp('^' + coreBits[0]);
@@ -161,19 +145,40 @@ function convertClasses({ css, html, ids }, version) {
 	let humanReadableCSS = css;
 	let humanReadableHtml = html;
 
+	const niceVersion = version.replace(/\./g, '_');
+	const versionString = SETTINGS.get.noVersionInClass ? '' : `-v${niceVersion}`;
+
 	ids.map((id) => {
 		const oldClass = new RegExp(`css-${id}`, 'g');
-		const versionString = version.replace(/\./g, '_');
 		const idBits = id.split('-').slice(1);
-		const newClass =
-			'GEL-' +
-			idBits[0] +
-			(SETTINGS.get.noVersionInClass ? '' : `-v${versionString}`) +
-			(idBits.length > 1 ? '-' : '') +
-			idBits.slice(1).join('-');
+		const newClass = getClassName(idBits, versionString);
 
 		humanReadableCSS = humanReadableCSS.replace(oldClass, newClass);
 		humanReadableHtml = humanReadableHtml.replace(oldClass, newClass);
+	});
+
+	// find any additional custom/nested classes
+	const convertRegex = new RegExp(/__convert__[\w-]+/, 'g');
+	const htmlClasses = findConvertClasses(humanReadableHtml, convertRegex);
+	const cssClasses = findConvertClasses(humanReadableCSS, convertRegex);
+
+	const convert = {
+		html: htmlClasses,
+		css: cssClasses,
+	};
+
+	Object.entries(convert).forEach(([key, classes]) => {
+		classes.forEach((c) => {
+			const currClass = c.replace('__convert__', '');
+			const oldClass = new RegExp(c, 'g');
+			const classBits = currClass.split('-');
+			const newClass = getClassName(classBits, versionString);
+			if (key === 'html') {
+				humanReadableHtml = humanReadableHtml.replace(oldClass, newClass);
+			} else if (key === 'css') {
+				humanReadableCSS = humanReadableCSS.replace(oldClass, newClass);
+			}
+		});
 	});
 
 	return {
@@ -181,6 +186,35 @@ function convertClasses({ css, html, ids }, version) {
 		html: humanReadableHtml,
 		ids,
 	};
+}
+
+/**
+ * Generate the formatted class name
+ *
+ * @param {array} 	bits 	- The class name split on '-' delimeter
+ * @param {string} 	version	- The class version string
+ *
+ * @return {string}			- The string with the formatted class name
+ */
+function getClassName(bits, version) {
+	const className =
+		'GEL-' + bits[0] + version + (bits.length > 1 ? '-' : '') + bits.slice(1).join('-');
+
+	return className;
+}
+
+/**
+ * Find all classes with the __format__ prefix
+ *
+ * @param {string} searchString	- The string to search
+ * @param {object} regex 		- The regex to use for search
+ *
+ * @return {array}				- An array containing all the unique classes to convert
+ */
+function findConvertClasses(searchString, regex) {
+	const matches = Array.from(searchString.matchAll(regex), (match) => match[0]);
+	const uniqueMatches = [...new Set(matches)];
+	return uniqueMatches;
 }
 
 module.exports = exports = {
