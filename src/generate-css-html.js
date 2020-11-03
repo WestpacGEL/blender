@@ -115,6 +115,9 @@ async function generateHtml({ pkg, coreHtml = '' }) {
 
 		let { html } = convertClasses(recipe.static, pkg.version);
 
+		// clean-up all disabled="" & checked="" attributes to be semantically correct
+		html = html.replace(/=""/gi, '');
+
 		return {
 			heading: recipe.heading,
 			subheading: recipe.subheading,
