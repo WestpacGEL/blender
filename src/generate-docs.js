@@ -343,7 +343,6 @@ body {
 	padding: 2rem;
 	margin-top: 1rem;
 	margin-bottom: 0;
-	overflow-x: auto;
 }
 .docs-codeBox .row>.col, .docs-codeBox .row>[class^="col-"] {
     padding-top: .75rem;
