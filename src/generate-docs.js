@@ -268,14 +268,14 @@ body {
 	display: inline-block;
 	text-decoration: none;
 }
-.docs-link:before {
+.docs-link::before {
 	content: '';
 	display: inline-block;
 	width: 0.7rem;
 	height: 0.75rem;
 	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 12'%3E%3Cpath fill='%23C80038' fill-rule='evenodd' d='M4.73 6l-4.4 4.39.94.94L6.61 6 1.27.67l-.94.94z'/%3E%3C/svg%3E") no-repeat;
 }
-.docs-link-back:before {
+.docs-link-back::before {
 	width: 1rem;
 	transform: rotate(180deg);
 	background-position-x: 0.5rem;
