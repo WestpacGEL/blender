@@ -177,7 +177,7 @@ function extractMarkup({ Component, componentPath, brand, children }) {
 						context === -2 &&
 						selectors.length &&
 						selectors[0] !== '' && // exclude <Global /> styles
-						!selectors[0].includes('-Core') // exclude nested <GEL /> (Core) styles
+						!selectors[0].includes('-core') // exclude nested <GEL /> (Core) styles
 					) {
 						/* 1. Strip any parsed CSS comments */
 						content = content.replace(/\/\*.*?\*\//g, '');
