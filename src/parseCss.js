@@ -177,10 +177,13 @@ function extractMarkup({ Component, componentPath, brand, children }) {
 						context === -2 &&
 						selectors.length &&
 						selectors[0] !== '' && // exclude <Global /> styles
-						!selectors[0].includes(`-GELCore`) // exclude nested <GEL /> (Core) styles
+						!selectors[0].includes('-Core') // exclude nested <GEL /> (Core) styles
 					) {
+						/* 1. Strip any parsed CSS comments */
+						content = content.replace(/\/\*.*?\*\//g, '');
+
 						/**
-						 * Add to beginning of `content` string, if not beginning with `@`
+						 * 2. Add to beginning of `content` string, if not beginning with `@`
 						 * (catches `@media` and `@font-face` queries etc)
 						 *
 						 * Regex explanation:
@@ -192,13 +195,27 @@ function extractMarkup({ Component, componentPath, brand, children }) {
 						content = content.replace(/^[^@].*/g, (s) => `.GEL ${s}`);
 
 						/**
-						 * Additionally, insert within @media queries
+						 * 3. Additionally, consider selectors found within the same string (e.g. child selectors)
 						 *
 						 * Regex explanation:
-						 * - (\){) Match `){`
+						 * - (;}) Capture group #1 matching `;}`
+						 * - ([^@/}]) Capture group #2 matching negated set (not `@`, `/` or `}` symbol)
 						 * - /g Global search
 						 */
-						content = content.replace(/(\){)/g, (s) => `${s}.GEL `);
+						content = content.replace(/(;})([^@/}])/g, '$1.GEL $2');
+
+						/**
+						 * 4. Additionally, insert within all @media queries
+						 *
+						 * Regex explanation:
+						 * - @ Match `@` character
+						 * - .+ Any character except new line, match 1 or more
+						 * - ? Makes the preceding quantifier lazy, causing it to match as few characters as possible
+						 * - /g Global search
+						 *
+						 * - i.e. match `@media (min-width:576px){` and `@print {`
+						 */
+						content = content.replace(/@.+?\{/g, (s) => `${s}.GEL `);
 					}
 					return content;
 				},
