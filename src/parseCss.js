@@ -176,13 +176,6 @@ function extractMarkup({ Component, componentPath, brand, children }) {
 					if (
 						context === -2 &&
 						selectors.length &&
-						selectors[0] !== '' // exclude <Global /> styles
-					) {
-						console.log(`Original: ${content}`);
-					}
-					if (
-						context === -2 &&
-						selectors.length &&
 						selectors[0] !== '' && // exclude <Global /> styles
 						!selectors[0].includes('-Core') // exclude nested <GEL /> (Core) styles
 					) {
@@ -224,7 +217,6 @@ function extractMarkup({ Component, componentPath, brand, children }) {
 						 */
 						content = content.replace(/@.+?\{/g, (s) => `${s}.GEL `);
 					}
-					console.log(`Edited: ${content}`);
 					return content;
 				},
 			],
