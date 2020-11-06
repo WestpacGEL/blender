@@ -37,10 +37,10 @@ This is very hard to manage for the consumer when you add modifiers for your com
 The blender takes the above output and creates human readable classes that make it easier to manage modifiers.
 
 ```html
-<div class="GEL-Core-v1_0_0">
-	<span class="GEL-badge-v1_0_0-look_primary"> Primary </span>
+<div class="GEL-core-v1_0_0">
+	<span class="GEL-badge-v1_0_0 GEL-badge-v1_0_0-primary"> Primary </span>
 
-	<span class="GEL-badge-v1_0_0-look_hero"> Hero </span>
+	<span class="GEL-badge-v1_0_0 GEL-badge-v1_0_0-hero"> Hero </span>
 </div>
 ```
 
