@@ -170,28 +170,42 @@ function extractMarkup({ Component, componentPath, brand, children }) {
 			D.log(`Used local emotion/core and emotion/cache package`);
 		}
 
+		const coreLabel = 'core';
 		const seen = new WeakSet();
 
 		const cache = createCache({
 			stylisPlugins: [
 				// Prepend all CSS selectors that are children of the GEL wrapper (Core) with `.GEL` parent class to increase specificity
-				(context, content, selectors, parents, line, column, length, type) => {
+				(context, content, selectors, parents, line, column, length, id) => {
 					if (
 						context !== 2 ||
-						type === 107 ||
+						id === 107 || //@keyframes
 						seen.has(selectors) ||
 						seen.has(parents) ||
 						!selectors.length ||
-						selectors[0] === '' ||
-						selectors[0].includes('-core')
+						selectors[0] === ''
 					) {
 						return;
 					}
 
 					seen.add(selectors);
 
+					// Prepend selector with `.GEL `
 					for (let i = 0; i < selectors.length; i++) {
-						selectors[i] = `.GEL ${selectors[i]}`;
+						/**
+						 * Don't process the following...
+						 * 1. `html` or `body` selectors, possible if styles are passed to Emotion's `<Global />` component within the `<GEL>` wrapper (e.g. <GEL><Global styles={{ 'body': { margin: 0 } }} /></GEL>)
+						 * 2. Core components (we don't want to increase Core's specificity)
+						 * 3. Selectors already prepended with `.GEL `
+						 */
+						if (
+							!selectors[i].includes('html') /* 1 */ &&
+							!selectors[i].includes('body') /* 1 */ &&
+							!selectors[i].includes(`-${coreLabel}`) /* 2 */ &&
+							!selectors[i].includes('.GEL ') /* 3 */
+						) {
+							selectors[i] = `.GEL ${selectors[i]}`;
+						}
 					}
 				},
 			],
