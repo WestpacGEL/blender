@@ -340,9 +340,12 @@ body {
 }
 .docs-codeBox {
 	background: #fff;
-	padding: 2rem;
+	padding: 2rem 2rem 1.25rem;
 	margin-top: 1rem;
 	margin-bottom: 0;
+}
+.docs-codeBox > * {
+	margin-bottom: 12px !important;
 }
 .docs-codeBox .row>.col, .docs-codeBox .row>[class^="col-"] {
     padding-top: .75rem;
