@@ -72,7 +72,7 @@ describe('generateIndexFile', () => {
 
 		const result = generateIndexFile(docs);
 
-		expect(result.includes('Your Westpac Design System blend')).toBe(true);
+		expect(result.includes('<p>Brand: <strong>Westpac</strong></p>')).toBe(true);
 		expect(result.match(/<li class="docs-li"><a class="docs-link"/g).length).toBe(3);
 	});
 
@@ -88,7 +88,7 @@ describe('generateIndexFile', () => {
 
 		const result = generateIndexFile(docs);
 
-		expect(result.includes('Your Bank of Melbourne Design System blend')).toBe(true);
+		expect(result.includes('<p>Brand: <strong>Bank of Melbourne</strong></p>')).toBe(true);
 		expect(result.match(/<li class="docs-li"><a class="docs-link"/g).length).toBe(2);
 	});
 
@@ -104,7 +104,7 @@ describe('generateIndexFile', () => {
 
 		const result = generateIndexFile(docs);
 
-		expect(result.includes('Your VOID Design System blend')).toBe(true);
+		expect(result.includes('<p>Brand: <strong>VOID</strong></p>')).toBe(true);
 		expect(result.match(/<li class="docs-li"><a class="docs-link"/g).length).toBe(2);
 	});
 });
