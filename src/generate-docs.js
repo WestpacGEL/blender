@@ -130,7 +130,7 @@ function generateIndexFile(docs) {
 		BOM: 'Bank of Melbourne',
 		BSA: 'Bank SA',
 		BTFG: 'BT Financial Group',
-		STG: 'StGeorge',
+		STG: 'St.George',
 		WBC: 'Westpac',
 		WBG: 'Westpac Group',
 	};
