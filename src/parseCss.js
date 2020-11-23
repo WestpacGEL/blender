@@ -170,37 +170,43 @@ function extractMarkup({ Component, componentPath, brand, children }) {
 			D.log(`Used local emotion/core and emotion/cache package`);
 		}
 
+		const coreLabel = 'core';
+		const seen = new WeakSet();
+
 		const cache = createCache({
 			stylisPlugins: [
-				(context, content, selectors) => {
+				// Prepend all CSS selectors that are children of the GEL wrapper (Core) with `.GEL` parent class to increase specificity
+				(context, content, selectors, parents, line, column, length, id) => {
 					if (
-						context === -2 &&
-						selectors.length &&
-						selectors[0] !== '' && // exclude <Global /> styles
-						!selectors[0].includes(`-GELCore`) // exclude nested <GEL /> (Core) styles
+						context !== 2 ||
+						id === 107 || //@keyframes
+						seen.has(selectors) ||
+						seen.has(parents) ||
+						!selectors.length ||
+						selectors[0] === ''
 					) {
-						/**
-						 * Add to beginning of `content` string, if not beginning with `@`
-						 * (catches `@media` and `@font-face` queries etc)
-						 *
-						 * Regex explanation:
-						 * - ^ Beginning of string
-						 * - [^@] Negated set (not `@` symbol)
-						 * - .* Any character except new line, match 0 or more
-						 * - /g Global search
-						 */
-						content = content.replace(/^[^@].*/g, (s) => `.GEL ${s}`);
-
-						/**
-						 * Additionally, insert within @media queries
-						 *
-						 * Regex explanation:
-						 * - (\){) Match `){`
-						 * - /g Global search
-						 */
-						content = content.replace(/(\){)/g, (s) => `${s}.GEL `);
+						return;
 					}
-					return content;
+
+					seen.add(selectors);
+
+					// Prepend selector with `.GEL `
+					for (let i = 0; i < selectors.length; i++) {
+						/**
+						 * Don't process the following...
+						 * 1. `html` or `body` selectors, possible if styles are passed to Emotion's `<Global />` component within the `<GEL>` wrapper (e.g. <GEL><Global styles={{ 'body': { margin: 0 } }} /></GEL>)
+						 * 2. Core components (we don't want to increase Core's specificity)
+						 * 3. Selectors already prepended with `.GEL `
+						 */
+						if (
+							!selectors[i].includes('html') /* 1 */ &&
+							!selectors[i].includes('body') /* 1 */ &&
+							!selectors[i].includes(`-${coreLabel}`) /* 2 */ &&
+							!selectors[i].includes('.GEL ') /* 3 */
+						) {
+							selectors[i] = `.GEL ${selectors[i]}`;
+						}
+					}
 				},
 			],
 		});

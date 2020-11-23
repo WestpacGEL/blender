@@ -53,7 +53,7 @@ function generateJSFile(pkg) {
  * @return {string}         - The converted text
  */
 function convertVersion(text, version) {
-	const replacement = SETTINGS.get.noVersionInClass ? '' : `-${version.replace(/\./g, '_')}`;
+	const replacement = SETTINGS.get.noVersionInClass ? '' : `-v${version.replace(/\./g, '_')}`;
 	return String(text).replace(/__version__/g, replacement);
 }
 
