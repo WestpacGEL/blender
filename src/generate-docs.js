@@ -186,10 +186,10 @@ ${COMMENT.join('\n')}
 					<section class="docs-section">
 						<h2 class="docs-h2">Your web fonts</h2>
 						<p class="docs-lead">							
-							Font license agreements restrict us from distributing web fonts via the Blender. Westpac Group employees may follow the link below to access the web font packages on the internal network.
+							Font licence agreements restrict us from distributing web fonts via the Blender. Westpac Group employees may follow the link below to access the web font packages on the internal network.
 						</p>
 						<p>
-							<a class="docs-link" href="https://sites.thewestpacgroup.com.au/sites/TS1206/Shared%20Documents/webfonts/" target="_blank" rel="noopener">Download web fonts</a>
+							<a class="docs-link" href="https://westpacgroup.sharepoint.com/sites/TS1206/Shared%20Documents/webfonts/${brandFlag.toUpperCase()}" target="_blank" rel="noopener">Download web fonts</a>
 						</p>
 					</section>
 
