@@ -39,12 +39,13 @@ function generateTokenFile(pathToTokens, tokensFormat) {
 function flattenTokens(tokens, key = '', list = {}) {
 	const seperator = key === '' ? '' : '_';
 
-	if (typeof tokens !== 'object') {
+	if (typeof tokens !== 'object' || tokens === null) {
 		return tokens;
 	}
 
 	if (!Array.isArray(tokens)) {
 		Object.entries(tokens).map(([name, value]) => {
+			name = name.replace(/:/g, '');
 			if (typeof value === 'string') {
 				list[`${key}${seperator}${name}`] = value;
 			} else if (typeof value === 'number') {

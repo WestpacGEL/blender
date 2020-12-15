@@ -216,16 +216,19 @@ async function blendPkg({
 
 	// Building tokens
 	if (includeTokens && thisPkg.pkg.tokens) {
-		D.log(`Creating tokens for ${color.yellow(thisPkg.name)}`);
+		const brandRegex = new RegExp(`${SETTINGS.get.brand}`, 'i');
+		if (brandRegex.test(thisPkg.name)) {
+			D.log(`Creating tokens for ${color.yellow(thisPkg.name)}`);
 
-		const compiledTokens = generateTokenFile(thisPkg.path, SETTINGS.get.tokensFormat);
+			const compiledTokens = generateTokenFile(thisPkg.path, SETTINGS.get.tokensFormat);
 
-		D.log(`Adding tokens to store`);
-		FILES.add = {
-			name: `tokens.${SETTINGS.get.tokensFormat}`,
-			dir: SETTINGS.get.outputTokens,
-			content: compiledTokens,
-		};
+			D.log(`Adding tokens to store`);
+			FILES.add = {
+				name: `tokens.${SETTINGS.get.tokensFormat}`,
+				dir: SETTINGS.get.outputTokens,
+				content: compiledTokens,
+			};
+		}
 	}
 
 	// Building CSS
