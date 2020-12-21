@@ -362,7 +362,7 @@ describe('getPkgOptions', () => {
 			modules: true,
 			brand: 'BOM',
 			includeJquery: true,
-			versionInClass: true,
+			versionInClass: false,
 		});
 	});
 
