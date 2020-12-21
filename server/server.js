@@ -89,8 +89,8 @@ async function createZip({ response, cleanReq }) {
 			scope: '',
 			modules: cleanReq.modules,
 			prettify: cleanReq.prettify,
-			excludeJquery: cleanReq.excludeJquery,
-			noVersionInClass: cleanReq.noVersionInClass,
+			includeJquery: cleanReq.includeJquery,
+			versionInClass: cleanReq.versionInClass,
 			tokensFormat: cleanReq.tokensFormat,
 			output: prefix,
 			include: cleanReq.packages.map((pkg) => `@westpac/${pkg.toLowerCase()}`),
@@ -168,8 +168,8 @@ function sanitizeRequest(request, allPkgs) {
 		brand: brandDict.includes(request.body.brand) ? request.body.brand : 'wbc',
 		modules: !!request.body.modules,
 		prettify: !!request.body.prettify,
-		excludeJquery: !!request.body.excludeJquery,
-		noVersionInClass: !!request.body.noVersionInClass,
+		includeJquery: !request.body.includeJquery,
+		versionInClass: !request.body.versionInClass,
 		tokensFormat: tokensDict.includes(request.body.tokensFormat.toLowerCase())
 			? request.body.tokensFormat.toLowerCase()
 			: 'json',
@@ -232,8 +232,8 @@ function send2Slack({ cleanReq, IP, slackUrls, time }) {
 				fields: [
 					{ type: 'mrkdwn', text: `Modules: \`${cleanReq.modules}\`` },
 					{ type: 'mrkdwn', text: `Prettify: \`${cleanReq.prettify}\`` },
-					{ type: 'mrkdwn', text: `jQuery: \`${cleanReq.excludeJquery}\`` },
-					{ type: 'mrkdwn', text: `Classes: \`${cleanReq.noVersionInClass}\`` },
+					{ type: 'mrkdwn', text: `jQuery: \`${cleanReq.includeJquery}\`` },
+					{ type: 'mrkdwn', text: `Classes: \`${cleanReq.versionInClass}\`` },
 					{ type: 'mrkdwn', text: `Tokens: \`${cleanReq.tokensFormat}\`` },
 				],
 			},
