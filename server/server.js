@@ -168,8 +168,8 @@ function sanitizeRequest(request, allPkgs) {
 		brand: brandDict.includes(request.body.brand) ? request.body.brand : 'wbc',
 		modules: !!request.body.modules,
 		prettify: !!request.body.prettify,
-		includeJquery: !request.body.includeJquery,
-		versionInClass: !request.body.versionInClass,
+		includeJquery: !!request.body.includeJquery,
+		versionInClass: !!request.body.versionInClass,
 		tokensFormat: tokensDict.includes(request.body.tokensFormat.toLowerCase())
 			? request.body.tokensFormat.toLowerCase()
 			: 'json',
