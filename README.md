@@ -150,7 +150,7 @@ const result = await blender({
 	prettify: true,
 	modules: true,
 	brand: 'WBC',
-	excludeJquery: false,
+	includeJquery: true,
 	versionInClass: true,
 });
 ```

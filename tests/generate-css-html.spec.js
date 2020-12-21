@@ -55,9 +55,9 @@ describe('convertClasses', () => {
 			'0.1.0'
 		);
 
-		expect(result.html).toStrictEqual('<div class="GEL-component1-v0_1_0-look1">Content</div>');
+		expect(result.html).toStrictEqual('<div class="GEL-component1-look1">Content</div>');
 		expect(result.css).toStrictEqual(
-			'.GEL-core-v0_1_0{background:orange;}.GEL-core-v0_1_0:after{content:"Core";}.GEL-component1-v0_1_0-look1{background:#ffffff;}'
+			'.GEL-core{background:orange;}.GEL-core:after{content:"Core";}.GEL-component1-look1{background:#ffffff;}'
 		);
 	});
 	test('Convert custom HTML and nested classes', () => {
@@ -65,15 +65,15 @@ describe('convertClasses', () => {
 			{
 				html: '<div class="__convert__component2">Content</div>',
 				css:
-					'.__convert__component2{color:blue;}.GEL-component2-v0_1_0 .__convert__component2-nested:after{background:red;}',
+					'.__convert__component2{color:blue;}.GEL-component2 .__convert__component2-nested:after{background:red;}',
 				ids: [],
 			},
 			'0.1.0'
 		);
 
-		expect(result.html).toStrictEqual('<div class="GEL-component2-v0_1_0">Content</div>');
+		expect(result.html).toStrictEqual('<div class="GEL-component2">Content</div>');
 		expect(result.css).toStrictEqual(
-			'.GEL-component2-v0_1_0{color:blue;}.GEL-component2-v0_1_0 .GEL-component2-v0_1_0-nested:after{background:red;}'
+			'.GEL-component2{color:blue;}.GEL-component2 .GEL-component2-nested:after{background:red;}'
 		);
 	});
 });

@@ -49,7 +49,7 @@ function generator(packages) {
 			.map(async (core) => {
 				const { oldCss, oldHtml, js, css, html, ...rest } = await blendPkg({
 					thisPkg: core,
-					includeJs: !!SETTINGS.get.outputJs && !SETTINGS.get.excludeJquery,
+					includeJs: !!SETTINGS.get.outputJs && !!SETTINGS.get.includeJquery,
 					children: 'CORE',
 				});
 

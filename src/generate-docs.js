@@ -133,6 +133,7 @@ function generateIndexFile(docs) {
 		STG: 'St.George',
 		WBC: 'Westpac',
 		WBG: 'Westpac Group',
+		RAMS: 'RAMS',
 	};
 	const brand = dict[brandFlag.toUpperCase()] || SETTINGS.get.brand;
 

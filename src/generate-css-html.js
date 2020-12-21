@@ -149,7 +149,7 @@ function convertClasses({ css, html, ids }, version) {
 	let humanReadableHtml = html;
 
 	const niceVersion = version.replace(/\./g, '_');
-	const versionString = SETTINGS.get.noVersionInClass ? '' : `-v${niceVersion}`;
+	const versionString = SETTINGS.get.versionInClass ? `-v${niceVersion}` : '';
 
 	ids.map((id) => {
 		const oldClass = new RegExp(`css-${id}`, 'g');
