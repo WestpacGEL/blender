@@ -97,9 +97,9 @@ blender
 	-x "@westpac/button" "@westpac/alert" # --exclude
 	-D path/to/cwd                        # --cwd
 	-p                                    # --prettify
-	-J                                    # --exclude-jquery
+	-J                                    # --include-jquery
 	-m                                    # --modules
-	-C                                    # --no-version-in-class
+	-C                                    # --version-in-class
 	-g                                    # --debug
 	-v                                    # --version
 	-h                                    # --help
@@ -223,7 +223,7 @@ Since the blender just SSR each component it won't provide the functionality of 
 For this you have to provide a `js` file for fallback.
 In the GEL3 we use jQuery for this.
 Each jQuery file should target elements via the `data-js` attribute since classes can vary depending on your blend settings.
-So things like `data-js="body__version__"` or `data-js="component-closebtn__version__"` should work well and you target this via `$('[data-js="component-closebtn__version__"]')` in jQuery.
+So things like `data-js="body__version__"` or `data-js="component-closeBtn__version__"` should work well and you target this via `$('[data-js="component-closeBtn__version__"]')` in jQuery.
 
 The `__version__` bit is important for the blender to know where to inject the version.
 
