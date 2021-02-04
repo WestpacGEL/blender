@@ -310,7 +310,7 @@ async function blendPkg({
 		result.js = `${js}\n`;
 
 		if (!!SETTINGS.get.includeJquery && jquery) {
-			result.js = `${jquery}\n${result.js}`
+			result.js = `${jquery}\n${result.js}`;
 		}
 
 		// save each file into its own module
