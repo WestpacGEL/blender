@@ -83,8 +83,8 @@ const CLIOPTIONS = {
 		type: 'boolean',
 		default: false,
 	},
-	'exclude-jquery': {
-		description: `Specify if you don't want to include jQuery in your blend`,
+	'include-jquery': {
+		description: `Specify if you want to include jQuery in your blend`,
 		example: 'blender -J',
 		flag: 'J',
 		type: 'boolean',
@@ -97,8 +97,8 @@ const CLIOPTIONS = {
 		type: 'boolean',
 		default: false,
 	},
-	'no-version-in-class': {
-		description: `Specify if you don't want the component version included in your css classes`,
+	'version-in-class': {
+		description: `Specify if you want the component version included in your css classes`,
 		example: 'blender -C',
 		flag: 'C',
 		type: 'boolean',

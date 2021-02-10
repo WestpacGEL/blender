@@ -47,9 +47,9 @@ function generator(packages) {
 		const allCore = packages
 			.filter((pkg) => pkg.pkg.isCore)
 			.map(async (core) => {
-				const { oldCss, oldHtml, js, css, html, ...rest } = await blendPkg({
+				const { oldCss, oldHtml, js, jquery, css, html, ...rest } = await blendPkg({
 					thisPkg: core,
-					includeJs: !!SETTINGS.get.outputJs && !!SETTINGS.get.includeJquery,
+					includeJs: !!SETTINGS.get.outputJs,
 					children: 'CORE',
 				});
 
@@ -65,6 +65,9 @@ function generator(packages) {
 
 				// we collect all css and js for a possible concatenated css/js file
 				cssFile += css;
+				if (jquery) {
+					jsFile += jquery;
+				}
 				jsFile += js;
 				if (html) {
 					docs.push(html);
@@ -211,6 +214,7 @@ async function blendPkg({
 		oldHtml: '',
 		css: '',
 		js: '',
+		jquery: '',
 		html: false,
 	};
 
@@ -296,7 +300,7 @@ async function blendPkg({
 	// Building JS
 	if (includeJs && thisPkg.pkg.js) {
 		D.log(`Creating js for ${color.yellow(thisPkg.name)}`);
-		const { js, ...rest } = generateJSFile(thisPkg);
+		const { js, jquery, ...rest } = generateJSFile(thisPkg);
 
 		if (rest.code > 0) {
 			result.code = 1;
@@ -304,6 +308,10 @@ async function blendPkg({
 		}
 
 		result.js = `${js}\n`;
+
+		if (!!SETTINGS.get.includeJquery && jquery) {
+			result.js = `${jquery}\n${result.js}`;
+		}
 
 		// save each file into its own module
 		if (SETTINGS.get.modules) {
