@@ -4,7 +4,7 @@
  * parseComponent - Parsing a component to get out css and html
  * extractMarkup  - Extract the markup from a component
  **/
-const createEmotionServer = require('create-emotion-server').default;
+const createEmotionServer = require('@emotion/server/create-instance').default;
 const { SETTINGS } = require('./settings.js');
 
 const { color } = require('./color.js');
@@ -62,7 +62,7 @@ function parseComponent({ componentPath, componentName, brand = BRAND.get, child
 					return resolve({
 						code: 1,
 						error,
-						message: `An error occured when trying to open ${color.yellow(componentPath)}`,
+						message: `An error occurred when trying to open ${color.yellow(componentPath)}`,
 					});
 				}
 
@@ -106,7 +106,7 @@ function parseComponent({ componentPath, componentName, brand = BRAND.get, child
 					return resolve({
 						code: 1,
 						error,
-						message: `An error occured when trying to open ${color.yellow(componentPath)}`,
+						message: `An error occurred when trying to open ${color.yellow(componentPath)}`,
 					});
 				}
 				D.log(`Component successfully required via "${color.yellow(componentPath)}"`);
@@ -166,50 +166,11 @@ function extractMarkup({ Component, componentPath, brand, children }) {
 			);
 		} catch (_) {
 			createCache = require('@emotion/cache').default;
-			CacheProvider = require('@emotion/core').CacheProvider;
+			CacheProvider = require('@emotion/react').CacheProvider;
 			D.log(`Used local emotion/core and emotion/cache package`);
 		}
 
-		const coreLabel = 'core';
-		const seen = new WeakSet();
-
-		const cache = createCache({
-			stylisPlugins: [
-				// Prepend all CSS selectors that are children of the GEL wrapper (Core) with `.GEL` parent class to increase specificity
-				(context, content, selectors, parents, line, column, length, id) => {
-					if (
-						context !== 2 ||
-						id === 107 || //@keyframes
-						seen.has(selectors) ||
-						seen.has(parents) ||
-						!selectors.length ||
-						selectors[0] === ''
-					) {
-						return;
-					}
-
-					seen.add(selectors);
-
-					// Prepend selector with `.GEL `
-					for (let i = 0; i < selectors.length; i++) {
-						/**
-						 * Don't process the following...
-						 * 1. `html` or `body` selectors, possible if styles are passed to Emotion's `<Global />` component within the `<GEL>` wrapper (e.g. <GEL><Global styles={{ 'body': { margin: 0 } }} /></GEL>)
-						 * 2. Core components (we don't want to increase Core's specificity)
-						 * 3. Selectors already prepended with `.GEL `
-						 */
-						if (
-							!selectors[i].includes('html') /* 1 */ &&
-							!selectors[i].includes('body') /* 1 */ &&
-							!selectors[i].includes(`-${coreLabel}`) /* 2 */ &&
-							!selectors[i].includes('.GEL ') /* 3 */
-						) {
-							selectors[i] = `.GEL ${selectors[i]}`;
-						}
-					}
-				},
-			],
-		});
+		const cache = createCache({ key: 'blender' });
 		const { extractCritical } = createEmotionServer(cache);
 		let staticMarkup;
 
@@ -248,7 +209,7 @@ function extractMarkup({ Component, componentPath, brand, children }) {
 				reject({
 					code: 1,
 					error,
-					message: `An error occured when trying to parse ${color.yellow(componentPath)}`,
+					message: `An error occurred when trying to parse ${color.yellow(componentPath)}`,
 				});
 			}
 
