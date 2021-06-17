@@ -122,7 +122,7 @@ function testLabels(parsedPkg) {
  * @return {array}      - Filtered ids
  */
 function getValidIds(ids, css) {
-	return ids.filter((id) => css.includes(`.css-${id}`));
+	return ids.filter((id) => css.includes(`.blender-${id}`));
 }
 
 /**

@@ -153,7 +153,7 @@ exports.Component${num} = Component${num};
 	},
 	dist4: ({ num, dir, scope = '@westpac/', core = '@westpac/' }) => {
 		const content = `import { useBrand } from '${core}core';
-import { jsx } from '@emotion/core';
+import { jsx } from '@emotion/react';
 
 /** @jsx jsx */
 function Component${num}(_ref) {
@@ -187,7 +187,7 @@ export { Component${num} };
 		const content = `/** @jsx jsx */
 
 import { useBrand } from '${core}core';
-import { jsx } from '@emotion/core';
+import { jsx } from '@emotion/react';
 
 export function Component${num}({ look = 'look1', children }) {
 	const { COLORS } = useBrand();
@@ -311,7 +311,7 @@ exports.Component${num} = Component${num};
 		fs.writeFileSync(`${filePath}component${num}.cjs.prod.js`, content, { encoding: 'utf8' });
 	},
 	dist4: ({ num, dir }) => {
-		const content = `import { jsx } from '@emotion/core';
+		const content = `import { jsx } from '@emotion/react';
 
 /** @jsx jsx */
 function Component${num}(_ref) {
@@ -332,7 +332,7 @@ export { Component${num} };
 	src1: ({ num, dir }) => {
 		const content = `/** @jsx jsx */
 
-import { jsx } from '@emotion/core';
+import { jsx } from '@emotion/react';
 
 export function Component${num}({ children }) {
 	return (
@@ -448,7 +448,7 @@ exports.Component${num} = Component${num};
 	},
 	dist4: ({ num, dir, scope = '@westpac/', core = '@westpac/' }) => {
 		const content = `import { useBrand } from '${core}core';
-import { jsx } from '@emotion/core';
+import { jsx } from '@emotion/react';
 
 /** @jsx jsx */
 function Component${num}(_ref) {
@@ -483,7 +483,7 @@ export { Component${num} };
 		const content = `/** @jsx jsx */
 
 import { useBrand } from '${core}core';
-import { jsx } from '@emotion/core';
+import { jsx } from '@emotion/react';
 
 export function Component${num}({ look = 'look1', children }) {
 	const { COLORS } = useBrand();
@@ -779,7 +779,7 @@ exports.Core = Core, exports.useBrand = useBrand;
 		fs.writeFileSync(`${filePath}core.cjs.prod.js`, content, { encoding: 'utf8' });
 	},
 	dist4: ({ dir }) => {
-		const content = `import { jsx } from '@emotion/core';
+		const content = `import { jsx } from '@emotion/react';
 import { createContext, useContext } from 'react';
 
 /** @jsx jsx */
@@ -819,7 +819,7 @@ export { Core, useBrand };
 	src1: ({ dir }) => {
 		const content = `/** @jsx jsx */
 
-import { jsx } from '@emotion/core';
+import { jsx } from '@emotion/react';
 import { createContext, useContext } from 'react';
 
 export const BrandContext = createContext();
