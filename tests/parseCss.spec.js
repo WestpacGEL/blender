@@ -27,10 +27,10 @@ describe('parseComponent', () => {
 			'1imz2ok-component1-look3',
 		]);
 		expect(result.html).toBe(
-			'<div class="css-gshptl-component1-look1"></div><div class="css-a2lehl-component1-look2"></div><div class="css-1imz2ok-component1-look3"></div>'
+			'<div class="blender-gshptl-component1-look1"></div><div class="blender-a2lehl-component1-look2"></div><div class="blender-1imz2ok-component1-look3"></div>'
 		);
 		expect(result.css).toBe(
-			'.GEL .css-gshptl-component1-look1{background:rebeccapurple;}.GEL .css-a2lehl-component1-look2{background:hotpinnk;}.GEL .css-1imz2ok-component1-look3{background:red;}'
+			'.blender-gshptl-component1-look1{background:rebeccapurple;}.blender-a2lehl-component1-look2{background:hotpinnk;}.blender-1imz2ok-component1-look3{background:red;}'
 		);
 	});
 
@@ -79,10 +79,10 @@ describe('parseComponent', () => {
 			'1imz2ok-component1-look3',
 		]);
 		expect(result.html).toBe(
-			'<div class="css-gshptl-component1-look1"></div><div class="css-a2lehl-component1-look2"></div><div class="css-1imz2ok-component1-look3"></div>'
+			'<div class="blender-gshptl-component1-look1"></div><div class="blender-a2lehl-component1-look2"></div><div class="blender-1imz2ok-component1-look3"></div>'
 		);
 		expect(result.css).toBe(
-			'.GEL .css-gshptl-component1-look1{background:rebeccapurple;}.GEL .css-a2lehl-component1-look2{background:hotpinnk;}.GEL .css-1imz2ok-component1-look3{background:red;}'
+			'.blender-gshptl-component1-look1{background:rebeccapurple;}.blender-a2lehl-component1-look2{background:hotpinnk;}.blender-1imz2ok-component1-look3{background:red;}'
 		);
 	});
 
@@ -101,25 +101,25 @@ describe('parseComponent', () => {
 		expect(typeof result.recipes[0].component).toBe('function');
 		expect(result.recipes[0].static).toStrictEqual({
 			code: 0,
-			html: '<div class="css-gshptl-component1-look1">Here comes the content</div>',
+			html: '<div class="blender-gshptl-component1-look1">Here comes the content</div>',
 			ids: ['gshptl-component1-look1'],
-			css: '.GEL .css-gshptl-component1-look1{background:rebeccapurple;}',
+			css: '.blender-gshptl-component1-look1{background:rebeccapurple;}',
 		});
 		expect(result.recipes[1].heading).toBe('Variation 2 for Component 1');
 		expect(typeof result.recipes[1].component).toBe('function');
 		expect(result.recipes[1].static).toStrictEqual({
 			code: 0,
-			html: '<div class="css-a2lehl-component1-look2">Here comes the content</div>',
+			html: '<div class="blender-a2lehl-component1-look2">Here comes the content</div>',
 			ids: ['a2lehl-component1-look2'],
-			css: '.GEL .css-a2lehl-component1-look2{background:hotpinnk;}',
+			css: '.blender-a2lehl-component1-look2{background:hotpinnk;}',
 		});
 		expect(result.recipes[2].heading).toBe('Variation 3 for Component 1');
 		expect(typeof result.recipes[2].component).toBe('function');
 		expect(result.recipes[2].static).toStrictEqual({
 			code: 0,
-			html: '<div class="css-1imz2ok-component1-look3">Here comes the content</div>',
+			html: '<div class="blender-1imz2ok-component1-look3">Here comes the content</div>',
 			ids: ['1imz2ok-component1-look3'],
-			css: '.GEL .css-1imz2ok-component1-look3{background:red;}',
+			css: '.blender-1imz2ok-component1-look3{background:red;}',
 		});
 	});
 
@@ -168,8 +168,8 @@ describe('parseComponent', () => {
 
 		expect(result.code).toBe(0);
 		expect(result.ids).toStrictEqual(['a8hlze-Component']);
-		expect(result.html).toBe('<div class="css-a8hlze-Component">CHILD</div>');
-		expect(result.css).toBe('.GEL .css-a8hlze-Component{background:red;}');
+		expect(result.html).toBe('<div class="blender-a8hlze-Component">CHILD</div>');
+		expect(result.css).toBe('.blender-a8hlze-Component{background:red;}');
 	});
 });
 

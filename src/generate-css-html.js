@@ -152,7 +152,7 @@ function convertClasses({ css, html, ids }, version) {
 	const versionString = SETTINGS.get.versionInClass ? `-v${niceVersion}` : '';
 
 	ids.map((id) => {
-		const oldClass = new RegExp(`css-${id}`, 'g');
+		const oldClass = new RegExp(`blender-${id}`, 'g');
 		const idBits = id.split('-').slice(1);
 		const newClass = getClassName(idBits, versionString);
 

@@ -33,7 +33,7 @@ function generateJSFile(pkg) {
 		D.log(`Found file at "${color.yellow(pkgPathJS)}"`);
 	} catch (error) {
 		result.code = 1;
-		result.message = `An error occured when trying to open ${color.yellow(pkgPathJS)}`;
+		result.message = `An error occurred when trying to open ${color.yellow(pkgPathJS)}`;
 		D.error(`Unable to find ${pkg.pkg.js} at "${color.yellow(pkg.path)}"`);
 	}
 
@@ -44,7 +44,7 @@ function generateJSFile(pkg) {
 			D.log(`Found file at "${color.yellow(pkgPathJquery)}"`);
 		} catch (error) {
 			result.code = 1;
-			result.message = `An error occured when trying to open ${color.yellow(pkgPathJquery)}`;
+			result.message = `An error occurred when trying to open ${color.yellow(pkgPathJquery)}`;
 			D.error(`Unable to find ${pkg.pkg.jquery} at "${color.yellow(pkg.path)}"`);
 		}
 	}

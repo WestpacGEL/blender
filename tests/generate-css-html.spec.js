@@ -47,9 +47,8 @@ describe('convertClasses', () => {
 	test('Convert HTML and CSS classes', () => {
 		const result = convertClasses(
 			{
-				html: '<div class="css-zje891-component1-look1">Content</div>',
-				css:
-					'.css-981abc-core{background:orange;}.css-981abc-core:after{content:"Core";}.css-zje891-component1-look1{background:#ffffff;}',
+				html: '<div class="blender-zje891-component1-look1">Content</div>',
+				css: '.blender-981abc-core{background:orange;}.blender-981abc-core:after{content:"Core";}.blender-zje891-component1-look1{background:#ffffff;}',
 				ids: ['981abc-core', 'zje891-component1-look1'],
 			},
 			'0.1.0'
@@ -64,8 +63,7 @@ describe('convertClasses', () => {
 		const result = convertClasses(
 			{
 				html: '<div class="__convert__component2">Content</div>',
-				css:
-					'.__convert__component2{color:blue;}.GEL-component2 .__convert__component2-nested:after{background:red;}',
+				css: '.__convert__component2{color:blue;}.GEL-component2 .__convert__component2-nested:after{background:red;}',
 				ids: [],
 			},
 			'0.1.0'

@@ -85,9 +85,10 @@ function indentHtml(html_source, options) {
 		this.Utils = {
 			//Uilities made available to the various functions
 			whitespace: '\n\r\t '.split(''),
-			single_token: 'br,input,link,meta,!doctype,basefont,base,area,hr,wbr,param,img,isindex,?xml,embed,?php,?,?='.split(
-				','
-			), //all the single tags for HTML
+			single_token:
+				'br,input,link,meta,!doctype,basefont,base,area,hr,wbr,param,img,isindex,?xml,embed,?php,?,?='.split(
+					','
+				), //all the single tags for HTML
 			extra_liners: 'head,body,/html'.split(','), //for tags that need a line of whitespace before them
 			in_array: function (what, arr) {
 				for (var i = 0; i < arr.length; i++) {
@@ -492,9 +493,8 @@ function indentHtml(html_source, options) {
 				break;
 			case 'TK_TAG_END':
 				var tag_name = multi_parser.token_text.match(/\w+/)[0];
-				var tag_extracted_from_last_output = multi_parser.output[
-					multi_parser.output.length - 1
-				].match(/<\s*(\w+)/);
+				var tag_extracted_from_last_output =
+					multi_parser.output[multi_parser.output.length - 1].match(/<\s*(\w+)/);
 				if (
 					tag_extracted_from_last_output === null ||
 					tag_extracted_from_last_output[1] !== tag_name

@@ -70,7 +70,7 @@ describe('testLabels', () => {
 	test('Successfully test a package while excluding ids not included in css', () => {
 		const pkg = {
 			ids: ['hash1-one', 'hash2-not-in-css', 'hash2-not-in-css', 'hash3-three'],
-			css: 'css with .css-hash1-one and .css-hash3-three classes',
+			css: 'css with .blender-hash1-one and .blender-hash3-three classes',
 		};
 		const result = testLabels(pkg);
 
@@ -84,7 +84,7 @@ describe('testLabels', () => {
 describe('getValidIds', () => {
 	test('Filter out all ids not included in the html', () => {
 		const ids = ['one', 'two', 'three'];
-		const css = 'this string contains .css-one and .css-three but not two';
+		const css = 'this string contains .blender-one and .blender-three but not two';
 		const result = getValidIds(ids, css);
 
 		expect(result).toStrictEqual(['one', 'three']);
