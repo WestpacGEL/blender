@@ -56,8 +56,8 @@ server.post(BLENDERURL, async (request, response) => {
 		`Request received at ${time} from ${IP} with:\n            ${JSON.stringify(cleanReq)}`
 	);
 
-	// manually add core and brand package as that's not something you get to chose in the form
-	cleanReq.packages = [...cleanReq.packages, 'core', `${cleanReq.brand}`];
+	// manually add brand package as that's not something you get to chose in the form
+	cleanReq.packages = [...cleanReq.packages, `${cleanReq.brand}`];
 
 	// create a pipe zip
 	await createZip({ response, cleanReq, IP });
