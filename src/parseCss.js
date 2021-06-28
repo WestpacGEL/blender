@@ -153,7 +153,7 @@ function extractMarkup({ Component, componentPath, brand, children }) {
 		let createCache;
 		let CacheProvider;
 		try {
-			const emotionCorePath = require.resolve(`${SETTINGS.get.cwd}/node_modules/@emotion/core`);
+			const emotionCorePath = require.resolve(`${SETTINGS.get.cwd}/node_modules/@emotion/react`);
 			CacheProvider = require(emotionCorePath).CacheProvider;
 
 			const emotionCachePath = require.resolve(`${SETTINGS.get.cwd}/node_modules/@emotion/cache`);
