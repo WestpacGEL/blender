@@ -190,7 +190,7 @@ ${COMMENT.join('\n')}
 							Font licence agreements restrict us from distributing web fonts via the Blender. Westpac Group employees may follow the link below to access the web font packages on the internal network.
 						</p>
 						<p>
-							<a class="docs-link" href="https://westpacgroup.sharepoint.com/sites/O365-UG-043642/Shared%20Documents/General/Web%20Fonts/${brandFlag.toUpperCase()}.zip" target="_blank" rel="noopener">Download web fonts</a>
+							<a class="docs-link" href="https://westpacgroup.sharepoint.com/:f:/s/O365-UG-043642/EmCGwWc6TtVKrkd39ZL2lZMBK06NWlIvAl2wA3uOa4gnTQ" target="_blank" rel="noopener">Download web fonts</a>
 						</p>
 					</section>
 
