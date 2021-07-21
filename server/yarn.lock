@@ -117,10 +117,10 @@ bytes@3.1.0:
   resolved "https://registry.yarnpkg.com/bytes/-/bytes-3.1.0.tgz#f6cf7933a360e0588fa9fde85651cdc7f805d1f6"
   integrity sha512-zauLjrfCG+xvoyaqLoV8bLVXXNGC4JqlxFCutSDWA6fJrTo2ZuvLYTqZ7aHBLZSMOopbzwv8f+wZcVzfVTI2Dg==
 
-cfonts@^2.9.2:
-  version "2.9.2"
-  resolved "https://registry.yarnpkg.com/cfonts/-/cfonts-2.9.2.tgz#bfffa07ec1d24d4f62d8d0f39e7ac2cdb1f23094"
-  integrity sha512-TdqmOFEs5mx4S/ypJAXVsM7vaWFAsdEnrGUahPLQpzjI5SRBpoU4azF/BGzwEV0sFnJmbC4tT/Y7jp8LyZSfAA==
+cfonts@^2.9.3:
+  version "2.9.3"
+  resolved "https://registry.yarnpkg.com/cfonts/-/cfonts-2.9.3.tgz#b7dc439212fcf70cb5df1f3acfba14a2eac22902"
+  integrity sha512-HVDE+Qsoi8s4iwDLCRK/l8yQVAkLyPvz1jc1ZUvDSXkAZVN2Dtdw4Rsx0uhXNouHHVmCPa5bvmZ7oUYWzP6oow==
   dependencies:
     chalk "^4.1.1"
     window-size "^1.1.1"
